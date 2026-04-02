@@ -1,0 +1,39 @@
+Алгоритм,Сложность,Где
+AABB / circle overlap,Ультра-Легко,Коллизии
+Sprite sheet indexing (col = index % cols),Ультра-Легко,Анимации
+Camera offset + clamp,Ультра-Легко,Камера
+FSM (enum + switch),Ультра-Легко,Конечные автоматы
+Observer / Event pattern,Ультра-Легко,Событийная модель
+Fisher-Yates shuffle,Ультра-Легко,Случайность
+Shuffle bag,Ультра-Легко,Случайность
+Flood fill / BFS (валидация уровня),Легко,Процедурная генерация
+Random walk,Легко,Случайное блуждание
+Cellular automata smoothing,Легко,Клеточные автоматы
+Fixed timestep accumulator,Легко,Порядок обновления
+Command + undo/redo (two stacks),Легко,Пошаговые игры
+Object pool,Легко,Системы частиц
+Circular buffer (FPS counter),Легко,Отладка
+Seek / Flee / Arrive (steering),Легко,Управляющие силы и Boids
+Game loop + deltaTime,Легко,Основной игровой цикл
+Patrol + LOS detection + hysteresis,Легко,Простой ИИ врагов
+"A* (heuristic search, priority queue)",Легко,Поиск путей
+Priority queue / heap (initiative),Легко,Пошаговые игры
+Weighted random + binary search,Легко,Случайность
+Box-Muller (normal distribution),Легко,Случайность
+Uniform Grid (bucket array),Средне,Пространственные структуры
+Swept collision (CCD),Средне,Порядок обновления
+Behavior tree tick traversal,Средне,Деревья поведений
+Spatial hashing,Средне,Пространственные структуры
+PRD (pseudo-random distribution),Средне,Случайность
+Minimax + alpha-beta pruning,Средне,Минимакс
+Boids (separation + alignment + cohesion),Средне,Управляющие силы и Boids
+Wave Function Collapse (constraint propagation),Средне,WFC
+L-система (expand + turtle + стек),Средне,L-системы
+"Цепь Маркова (матрица переходов, взвешенный выбор)",Средне,Цепи Маркова
+QuadTree (recursive subdivision),Средне,Пространственные структуры
+BSP dungeon generation (split + rooms + corridors),Сложно,BSP-генерация
+"Lightmap + multiply blending (шейдеры, render targets, gamma)",Сложно,Простое освещение
+"Perlin noise (gradient dot products, fade curves)",Сложно,Шум Перлина
+Client-side prediction + reconciliation,Сложно,Сетевая архитектура
+"Генетический алгоритм (популяция, отбор, скрещивание, мутация)",Сложно,Генетические алгоритмы
+"Нейросеть (перцептрон, обратное распространение)",Сложно,Нейросети для игр
