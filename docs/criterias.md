@@ -24,3 +24,5 @@
 - [] Наличие стабильной гит-истории (отсчет с 1.04)
 
 [Памятка](https://gg.xetren.com/)
+
+[Критерии](https://docs.google.com/spreadsheets/d/1R_Fa0IfBaxRO3TNC8M7gYszPr4blvg7La5XSk0DZkzI/edit?gid=0#gid=0&fvid=233901592)
