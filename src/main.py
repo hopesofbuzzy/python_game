@@ -1,26 +1,20 @@
 import pygame
 
 from src.core.game import Game
+from src.scenes.test import TestScene
 
 
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     clock = pygame.time.Clock()
-    game = Game()
+    game = Game(TestScene())
+    delta_time = 0.0
 
     while game.running:
-        # Input
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        # Render
-        screen.fill("purple")
-        rect = pygame.Rect(100, 100, 100, 100)
-        pygame.draw.rect(screen, (255, 255, 255), rect)
-        # Show
+        game.update(delta_time)
+        game.draw(screen)
         pygame.display.flip()
-        # Delta time
-        clock.tick(60)
+        delta_time = clock.tick(60) // 1000.0
 
     pygame.quit()

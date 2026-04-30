@@ -1,7 +1,12 @@
 import pygame
 
+from src.core.systems.event import Event
+
 class InputManager:
-    def update(self):
+    def __init__(self):
+        self.on_exit = Event()
+
+    def handle_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                self.on_exit.emit()
