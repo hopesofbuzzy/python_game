@@ -18,6 +18,8 @@ class Game:
         self.paused: bool = False
         self.running: bool = True
 
+        self.input.on_exit.subscribe(self.exit)
+
     def update(self, delta_time: float):
         # Input
         self.input.handle_input()
@@ -27,3 +29,6 @@ class Game:
         rect = pygame.Rect(100, 100, 100, 100)
         pygame.draw.rect(screen, (255, 255, 255), rect)
         # self.renderer.draw()
+
+    def exit(self):
+        self.running = False
