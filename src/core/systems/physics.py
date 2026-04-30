@@ -1,0 +1,3 @@
+class PhysicsSystem:
+    def __init__(self):
+        ...
