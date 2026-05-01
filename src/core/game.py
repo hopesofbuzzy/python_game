@@ -7,14 +7,14 @@ from src.core.systems.scene import Scene
 
 
 class Game:
-    def __init__(self, scene: Scene):
+    def __init__(self, scene_class):
         # Input
         # Render
         # Show
         self.input: InputManager = InputManager()
-        self.scene: Scene = scene
-        self.physics = PhysicsSystem()
-        self.renderer = Renderer()
+        self.scene: Scene = scene_class(self.input)
+        # self.physics = PhysicsSystem()
+        self.renderer: Renderer = Renderer()
         self.paused: bool = False
         self.running: bool = True
 
@@ -22,14 +22,12 @@ class Game:
 
     def update(self, delta_time: float):
         # Input
-        self.input.handle_input()
+        self.input.handle_input(self.scene)
         # Update
+        self.scene.update(delta_time)
 
     def draw(self, screen: pygame.Surface):
-        screen.fill("purple")
-        rect = pygame.Rect(100, 100, 100, 100)
-        pygame.draw.rect(screen, (255, 255, 255), rect)
-        # self.renderer.draw()
+        self.renderer.draw(screen, self.scene)
 
     def exit(self):
         self.running = False

@@ -1,30 +1,39 @@
+import pygame
+from pygame.math import Vector2
+from pygame.event import Event as PygameEvent
+
 from dataclasses import dataclass
 from abc import abstractmethod
 
-class Model2D:
+class Model:
     def __init__(self):
-        self.position: Position = Position(0, 0)
+        self.position: Vector2 = Vector2(0, 0)
         # Радианы.
         self.rotation: float = 0
-
-@dataclass
-class Position:
-    x: float
-    y: float
-
-class View2D:
-    def __init__(self):
-        # Прослойка цвета.
-        self.modulate: tuple[int, int, int] = (255, 255, 255)
+        self.size: Vector2 = Vector2(0, 0)
 
     @abstractmethod
-    def draw(self):
+    def update(self, delta_time: float):
+        """Регулярно обновляет модель."""
+        ...
+
+class View:
+    @abstractmethod
+    def draw(self, screen: pygame.Surface, model: Model):
+        """Отрисовывает по модели."""
         ...
 
 class Controller:
-    def __init__(self, model: Model2D, view: View2D):
+    def __init__(self, model: Model, view: View):
         self.model = model
 
     @abstractmethod
-    def handle_input(self):
+    def handle_input(self, event: PygameEvent):
+        """Читает pygame.event и уведомляет модель по Event"""
         ...
+
+@dataclass
+class GameObject:
+    model: Model
+    view: View
+    controller: Controller
