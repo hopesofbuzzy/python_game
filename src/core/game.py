@@ -12,9 +12,9 @@ class Game:
         # Render
         # Show
         self.input: InputManager = InputManager()
+        self.scene: Scene = scene
         self.physics = PhysicsSystem()
         self.renderer = Renderer()
-        self.scene: Scene = scene
         self.paused: bool = False
         self.running: bool = True
 
@@ -23,6 +23,7 @@ class Game:
     def update(self, delta_time: float):
         # Input
         self.input.handle_input()
+        # Update
 
     def draw(self, screen: pygame.Surface):
         screen.fill("purple")

@@ -12,8 +12,13 @@ class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
     def __init__(self, *args):
         self.object_registry: dict[str, GameObject] = {}
-        self._ready(*args)
 
-    @abstractmethod
-    def _ready(self, *args):
-        ...
+    def add_object(self, obj_id: str, obj: GameObject) -> GameObject:
+        if obj_id in self.object_registry:
+            raise KeyError("Объект с таким obj_id уже существует")
+        self.object_registry[obj_id] = obj
+        return obj
+
+    def remove_object(self, obj_id: str) -> None:
+        obj = self.object_registry.pop(obj_id)
+        del obj
