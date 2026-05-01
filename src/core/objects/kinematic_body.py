@@ -1,8 +1,8 @@
 from pygame.math import Vector2
+from dataclasses import dataclass, field
 
 from src.core.objects.game_object import Model
 
+@dataclass
 class KinematicBodyModel(Model):
-    def __init__(self):
-        super().__init__()
-        self.velocity: Vector2 = Vector2(0, 0)
+    velocity: Vector2 = field(default_factory=lambda: Vector2(0, 0))

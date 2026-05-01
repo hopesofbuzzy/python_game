@@ -9,5 +9,6 @@ class Renderer:
         screen: pygame.Surface,
         scene: Scene
     ):
+        screen.fill((0, 0, 0))
         for object in scene.object_registry.values():
             object.view.draw(screen, object.model)

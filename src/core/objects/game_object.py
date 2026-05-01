@@ -2,20 +2,14 @@ import pygame
 from pygame.math import Vector2
 from pygame.event import Event as PygameEvent
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod
 
+@dataclass
 class Model:
-    def __init__(
-            self,
-            position: Vector2 = Vector2(0, 0),
-            rotation: float = 0.0,
-            size: Vector2 = Vector2(0, 0)
-        ):
-        self.position = position
-        # Радианы.
-        self.rotation: float = rotation
-        self.size = size
+    position: Vector2 = field(default_factory=lambda: Vector2(0, 0))
+    rotation: float = 0.0
+    size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
 
     @abstractmethod
     def update(self, delta_time: float):

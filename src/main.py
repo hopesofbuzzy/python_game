@@ -14,7 +14,7 @@ if __name__ == "__main__":
     while game.running:
         game.update(delta_time)
         game.draw(screen)
-        pygame.display.flip()
-        delta_time = clock.tick(60) // 1000.0
+        pygame.display.update()
+        delta_time = clock.tick(60) / 1000.0
 
     pygame.quit()
