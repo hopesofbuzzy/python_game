@@ -3,7 +3,7 @@ from pygame.math import Vector2
 
 from src.core.objects.game_object import View, Model
 
-class Rect(View):
+class RectView(View):
     def __init__(self, color: tuple[int, int, int]):
         super().__init__()
         self.color = color

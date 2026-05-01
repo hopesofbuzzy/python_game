@@ -6,11 +6,16 @@ from dataclasses import dataclass
 from abc import abstractmethod
 
 class Model:
-    def __init__(self):
-        self.position: Vector2 = Vector2(0, 0)
+    def __init__(
+            self,
+            position: Vector2 = Vector2(0, 0),
+            rotation: float = 0.0,
+            size: Vector2 = Vector2(0, 0)
+        ):
+        self.position = position
         # Радианы.
-        self.rotation: float = 0
-        self.size: Vector2 = Vector2(0, 0)
+        self.rotation: float = rotation
+        self.size = size
 
     @abstractmethod
     def update(self, delta_time: float):
@@ -24,7 +29,7 @@ class View:
         ...
 
 class Controller:
-    def __init__(self, model: Model, view: View):
+    def __init__(self, model: Model):
         self.model = model
 
     @abstractmethod

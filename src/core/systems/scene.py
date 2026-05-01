@@ -1,13 +1,12 @@
-from src.core.objects.game_object import GameObject, Controller, Model, View
-from src.core.systems.input import InputManager
-from abc import abstractmethod
+from src.core.objects import *
+from abc import abstractmethod, ABC
 from pygame.event import Event as PygameEvent
 
 
 # FSM для сцен.
 class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
-    def __init__(self, input: InputManager):
+    def __init__(self):
         self.object_registry: dict[str, GameObject] = {}
         self.input = input
         self.ready()

@@ -12,7 +12,7 @@ class Game:
         # Render
         # Show
         self.input: InputManager = InputManager()
-        self.scene: Scene = scene_class(self.input)
+        self.scene: Scene = scene_class()
         # self.physics = PhysicsSystem()
         self.renderer: Renderer = Renderer()
         self.paused: bool = False

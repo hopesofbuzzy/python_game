@@ -8,7 +8,7 @@ if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     clock = pygame.time.Clock()
-    game = Game(TestScene())
+    game = Game(TestScene)
     delta_time = 0.0
 
     while game.running:
