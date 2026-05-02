@@ -1,12 +1,12 @@
 import pygame
 from pygame.math import Vector2
+from dataclasses import dataclass
 
 from src.core.objects.game_object import View, Model
 
+@dataclass
 class RectView(View):
-    def __init__(self, color: tuple[int, int, int]):
-        super().__init__()
-        self.color = color
+    color: tuple[int, int, int] = (255, 255, 255)
 
     def draw(
             self,

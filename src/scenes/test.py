@@ -2,27 +2,19 @@ from pygame.math import Vector2
 
 from src.core.systems.scene import Scene
 from src.core.objects import *
+from src.objects.player.player import *
 
 class TestScene(Scene):
     def ready(self):
-        rect_model = Model(
-            position=Vector2(100, 100),
-            size=Vector2(100, 100)
-        )
-        rect = GameObject(
-            model=rect_model,
-            view=RectView((255, 255, 255)),
-            controller=Controller(rect_model)
-        )
-        body_model = KinematicBodyModel(
+        player_model = PlayerModel(
             position=Vector2(100, 300),
-            size=Vector2(5, 5),
-            velocity=Vector2(100, 0)
+            size=Vector2(25, 25),
+            velocity=Vector2(100, 0),
+            speed=150
         )
-        body = GameObject(
-            model=body_model,
-            view=RectView((255, 255, 255)),
-            controller=Controller(rect_model)
+        player = GameObject(
+            model=player_model,
+            view=RectView(color=(255, 255, 255)),
+            controller=PlayerController(player_model)
         )
-        self.add_object("rect_1", rect)
-        self.add_object("body_1", body)
+        self.add_object("player", player)

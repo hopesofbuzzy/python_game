@@ -9,6 +9,6 @@ class MovementSystem:
     def update(self, scene: Scene, delta_time: float):
         for object in scene.object_registry.values():
             model = object.model
-            if type(model) is KinematicBodyModel:
+            if isinstance(model, KinematicBodyModel):
                 # print(model.position, model.size, model.velocity, delta_time)
                 model.position += model.velocity * delta_time

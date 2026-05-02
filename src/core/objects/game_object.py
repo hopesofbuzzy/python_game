@@ -16,15 +16,16 @@ class Model:
         """Регулярно обновляет модель."""
         ...
 
+@dataclass
 class View:
     @abstractmethod
-    def draw(self, screen: pygame.Surface, model: Model):
+    def draw(self, screen: pygame.Surface, model):
         """Отрисовывает по модели."""
         ...
 
+@dataclass
 class Controller:
-    def __init__(self, model: Model):
-        self.model = model
+    model: Model
 
     @abstractmethod
     def handle_input(self, event: PygameEvent):
