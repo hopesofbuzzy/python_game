@@ -8,6 +8,7 @@ class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
     def __init__(self):
         self.object_registry: dict[str, GameObject] = {}
+        self.collisions: list[tuple] = []
         self.input = input
         self.ready()
 

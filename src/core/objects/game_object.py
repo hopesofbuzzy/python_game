@@ -9,7 +9,6 @@ from abc import abstractmethod
 class Model:
     position: Vector2 = field(default_factory=lambda: Vector2(0, 0))
     rotation: float = 0.0
-    size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
 
     @abstractmethod
     def update(self, delta_time: float):

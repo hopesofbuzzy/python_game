@@ -1,3 +1,3 @@
 from .game_object import Model, View, Controller, GameObject
-from .rect import RectView
-from .kinematic_body import KinematicBodyModel
+from .view import RectView
+from .collidable import KinematicBodyModel, Collidable, CircleShape, RectShape, StaticBodyModel

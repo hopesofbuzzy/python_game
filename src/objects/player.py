@@ -2,10 +2,13 @@ import pygame
 from pygame.event import Event as PygameEvent
 from dataclasses import dataclass
 
+from src.core.objects.collidable import Collidable
 from src.core.objects import KinematicBodyModel, RectView, Controller
 
+@dataclass
 class PlayerModel(KinematicBodyModel):
-    ...
+    def handle_collision(self, other: Collidable):
+        print(other)
 
 @dataclass
 class PlayerController(Controller):

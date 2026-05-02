@@ -2,19 +2,43 @@ from pygame.math import Vector2
 
 from src.core.systems.scene import Scene
 from src.core.objects import *
-from src.objects.player.player import *
+from src.objects import *
 
 class TestScene(Scene):
     def ready(self):
         player_model = PlayerModel(
             position=Vector2(100, 300),
-            size=Vector2(25, 25),
             velocity=Vector2(100, 0),
-            speed=150
+            speed=150,
+            shape=RectShape(size=Vector2(25, 25)) #  CircleShape(radius=12, position=Vector2(12, 12))
         )
         player = GameObject(
             model=player_model,
-            view=RectView(color=(255, 255, 255)),
+            view=RectView(color=(255, 255, 255), size=Vector2(25, 25)),
             controller=PlayerController(player_model)
         )
         self.add_object("player", player)
+
+        enemy_model = EnemyModel(
+            position=Vector2(170, 300),
+            velocity=Vector2(0, 0),
+            shape=RectShape(size=Vector2(25, 25))  #CircleShape(radius=12, position=Vector2(12, 12)) 
+        )
+        enemy = GameObject(
+            model=enemy_model,
+            view=RectView(color=(255, 25, 25), size=Vector2(25, 25)),
+            controller=Controller(enemy_model)
+        )
+        self.add_object("enemy_1", enemy)
+
+        enemy_model2 = EnemyModel(
+            position=Vector2(250, 320),
+            velocity=Vector2(0, 0),
+            shape=RectShape(size=Vector2(25, 25))  #CircleShape(radius=12, position=Vector2(12, 12)) 
+        )
+        enemy2 = GameObject(
+            model=enemy_model2,
+            view=RectView(color=(25, 25, 255), size=Vector2(25, 25)),
+            controller=Controller(enemy_model)
+        )
+        self.add_object("enemy_2", enemy2)
