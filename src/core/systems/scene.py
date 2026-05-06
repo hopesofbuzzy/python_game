@@ -1,4 +1,6 @@
 from src.core.objects import *
+from src.core.systems.uniform_grid import UniformGrid
+
 from abc import abstractmethod, ABC
 from pygame.event import Event as PygameEvent
 
@@ -8,7 +10,6 @@ class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
     def __init__(self):
         self.object_registry: dict[str, GameObject] = {}
-        self.collisions: list[tuple] = []
         self.input = input
         self.ready()
 

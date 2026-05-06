@@ -4,10 +4,15 @@ from itertools import combinations
 from dataclasses import dataclass
 
 from src.core.systems.scene import Scene
+from src.core.systems.uniform_grid import UniformGrid
 from src.core.objects import *
 
 @dataclass
 class Overlap:
+    """
+        Контейнер данных о направлении и глубине пересечения
+        коллизий.
+    """
     # Направление разрешения
     nx: float
     ny: float
@@ -15,20 +20,48 @@ class Overlap:
     depth: float
 
 class CollisionSystem:
-    MAX_OBJECTS = 6
-    MAX_DEPTH = 4
-    def __init__(self, )
+    """
+        Система коллизий и столкновений.
+        Регулирует состояние коллизий и столкновений.
+        Эффективно разрешает столкновения.
 
-    def insert(self, object: GameObject):
-        ...
+        Владеет UniformGrid x Collisions (Single responsibility).
+    """
+    def __init__(self):
+        self.collisions: list[tuple] = []
+        self.uniform_grid = UniformGrid()
+
+    def update_uniform_grid(self, scene: Scene):
+        """Очистка и пересоздание UniformGrid."""
+        self.uniform_grid.clear()
+        for object in scene.object_registry.values():
+            self.uniform_grid.insert(object)
 
     def update(self, scene: Scene, delta_time: float):
-        for object, other in combinations(scene.object_registry.values(), r=2):
-            # Коллизия окружностей.
-            if isinstance(object.model, Collidable) and isinstance(other.model, Collidable):
-                overlap = self.check_overlap(object.model, other.model)
-                if overlap:
-                    scene.collisions.append((object.model, other.model, overlap))
+        """Проверка коллизий и определение столкновений."""
+        for object in scene.object_registry.values():
+            others = self.uniform_grid.query(object)
+            for other in others:
+                if (
+                    isinstance(object.model, Collidable)
+                    and isinstance(other.model, Collidable)
+                ):
+                    overlap = self.check_overlap(object.model, other.model)
+                    if overlap:
+                        self.collisions.append(
+                            (
+                                object.model,
+                                other.model,
+                                overlap
+                            )
+                        )
+
+        # for object, other in combinations(scene.object_registry.values(), r=2):
+        #     # Коллизия окружностей.
+        #     if isinstance(object.model, Collidable) and isinstance(other.model, Collidable):
+        #         overlap = self.check_overlap(object.model, other.model)
+        #         if overlap:
+        #             self.collisions.append((object.model, other.model, overlap))
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2) -> Overlap | None:
@@ -41,7 +74,7 @@ class CollisionSystem:
             return Overlap(nx=n.x, ny=n.y, depth=(r1+r2)-sqrt(dist))
 
     @staticmethod
-    def aabb_collide(pos1, size1, pos2, size2):
+    def aabb_collide(pos1, size1, pos2, size2) -> Overlap | None:
         if (
             pos1.x <= pos2.x + size2.x
             and pos2.x <= pos1.x + size1.x
@@ -82,10 +115,11 @@ class CollisionSystem:
                 oth.size
             )
 
-    def resolve(self, scene: Scene, delta_time: float):
-        for object, other, overlap in scene.collisions:
+    def resolve(self, delta_time: float):
+        """Разрешение столкновений."""
+        for object, other, overlap in self.collisions:
             if isinstance(object, KinematicBodyModel) and object.velocity:
                 object.position += Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
             if isinstance(other, KinematicBodyModel) and other.velocity:
                 other.position -= Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
-        scene.collisions = []
+        self.collisions = []

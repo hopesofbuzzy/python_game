@@ -1,4 +1,18 @@
-from itertools import combinations
+from src.core.systems.uniform_grid import UniformGrid
+from src.core.objects import GameObject
+import pygame
 
-for a1, a2 in combinations((1, 2, 3), r=2):
-    print(a1)
+
+ug = UniformGrid()
+# ug.insert()
+# for q in qt.children:
+#     q.subdivide()
+#     print(q)
+
+class My:
+    def hello(self):
+        print("hi")
+
+d: dict[set, str] = {
+    {My()}: "5"
+}

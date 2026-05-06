@@ -28,10 +28,12 @@ class Game:
         # AI
         # Movement
         self.movement.update(self.scene, delta_time)
+        # UniformGrid (очистка)
+        self.collision.update_uniform_grid(self.scene)
         # Collision
         self.collision.update(self.scene, delta_time)
         # Resolution
-        self.collision.resolve(self.scene, delta_time)
+        self.collision.resolve(delta_time)
         # Game Logic
         self.scene.update(delta_time)
         # Cleanup
