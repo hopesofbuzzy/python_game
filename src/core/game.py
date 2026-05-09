@@ -14,21 +14,16 @@ class Game:
     def __init__(self, scene_class):
         # Systems
         self.input: InputManager = InputManager()
-        self.scene: Scene = scene_class()
         self.movement = MovementSystem()
         self.collision = CollisionSystem()
         self.renderer: Renderer = Renderer()
-        # Registries
-        self.image_loader = ImageLoader()
-        self.scene.image_loader = self.image_loader
         # State
         self.paused: bool = False
         self.running: bool = True
         # Global events
         self.input.on_exit.subscribe(self.exit)
-        # Ready
-        # Все системы включены, запускаем сцену.
-        self.scene.ready()
+        # Scene
+        self.scene: Scene = scene_class()
 
     def update(self, delta_time: float):
         # Input
