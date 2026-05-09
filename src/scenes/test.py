@@ -17,7 +17,10 @@ class TestScene(Scene):
         )
         player = GameObject(
             model=player_model,
-            view=SpriteView(),
+            view=SpriteView(
+                image=self.image_loader.load_image("res/test.png"),
+                size=self.PLAYER_SIZE
+            ),
             controller=PlayerController(player_model)
         )
         self.add_object("player", player)

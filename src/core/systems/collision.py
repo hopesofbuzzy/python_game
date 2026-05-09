@@ -48,15 +48,15 @@ class CollisionSystem:
                     if object._uid >= other._uid:
                         continue
                     checks += 1
-                        overlap = self.check_overlap(object.model, other.model)
-                        if overlap:
-                            self.collisions.append(
-                                (
-                                    object.model,
-                                    other.model,
-                                    overlap
-                                )
+                    overlap = self.check_overlap(object.model, other.model)
+                    if overlap:
+                        self.collisions.append(
+                            (
+                                object.model,
+                                other.model,
+                                overlap
                             )
+                        )
         # print(checks)
 
     @staticmethod

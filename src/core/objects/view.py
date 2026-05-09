@@ -21,15 +21,23 @@ class RectView(View):
 
 @dataclass
 class SpriteView(View):
-    filename: str
-    image: Image | None = None
+    image: Image
+    resized_image: pygame.Surface | None = None
+    size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
+
+    def __post_init__(self):
+        self.resized_image = pygame.transform.scale(
+            self.image.surface,
+            size=self.size
+        )
 
     def draw(
         self,
         screen: pygame.Surface,
         model: Model
     ):
-        ...
+        pos = model.position
+        screen.blit(self.resized_image, dest=pos)
 
     def __del__(self):
-        image.refcount -= 1
+        self.image.refcount -= 1

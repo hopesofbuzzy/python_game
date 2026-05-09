@@ -7,7 +7,7 @@ class Image:
     surface: pygame.Surface
     refcount: int = 1
 
-class ImageRegistry:
+class ImageLoader:
     """Регистр подгрузки изображения для переиспользования."""
     def __init__(self):
         self.image_registry: dict[str, Image] = {}
