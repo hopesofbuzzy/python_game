@@ -36,3 +36,4 @@ class GameObject:
     model: Model
     view: View
     controller: Controller
+    _uid: int = -1

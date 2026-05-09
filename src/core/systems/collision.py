@@ -39,9 +39,13 @@ class CollisionSystem:
 
     def update(self, scene: Scene, delta_time: float):
         """Проверка коллизий и определение столкновений."""
+        checks = 0
         for object in scene.object_registry.values():
             others = self.uniform_grid.query(object)
             for other in others:
+                if object._uid >= other._uid:
+                    continue
+                checks += 1
                 if (
                     isinstance(object.model, Collidable)
                     and isinstance(other.model, Collidable)
@@ -55,13 +59,7 @@ class CollisionSystem:
                                 overlap
                             )
                         )
-
-        # for object, other in combinations(scene.object_registry.values(), r=2):
-        #     # Коллизия окружностей.
-        #     if isinstance(object.model, Collidable) and isinstance(other.model, Collidable):
-        #         overlap = self.check_overlap(object.model, other.model)
-        #         if overlap:
-        #             self.collisions.append((object.model, other.model, overlap))
+        # print(checks)
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2) -> Overlap | None:

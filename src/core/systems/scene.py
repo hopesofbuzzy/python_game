@@ -10,12 +10,15 @@ class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
     def __init__(self):
         self.object_registry: dict[str, GameObject] = {}
+        self.last_uid = 0
         self.input = input
         self.ready()
 
     def add_object(self, obj_id: str, obj: GameObject) -> GameObject:
         if obj_id in self.object_registry:
             raise KeyError("Объект с таким obj_id уже существует")
+        obj._uid = self.last_uid + 1
+        self.last_uid += 1
         self.object_registry[obj_id] = obj
         return obj
 
