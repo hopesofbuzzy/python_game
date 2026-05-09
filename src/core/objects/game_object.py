@@ -36,4 +36,8 @@ class GameObject:
     model: Model
     view: View
     controller: Controller
+    _active: bool = True
     _uid: int = -1
+
+    def free(self):
+        self._active = False

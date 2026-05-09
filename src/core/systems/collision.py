@@ -35,30 +35,28 @@ class CollisionSystem:
         """Очистка и пересоздание UniformGrid."""
         self.uniform_grid.clear()
         for object in scene.object_registry.values():
-            self.uniform_grid.insert(object)
+            if isinstance(object.model, Collidable):
+                self.uniform_grid.insert(object)
 
     def update(self, scene: Scene, delta_time: float):
         """Проверка коллизий и определение столкновений."""
         checks = 0
         for object in scene.object_registry.values():
-            others = self.uniform_grid.query(object)
-            for other in others:
-                if object._uid >= other._uid:
-                    continue
-                checks += 1
-                if (
-                    isinstance(object.model, Collidable)
-                    and isinstance(other.model, Collidable)
-                ):
-                    overlap = self.check_overlap(object.model, other.model)
-                    if overlap:
-                        self.collisions.append(
-                            (
-                                object.model,
-                                other.model,
-                                overlap
+            if isinstance(object.model, Collidable):
+                others = self.uniform_grid.query(object)
+                for other in others:
+                    if object._uid >= other._uid:
+                        continue
+                    checks += 1
+                        overlap = self.check_overlap(object.model, other.model)
+                        if overlap:
+                            self.collisions.append(
+                                (
+                                    object.model,
+                                    other.model,
+                                    overlap
+                                )
                             )
-                        )
         # print(checks)
 
     @staticmethod
@@ -120,4 +118,6 @@ class CollisionSystem:
                 object.position += Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
             if isinstance(other, KinematicBodyModel) and other.velocity:
                 other.position -= Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+            object.handle_collision(other)
+            other.handle_collision(object)
         self.collisions = []

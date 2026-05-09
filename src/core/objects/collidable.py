@@ -43,5 +43,5 @@ class KinematicBodyModel(Collidable):
 
 @dataclass
 class StaticBodyModel(Collidable):
-    """Модель статичного."""
+    """Модель статичного тела."""
     ...

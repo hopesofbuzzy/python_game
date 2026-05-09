@@ -17,7 +17,7 @@ class TestScene(Scene):
         )
         player = GameObject(
             model=player_model,
-            view=RectView(color=(255, 255, 255), size=self.PLAYER_SIZE),
+            view=SpriteView(),
             controller=PlayerController(player_model)
         )
         self.add_object("player", player)

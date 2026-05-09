@@ -26,6 +26,11 @@ class Scene:
         obj = self.object_registry.pop(obj_id)
         del obj
 
+    def cleanup(self):
+        for obj_id, obj in self.object_registry.items():
+            if not obj._active:
+                self.remove_object(obj_id)
+
     @abstractmethod
     def ready(self):
         """
