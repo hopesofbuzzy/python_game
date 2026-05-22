@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Image:
     filename: str
-    surface: pygame.Surface
+    surface: pygame.Surface | None
 
 class ImageLoader:
     """Регистр подгрузки изображения для переиспользования."""

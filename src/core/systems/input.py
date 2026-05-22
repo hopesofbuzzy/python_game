@@ -12,5 +12,6 @@ class InputManager:
             if event.type == pygame.QUIT:
                 self.on_exit.emit()
             for object in scene.object_registry.values():
-                object.controller.handle_input(event)
+                if object.controller:
+                    object.controller.handle_input(event)
             scene.handle_input(event)

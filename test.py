@@ -1,6 +1,7 @@
 from src.core.systems.uniform_grid import UniformGrid
 from src.core.objects import *
 import pygame
+from pygame.math import Vector2
 
 
 # ug = UniformGrid()
@@ -30,3 +31,7 @@ import pygame
 # assert o1.x == [1, 2]
 # assert o1.x is o2.x
 
+for i in range(0, 200, 40):
+    print(i)
+
+pygame.Rect(Vector2(0, 0), Vector2(100, 100))

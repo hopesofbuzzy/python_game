@@ -7,8 +7,7 @@ from abc import abstractmethod
 
 @dataclass
 class Model:
-    position: Vector2 = field(default_factory=lambda: Vector2(0, 0))
-    rotation: float = 0.0
+    position: Vector2
 
     @abstractmethod
     def update(self, delta_time: float):
@@ -34,8 +33,8 @@ class Controller:
 @dataclass
 class GameObject:
     model: Model
-    view: View
-    controller: Controller
+    view: View | None = None
+    controller: Controller | None = None
     _active: bool = True
     _uid: int = -1
 

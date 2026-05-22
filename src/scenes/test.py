@@ -9,6 +9,16 @@ class TestScene(Scene):
     ENEMY_SIZE = Vector2(40, 40)
 
     def ready(self):
+        tilemap_model = TileMapModel(
+            tiles_path="res/levels/1.csv",
+            position=Vector2(0, 0),
+            tileset=self.image_loader.load_image("res/tileset.png")
+        )
+        tilemap = GameObject(
+            model=tilemap_model,
+            view=TileMapView()
+        )
+        self.add_object("tilemap", tilemap)
         player_model = PlayerModel(
             position=Vector2(100, 300),
             velocity=Vector2(100, 0),
