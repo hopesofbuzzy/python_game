@@ -8,12 +8,13 @@ from src.core.systems.images import Image
 
 @dataclass
 class TileMapView(View):
-    def draw(self, screen: pygame.Surface, model):
+    def draw(self, screen: pygame.Surface, model, camera):
+        pos = camera.to_local(model.position)
         for ridx, row in enumerate(model._tiles):
             for cidx, tile_idx in enumerate(row):
                 tile = model._tileset[tile_idx]
                 screen.blit(tile, dest=(
-                    ridx * model.tile_size, cidx * model.tile_size
+                    pos.x + ridx * model.tile_size, pos.y + cidx * model.tile_size
                 ))
 
 @dataclass

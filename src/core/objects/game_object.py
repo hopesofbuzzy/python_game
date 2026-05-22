@@ -17,7 +17,7 @@ class Model:
 @dataclass
 class View:
     @abstractmethod
-    def draw(self, screen: pygame.Surface, model):
+    def draw(self, screen: pygame.Surface, model, camera):
         """Отрисовывает по модели."""
         ...
 

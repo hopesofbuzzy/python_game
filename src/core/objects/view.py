@@ -13,9 +13,10 @@ class RectView(View):
     def draw(
             self,
             screen: pygame.Surface,
-            model: Model 
+            model: Model,
+            camera
         ):
-        pos = model.position
+        pos = camera.to_local(model.position)
         rect = pygame.Rect(pos.x, pos.y, self.size.x, self.size.y)
         pygame.draw.rect(screen, self.color, rect)
 
@@ -34,7 +35,8 @@ class SpriteView(View):
     def draw(
         self,
         screen: pygame.Surface,
-        model: Model
+        model: Model,
+        camera
     ):
-        pos = model.position
+        pos = camera.to_local(model.position)
         screen.blit(self._resized_image, dest=pos)

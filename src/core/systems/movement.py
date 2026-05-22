@@ -10,5 +10,4 @@ class MovementSystem:
         for object in scene.object_registry.values():
             model = object.model
             if isinstance(model, KinematicBodyModel):
-                # print(model.position, model.size, model.velocity, delta_time)
                 model.position += model.velocity * delta_time

@@ -58,3 +58,4 @@ class TestScene(Scene):
             controller=Controller(enemy_model)
         )
         self.add_object("enemy_2", enemy2)
+        self.camera.target = player_model

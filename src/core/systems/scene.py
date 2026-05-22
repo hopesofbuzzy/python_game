@@ -9,11 +9,11 @@ from pygame.event import Event as PygameEvent
 # FSM для сцен.
 class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
-    def __init__(self):
+    def __init__(self, camera):
         self.object_registry: dict[str, GameObject] = {}
         self.image_loader = ImageLoader()
+        self.camera = camera
         self.last_uid = 0
-        self.input = input
         # Все системы включены, запускаем сцену.
         self.ready()
 

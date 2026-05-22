@@ -2,6 +2,7 @@ import pygame
 
 from src.core.systems.input import InputManager
 from src.core.systems.physics import PhysicsSystem
+from src.core.systems.camera import Camera
 from src.core.systems.movement import MovementSystem
 from src.core.systems.collision import CollisionSystem
 from src.core.systems.images import ImageLoader
@@ -15,6 +16,7 @@ class Game:
         # Systems
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
+        self.camera: Camera = Camera()
         self.collision = CollisionSystem()
         self.renderer: Renderer = Renderer()
         # State
@@ -23,7 +25,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class()
+        self.scene: Scene = scene_class(self.camera)
 
     def update(self, delta_time: float):
         # Input
@@ -39,11 +41,13 @@ class Game:
         self.collision.resolve(delta_time)
         # Game Logic
         self.scene.update(delta_time)
+        # Camera
+        self.camera.follow()
         # Cleanup
         self.scene.cleanup()
 
     def draw(self, screen: pygame.Surface):
-        self.renderer.draw(screen, self.scene)
+        self.renderer.draw(screen, self.scene, self.camera)
 
     def exit(self):
         self.running = False
