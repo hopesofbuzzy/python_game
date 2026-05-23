@@ -1,5 +1,4 @@
 from src.core.objects import *
-from src.core.systems.uniform_grid import UniformGrid
 from src.core.systems.images import ImageLoader
 
 from abc import abstractmethod, ABC
@@ -9,10 +8,10 @@ from pygame.event import Event as PygameEvent
 # FSM для сцен.
 class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
-    def __init__(self, camera):
+    def __init__(self, cursor):
         self.object_registry: dict[str, GameObject] = {}
         self.image_loader = ImageLoader()
-        self.camera = camera
+        self.cursor = cursor
         self.last_uid = 0
         # Все системы включены, запускаем сцену.
         self.ready()

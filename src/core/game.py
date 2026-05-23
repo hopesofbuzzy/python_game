@@ -5,9 +5,10 @@ from src.core.systems.input import InputManager
 from src.core.systems.camera import Camera
 from src.core.systems.movement import MovementSystem
 from src.core.systems.collision import CollisionSystem
-from src.core.systems.images import ImageLoader
+from src.core.systems.images import ImageLoader, Image
 from src.core.systems.renderer import Renderer
 from src.core.systems.scene import Scene
+
 
 
 class Game:
@@ -27,11 +28,11 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(self.camera)
+        self.scene: Scene = scene_class(self.input.cursor)
 
     def update(self, delta_time: float):
         # Input
-        self.input.handle_input(self.scene)
+        self.input.handle_input(self.scene, self.camera)
         # AI
         # Movement
         self.movement.update(self.scene, delta_time)

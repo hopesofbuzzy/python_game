@@ -26,7 +26,7 @@ class Controller:
     model: Model
 
     @abstractmethod
-    def handle_input(self, event: PygameEvent):
+    def handle_input(self, event: PygameEvent, cursor):
         """Читает pygame.event и уведомляет модель по Event"""
         ...
 

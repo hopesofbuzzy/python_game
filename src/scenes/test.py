@@ -14,9 +14,12 @@ class TestScene(Scene):
             position=Vector2(0, 0),
             tileset=self.image_loader.load_image("res/tileset.png")
         )
+        tilemap_controller = TileMapController(tilemap_model)
+        self.cursor.on_click.subscribe(tilemap_controller.on_click)
         tilemap = GameObject(
             model=tilemap_model,
-            view=TileMapView()
+            view=TileMapView(),
+            controller=tilemap_controller
         )
         self.add_object("tilemap", tilemap)
 
