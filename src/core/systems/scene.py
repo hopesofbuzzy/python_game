@@ -43,12 +43,12 @@ class Scene:
         """
         ...
 
-    @abstractmethod
     def update(self, delta_time: float):
         """
         Регулярно обновляет сцену.
         """
-        ...
+        for key, object in self.object_registry.items():
+            object.model.update(delta_time)
 
     @abstractmethod
     def handle_input(self, event: PygameEvent):

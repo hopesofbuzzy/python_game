@@ -19,6 +19,7 @@ class TestScene(Scene):
             view=TileMapView()
         )
         self.add_object("tilemap", tilemap)
+
         player_model = PlayerModel(
             position=Vector2(100, 300),
             velocity=Vector2(100, 0),
@@ -35,10 +36,23 @@ class TestScene(Scene):
         )
         self.add_object("player", player)
 
+        path = PathModel(
+            position=Vector2(0, 0),
+            points=[
+                Vector2(200, 200),
+                Vector2(0, 0),
+                Vector2(100, 100),
+                Vector2(0, 0),
+                Vector2(0, 200),
+                Vector2(200, 200),
+            ]
+        )
         enemy_model = EnemyModel(
             position=Vector2(200, 300),
             velocity=Vector2(0, 0),
-            shape=RectShape(size=self.ENEMY_SIZE)  #CircleShape(radius=12, position=Vector2(12, 12)) 
+            shape=RectShape(size=self.ENEMY_SIZE),
+            resolvable=False,
+            path=path
         )
         enemy = GameObject(
             model=enemy_model,
@@ -47,15 +61,4 @@ class TestScene(Scene):
         )
         self.add_object("enemy_1", enemy)
 
-        enemy_model2 = EnemyModel(
-            position=Vector2(250, 320),
-            velocity=Vector2(0, 0),
-            shape=RectShape(size=self.ENEMY_SIZE)  #CircleShape(radius=12, position=Vector2(12, 12)) 
-        )
-        enemy2 = GameObject(
-            model=enemy_model2,
-            view=RectView(color=(25, 25, 255), size=self.ENEMY_SIZE),
-            controller=Controller(enemy_model)
-        )
-        self.add_object("enemy_2", enemy2)
         self.camera.target = player_model

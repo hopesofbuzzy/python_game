@@ -114,10 +114,11 @@ class CollisionSystem:
     def resolve(self, delta_time: float):
         """Разрешение столкновений."""
         for object, other, overlap in self.collisions:
-            if isinstance(object, KinematicBodyModel) and object.velocity:
-                object.position += Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
-            if isinstance(other, KinematicBodyModel) and other.velocity:
-                other.position -= Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+            if object.resolvable and other.resolvable:
+                if isinstance(object, KinematicBodyModel) and object.velocity:
+                    object.position += Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+                if isinstance(other, KinematicBodyModel) and other.velocity:
+                    other.position -= Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
             object.handle_collision(other)
             other.handle_collision(object)
         self.collisions = []

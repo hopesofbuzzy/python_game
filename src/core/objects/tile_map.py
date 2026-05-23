@@ -35,7 +35,6 @@ class TileMapModel(Model):
         # Загружаем уровень.
         with open(self.tiles_path, "r") as f:
             for line in f.readlines():
-                print(line)
                 self._tiles.append(list(map(int, line.split(","))))
         # Делим tileset, извлекая наши тайлы.
         surface = self.tileset.surface
@@ -60,4 +59,3 @@ class TileMapModel(Model):
                     )
                     self._tileset[tile_idx] = tile
                     tile_idx += 1
-            print(self._tileset)

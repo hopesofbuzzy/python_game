@@ -26,6 +26,7 @@ class Collidable(Model):
     shape: CollisionShape = field(
         default_factory=lambda: CircleShape(radius=0)
     )
+    resolvable: bool = True
 
     def handle_collision(self, other: 'Collidable'):
         """Работает с объектом столкновения."""
@@ -39,7 +40,6 @@ class KinematicBodyModel(Collidable):
 
     def set_velocity(self, dx: float, dy: float):
         self.velocity = Vector2(dx, dy) * self.speed
-
 
 @dataclass
 class StaticBodyModel(Collidable):
