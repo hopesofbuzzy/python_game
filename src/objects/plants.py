@@ -10,7 +10,7 @@ class PlantModel(Model):
 @dataclass
 class ShooterModel(PlantModel):
     """Растение, стреляющее во врагов на дистанции."""
-    range: int = 100
+    range: int = 1
 
     def handle_targets(self, targets: list):
         print(self, len(targets))

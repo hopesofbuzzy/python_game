@@ -9,6 +9,9 @@ class TargetingSystem:
         for object in scene.object_registry.values():
             if isinstance(object.model, ShooterModel):
                 others = self.uniform_grid.query_circle(object, object.model.range)
-                enemies = [other.model for other in others if isinstance(other.model, EnemyModel)]
+                enemies = [
+                     other.model for other in others
+                     if isinstance(other.model, EnemyModel) and object._uid >= other._uid
+                ]
                 if enemies:
                     object.model.handle_targets(enemies)

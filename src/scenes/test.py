@@ -85,7 +85,7 @@ class TestScene(Scene):
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
         plant_model = ShooterModel(
             position=global_pos,
-            range=100
+            range=1
         )
         plant = GameObject(
             model=plant_model,

@@ -23,7 +23,10 @@ class UniformGrid:
         self.cells[cy][cx].append(object)
 
     def query_rect(self, object: GameObject, range_x, range_y) -> list[GameObject]:
-        """Извлечение соседних объектов для целевого объекта."""
+        """
+        Извлечение соседних объектов для целевого объекта.
+        range в тайлах.
+        """
         cx = int(object.model.position.x / self.CELL_SIZE)
         cy = int(object.model.position.y / self.CELL_SIZE)
         result = list()
@@ -34,10 +37,16 @@ class UniformGrid:
         return result
 
     def query_circle(self, object: GameObject, radius) -> list[GameObject]:
-        """Извлечение соседних объектов для целевого объекта."""
-        candidates = self.query_rect(object, radius // 2, radius // 2)
+        """
+        Извлечение соседних объектов для целевого объекта.
+        radius в тайлах.
+        """
+        candidates = self.query_rect(object, radius, radius)
         center = object.model.position
-        return [cndt for cndt in candidates if (center - cndt.model.position).length_squared() < radius**2]
+        return [
+            cndt for cndt in candidates
+            if (center - cndt.model.position).length_squared() < (radius * self.CELL_SIZE)**2
+        ]
 
     def update(self, scene):
         """Очистка и пересоздание UniformGrid."""
