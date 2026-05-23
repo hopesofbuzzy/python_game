@@ -2,7 +2,6 @@ import pygame
 from pygame.math import Vector2
 
 from src.core.systems.input import InputManager
-from src.core.systems.physics import PhysicsSystem
 from src.core.systems.camera import Camera
 from src.core.systems.movement import MovementSystem
 from src.core.systems.collision import CollisionSystem
@@ -45,7 +44,7 @@ class Game:
         # Game Logic
         self.scene.update(delta_time)
         # Camera
-        self.camera.follow()
+        self.camera.handle_drag(self.input.cursor)
         # Cleanup
         self.scene.cleanup()
 

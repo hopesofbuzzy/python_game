@@ -8,4 +8,4 @@ from src.core.objects import *
 @dataclass
 class EnemyModel(PathBodyModel):
     def handle_collision(self, other: Collidable):
-        print("ENEMY")
+        ...

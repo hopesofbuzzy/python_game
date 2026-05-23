@@ -20,21 +20,21 @@ class TestScene(Scene):
         )
         self.add_object("tilemap", tilemap)
 
-        player_model = PlayerModel(
-            position=Vector2(100, 300),
-            velocity=Vector2(100, 0),
-            speed=150,
-            shape=RectShape(size=self.PLAYER_SIZE) #  CircleShape(radius=12, position=Vector2(12, 12))
-        )
-        player = GameObject(
-            model=player_model,
-            view=SpriteView(
-                image=self.image_loader.load_image("res/test.png"),
-                size=self.PLAYER_SIZE
-            ),
-            controller=PlayerController(player_model)
-        )
-        self.add_object("player", player)
+        # player_model = PlayerModel(
+        #     position=Vector2(100, 300),
+        #     velocity=Vector2(100, 0),
+        #     speed=150,
+        #     shape=RectShape(size=self.PLAYER_SIZE) #  CircleShape(radius=12, position=Vector2(12, 12))
+        # )
+        # player = GameObject(
+        #     model=player_model,
+        #     view=SpriteView(
+        #         image=self.image_loader.load_image("res/test.png"),
+        #         size=self.PLAYER_SIZE
+        #     ),
+        #     controller=PlayerController(player_model)
+        # )
+        # self.add_object("player", player)
 
         path = PathModel(
             position=Vector2(0, 0),
@@ -75,4 +75,4 @@ class TestScene(Scene):
         )
         self.add_object("enemy_2", enemy)
 
-        self.camera.target = player_model
+        # self.camera.target = player_model
