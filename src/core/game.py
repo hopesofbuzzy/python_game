@@ -4,7 +4,9 @@ from pygame.math import Vector2
 from src.core.systems.input import InputManager
 from src.core.systems.camera import Camera
 from src.core.systems.movement import MovementSystem
+from src.core.systems.uniform_grid import UniformGrid
 from src.core.systems.collision import CollisionSystem
+from src.core.systems.targeting import TargetingSystem
 from src.core.systems.images import ImageLoader, Image
 from src.core.systems.renderer import Renderer
 from src.core.systems.scene import Scene
@@ -20,7 +22,9 @@ class Game:
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
         self.camera: Camera = Camera(size=Vector2(self.WINDOW_SIZE))
-        self.collision = CollisionSystem()
+        self.uniform_grid = UniformGrid()
+        self.collision = CollisionSystem(self.uniform_grid)
+        self.targeting = TargetingSystem(self.uniform_grid)
         self.renderer: Renderer = Renderer()
         # State
         self.paused: bool = False
@@ -37,11 +41,13 @@ class Game:
         # Movement
         self.movement.update(self.scene, delta_time)
         # UniformGrid (очистка)
-        self.collision.update_uniform_grid(self.scene)
+        self.uniform_grid.update(self.scene)
         # Collision
         self.collision.update(self.scene, delta_time)
         # Resolution
         self.collision.resolve(delta_time)
+        # Targeting
+        self.targeting.update(self.scene, delta_time)
         # Game Logic
         self.scene.update(delta_time)
         # Camera

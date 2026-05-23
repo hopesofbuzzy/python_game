@@ -9,5 +9,5 @@ class MovementSystem:
     def update(self, scene: Scene, delta_time: float):
         for object in scene.object_registry.values():
             model = object.model
-            if isinstance(model, KinematicBodyModel):
+            if isinstance(model, KinematicBodyModel) or isinstance(model, AreaModel):
                 model.position += model.velocity * delta_time

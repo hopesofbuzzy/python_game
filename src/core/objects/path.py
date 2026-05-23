@@ -8,7 +8,7 @@ class PathModel(Model):
     points: list[Vector2]
 
 @dataclass
-class PathBodyModel(KinematicBodyModel):
+class PathBodyModel(AreaModel):
     """Модель объекта следования по пути."""
     path: PathModel = field(default_factory=lambda: PathModel(
         position=Vector2(0, 0), 

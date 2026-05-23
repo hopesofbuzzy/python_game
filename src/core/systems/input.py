@@ -28,10 +28,12 @@ class InputManager:
                     self.cursor.rel_pos = event.dict["rel"]
                     self.cursor.buttons = list(event.dict["buttons"])
                 case pygame.MOUSEBUTTONDOWN:
-                    self.cursor.buttons[event.dict["button"]-1] = 1
-                    self.cursor.on_click.emit(self.cursor)
+                    if event.dict["button"]-1 in range(0, 3):
+                        self.cursor.buttons[event.dict["button"]-1] = 1
+                        self.cursor.on_click.emit(self.cursor)
                 case pygame.MOUSEBUTTONUP:
-                    self.cursor.buttons[event.dict["button"]-1] = 0
+                    if event.dict["button"]-1 in range(0, 3):
+                        self.cursor.buttons[event.dict["button"]-1] = 0
                 case pygame.QUIT:
                     self.on_exit.emit()
             for object in scene.object_registry.values():

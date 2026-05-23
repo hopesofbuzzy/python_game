@@ -5,8 +5,9 @@ from src.core.objects import *
 from src.objects import *
 
 class TestScene(Scene):
-    PLAYER_SIZE = Vector2(40, 40)
-    ENEMY_SIZE = Vector2(40, 40)
+    PLAYER_SIZE = Vector2(50, 50)
+    ENEMY_SIZE = Vector2(50, 50)
+    PLANT_SIZE = Vector2(50, 50)
     enemies = 0
 
     def ready(self):
@@ -56,7 +57,6 @@ class TestScene(Scene):
             position=Vector2(200, 300),
             velocity=Vector2(0, 0),
             shape=RectShape(size=self.ENEMY_SIZE),
-            resolvable=False,
             path=path
         )
         enemy = GameObject(
@@ -70,7 +70,7 @@ class TestScene(Scene):
             position=Vector2(600, 300),
             velocity=Vector2(0, 0),
             shape=RectShape(size=self.ENEMY_SIZE),
-            resolvable=False,
+            speed=25,
             path=path
         )
         enemy = GameObject(
@@ -83,14 +83,17 @@ class TestScene(Scene):
         # self.camera.target = player_model
 
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
-        enemy_model = Model(
-            position=global_pos
+        plant_model = ShooterModel(
+            position=global_pos,
+            range=100
         )
-        enemy = GameObject(
-            model=enemy_model,
-            view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
-            controller=Controller(enemy_model)
+        plant = GameObject(
+            model=plant_model,
+            view=SpriteView(
+                self.image_loader.load_image("res/mushroom.png"),
+                size=self.PLANT_SIZE
+            ),
         )
         self.enemies += 1
-        self.add_object(f"enemy_{self.enemies}", enemy)
+        self.add_object(f"plant_{self.enemies}", plant)
         print(len(self.object_registry))

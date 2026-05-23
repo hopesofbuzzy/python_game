@@ -33,7 +33,7 @@ class TileMapModel(Model):
     _tiles: list[list[int]] = field(default_factory=list)
     _tileset: dict[int, pygame.Surface] = field(default_factory=dict)
     original_tile_size: int = 200
-    tile_size: int = 40
+    tile_size: int = 50
 
     def __post_init__(self):
         # Загружаем уровень.
