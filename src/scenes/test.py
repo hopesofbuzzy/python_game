@@ -7,6 +7,7 @@ from src.objects import *
 class TestScene(Scene):
     PLAYER_SIZE = Vector2(40, 40)
     ENEMY_SIZE = Vector2(40, 40)
+    enemies = 0
 
     def ready(self):
         tilemap_model = TileMapModel(
@@ -16,6 +17,7 @@ class TestScene(Scene):
         )
         tilemap_controller = TileMapController(tilemap_model)
         self.cursor.on_click.subscribe(tilemap_controller.on_click)
+        tilemap_controller.on_tile_click.subscribe(self.on_tile_click)
         tilemap = GameObject(
             model=tilemap_model,
             view=TileMapView(),
@@ -62,7 +64,7 @@ class TestScene(Scene):
             view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
             controller=Controller(enemy_model)
         )
-        self.add_object("enemy_1", enemy)
+        self.add_object("enemy_111", enemy)
 
         enemy_model = EnemyModel(
             position=Vector2(600, 300),
@@ -76,6 +78,19 @@ class TestScene(Scene):
             view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
             controller=Controller(enemy_model)
         )
-        self.add_object("enemy_2", enemy)
+        self.add_object("enemy_222", enemy)
 
         # self.camera.target = player_model
+
+    def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
+        enemy_model = Model(
+            position=global_pos
+        )
+        enemy = GameObject(
+            model=enemy_model,
+            view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
+            controller=Controller(enemy_model)
+        )
+        self.enemies += 1
+        self.add_object(f"enemy_{self.enemies}", enemy)
+        print(len(self.object_registry))

@@ -64,9 +64,13 @@ class TileMapModel(Model):
                     self._tileset[tile_idx] = tile
                     tile_idx += 1
 
-    def pos_to_tile(self, position: Vector2):
+    def pos_to_tile(self, position: Vector2) -> Vector2:
         """Конвертирует глобальную позицию в тайл."""
         return position // self.tile_size
+
+    def tile_to_pos(self, tile: Vector2) -> Vector2:
+        """Конвертирует тайл в глобальную позицию."""
+        return tile * self.tile_size
 
     def set_tile(self, row: int, col: int, tile_idx: int):
         self._tiles[row][col] = tile_idx
@@ -79,4 +83,4 @@ class TileMapController(Controller):
     def on_click(self, cursor):
         clicked_tile = self.model.pos_to_tile(cursor.global_pos)
         # print(f"Clicked tile: {self.model.pos_to_tile(cursor.global_pos)}")
-        self.on_tile_click.emit(clicked_tile, cursor.global_pos)
+        self.on_tile_click.emit(clicked_tile, self.model.tile_to_pos(clicked_tile))
