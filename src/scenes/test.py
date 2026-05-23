@@ -61,4 +61,18 @@ class TestScene(Scene):
         )
         self.add_object("enemy_1", enemy)
 
+        enemy_model = EnemyModel(
+            position=Vector2(600, 300),
+            velocity=Vector2(0, 0),
+            shape=RectShape(size=self.ENEMY_SIZE),
+            resolvable=False,
+            path=path
+        )
+        enemy = GameObject(
+            model=enemy_model,
+            view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
+            controller=Controller(enemy_model)
+        )
+        self.add_object("enemy_2", enemy)
+
         self.camera.target = player_model

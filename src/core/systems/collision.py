@@ -82,7 +82,11 @@ class CollisionSystem:
             depth_x = (size1.x + size2.x) / 2 - adx
             dy = pos1.y - pos2.y + (size1.y - size2.y) / 2
             ady = abs(dy)
-            n = Vector2(dx, dy).normalize()
+            # Выталкивание в случае идеального перекрытия.
+            if dx == dy == 0:
+                n = Vector2(1, 0)
+            else:
+                n = Vector2(dx, dy).normalize()
 
             if adx > ady:
                 return Overlap(nx=n.x, ny=0, depth=depth_x)
