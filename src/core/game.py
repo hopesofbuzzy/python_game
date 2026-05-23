@@ -1,4 +1,5 @@
 import pygame
+from pygame.math import Vector2
 
 from src.core.systems.input import InputManager
 from src.core.systems.physics import PhysicsSystem
@@ -12,11 +13,13 @@ from src.core.systems.scene import Scene
 
 class Game:
     """Базовый класс для состояния игры."""
+    WINDOW_SIZE = (720, 720)
+
     def __init__(self, scene_class):
         # Systems
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
-        self.camera: Camera = Camera()
+        self.camera: Camera = Camera(size=Vector2(self.WINDOW_SIZE))
         self.collision = CollisionSystem()
         self.renderer: Renderer = Renderer()
         # State

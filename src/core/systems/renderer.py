@@ -14,4 +14,8 @@ class Renderer:
         screen.fill((0, 0, 0))
         for object in scene.object_registry.values():
             if object.view:
-                object.view.draw(screen, object.model, camera)
+                object.view.draw(
+                    screen,
+                    object.model,
+                    camera.to_local(object.model.position)
+                )

@@ -6,9 +6,9 @@ from src.scenes.test import TestScene
 
 if __name__ == "__main__":
     pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
-    clock = pygame.time.Clock()
     game = Game(TestScene)
+    screen = pygame.display.set_mode(game.WINDOW_SIZE)
+    clock = pygame.time.Clock()
     delta_time = 0.0
 
     while game.running:
