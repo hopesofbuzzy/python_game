@@ -1,7 +1,7 @@
-# Not yours shelter!
+# Garden-it!
 `python 3.13`
 
-Название: **Garden-garden!**
+Название: **Garden-it!**
 
 Жанр: Tower Defence с элементами фермерства.
 
