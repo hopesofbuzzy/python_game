@@ -10,6 +10,7 @@ from src.core.systems.images import ImageLoader
 @dataclass
 class Model:
     position: Vector2
+    free = None
 
     @abstractmethod
     def update(self, delta_time: float):
@@ -41,6 +42,3 @@ class GameObject:
     controller: Controller | None = None
     _active: bool = True
     _uid: int = -1
-
-    def free(self):
-        self._active = False

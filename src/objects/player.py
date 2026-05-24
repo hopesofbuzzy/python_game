@@ -7,7 +7,7 @@ from src.core.objects import KinematicBodyModel, RectView, Controller
 
 @dataclass
 class PlayerModel(KinematicBodyModel):
-    def handle_collision(self, other: Collidable):
+    def handle_collision(self, other):
         # print(other)
         ...
 

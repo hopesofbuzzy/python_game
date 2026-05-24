@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 from dataclasses import dataclass, field
 
-from src.core.objects.game_object import Model
+from src.core.objects.game_object import Model, GameObject
 
 
 # Хитбоксы
@@ -28,7 +28,7 @@ class Collidable(Model):
     )
     resolvable: bool = True
 
-    def handle_collision(self, other: 'Collidable'):
+    def handle_collision(self, other):
         """Работает с объектом столкновения."""
         ...
 

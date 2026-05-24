@@ -13,6 +13,7 @@ class Scene:
         self.object_registry: dict[str, GameObject] = {}
         # Пул объектов для отложенного добавления.
         self._objects_to_add: dict[str, GameObject] = {}
+        self._objects_to_delete: dict[str, GameObject] = {}
         # Фабрики объектов.
         self.entity_factory: EntityFactory = EntityFactory(self)
         self.cursor = cursor
@@ -28,7 +29,7 @@ class Scene:
         if obj_id is None:
             obj_id = f"{obj._uid}"
         self._objects_to_add[obj_id] = obj
-        obj.model.scene = self
+        obj.model.free = lambda o=obj: self.remove_object(str(o._uid), 0)
         return obj
 
     def add_objects(self):
@@ -37,14 +38,15 @@ class Scene:
             self.object_registry[obj_id] = obj
         self._objects_to_add = dict()
 
-    def remove_object(self, obj_id: str) -> None:
-        obj = self.object_registry.pop(obj_id)
-        del obj
+    def remove_object(self, obj_id, object) -> None:
+        self.object_registry.pop(obj_id)
+        self._objects_to_delete[obj_id] = object
 
     def cleanup(self):
-        for obj_id, obj in self.object_registry.items():
-            if not obj._active:
-                self.remove_object(obj_id)
+        for obj_id, obj in self._objects_to_delete.items():
+            del obj
+        self._objects_to_delete = dict()
+        
 
     @abstractmethod
     def ready(self):
