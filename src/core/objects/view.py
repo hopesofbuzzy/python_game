@@ -21,13 +21,14 @@ class RectView(View):
 
 @dataclass
 class SpriteView(View):
-    image: Image
+    image_path: str = ""
     size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
     _resized_image: pygame.Surface | None = None
 
     def __post_init__(self):
+        
         self._resized_image = pygame.transform.scale(
-            self.image.surface,
+            self.il.load_image(self.image_path).surface,
             size=self.size
         )
 

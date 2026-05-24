@@ -54,6 +54,8 @@ class Game:
         self.camera.handle_drag(self.input.cursor)
         # Cleanup
         self.scene.cleanup()
+        # Add objects after all logics.
+        self.scene.add_objects()
 
     def draw(self, screen: pygame.Surface):
         self.renderer.draw(screen, self.scene, self.camera)

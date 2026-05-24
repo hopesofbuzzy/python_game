@@ -43,6 +43,8 @@ class AreaModel(Collidable):
 
     def set_velocity(self, dx: float, dy: float):
         self.velocity = Vector2(dx, dy) * self.speed
+        if self.speed == 300:
+            print(self.velocity)
 
 @dataclass
 class KinematicBodyModel(Collidable):

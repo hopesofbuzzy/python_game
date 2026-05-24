@@ -1,30 +1,23 @@
 from pygame.math import Vector2
 
 from src.core.systems.scene import Scene
+from src.core.systems.entity_factory import EntityFactory
 from src.core.objects import *
 from src.objects import *
 
 class TestScene(Scene):
-    PLAYER_SIZE = Vector2(50, 50)
-    ENEMY_SIZE = Vector2(50, 50)
-    PLANT_SIZE = Vector2(50, 50)
-    enemies = 0
+    LEVEL_PATH = "res/levels/1.csv"
+    TILESET_PATH = "res/tileset.png"
+    plants = 0
 
     def ready(self):
-        tilemap_model = TileMapModel(
-            tiles_path="res/levels/1.csv",
+        tilemap = self.entity_factory.create_tilemap(
             position=Vector2(0, 0),
-            tileset=self.image_loader.load_image("res/tileset.png")
+            tiles_path=self.LEVEL_PATH,
+            tileset_path=self.TILESET_PATH
         )
-        tilemap_controller = TileMapController(tilemap_model)
-        self.cursor.on_click.subscribe(tilemap_controller.on_click)
-        tilemap_controller.on_tile_click.subscribe(self.on_tile_click)
-        tilemap = GameObject(
-            model=tilemap_model,
-            view=TileMapView(),
-            controller=tilemap_controller
-        )
-        self.add_object("tilemap", tilemap)
+        self.cursor.on_click.subscribe(tilemap.controller.on_click)
+        tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
 
         # player_model = PlayerModel(
         #     position=Vector2(100, 300),
@@ -53,47 +46,19 @@ class TestScene(Scene):
                 Vector2(200, 200),
             ]
         )
-        enemy_model = EnemyModel(
-            position=Vector2(200, 300),
-            velocity=Vector2(0, 0),
-            shape=RectShape(size=self.ENEMY_SIZE),
+        enemy_1 = self.entity_factory.create_enemy(
+            position=Vector2(200, 200),
             path=path
         )
-        enemy = GameObject(
-            model=enemy_model,
-            view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
-            controller=Controller(enemy_model)
-        )
-        self.add_object("enemy_111", enemy)
-
-        enemy_model = EnemyModel(
-            position=Vector2(600, 300),
-            velocity=Vector2(0, 0),
-            shape=RectShape(size=self.ENEMY_SIZE),
-            speed=25,
+        enemy_2 = self.entity_factory.create_enemy(
+            position=Vector2(120, 210),
             path=path
         )
-        enemy = GameObject(
-            model=enemy_model,
-            view=RectView(color=(255, 25, 25), size=self.ENEMY_SIZE),
-            controller=Controller(enemy_model)
-        )
-        self.add_object("enemy_222", enemy)
-
         # self.camera.target = player_model
 
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
-        plant_model = ShooterModel(
-            position=global_pos,
-            range=1
+        plant = self.entity_factory.create_plant(
+            position=global_pos
         )
-        plant = GameObject(
-            model=plant_model,
-            view=SpriteView(
-                self.image_loader.load_image("res/mushroom.png"),
-                size=self.PLANT_SIZE
-            ),
-        )
-        self.enemies += 1
-        self.add_object(f"plant_{self.enemies}", plant)
-        print(len(self.object_registry))
+        plant.model.on_bullet_spawn.subscribe(self.entity_factory.create_bullet)
+        self.plants += 1

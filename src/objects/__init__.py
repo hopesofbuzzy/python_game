@@ -1,3 +1,3 @@
 from .player import PlayerController, PlayerModel
-from .enemy import EnemyModel
+from .enemy import*
 from .plants import *

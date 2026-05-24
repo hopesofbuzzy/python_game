@@ -1,10 +1,11 @@
 import pygame
+import asyncio
 
 from src.core.game import Game
 from src.scenes.test import TestScene
 
 
-if __name__ == "__main__":
+async def main():
     pygame.init()
     game = Game(TestScene)
     screen = pygame.display.set_mode(game.WINDOW_SIZE)
@@ -18,3 +19,6 @@ if __name__ == "__main__":
         delta_time = clock.tick(60) / 1000.0
 
     pygame.quit()
+
+if __name__ == "__main__":
+    asyncio.run(main())

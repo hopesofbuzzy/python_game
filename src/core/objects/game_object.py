@@ -5,6 +5,8 @@ from pygame.event import Event as PygameEvent
 from dataclasses import dataclass, field
 from abc import abstractmethod
 
+from src.core.systems.images import ImageLoader
+
 @dataclass
 class Model:
     position: Vector2
@@ -16,6 +18,8 @@ class Model:
 
 @dataclass
 class View:
+    il: ImageLoader
+
     @abstractmethod
     def draw(self, screen: pygame.Surface, model, local_position):
         """Отрисовывает по модели."""
