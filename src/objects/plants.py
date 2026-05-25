@@ -10,10 +10,10 @@ from src.core.systems.event import Event
 PLANT_SIZE = Vector2(50, 50)
 PLANT_IMAGE_PATH = "res/mushroom.png"
 
-SHOOTER_RANGE = 3
-BULLET_SIZE = Vector2(10, 10)
+SHOOTER_RANGE = 2
+BULLET_SIZE = Vector2(15, 15)
 BULLET_IMAGE_PATH = "res/mushroom.png"
-BULLET_SPEED = 100
+BULLET_SPEED = 150
 
 @dataclass
 class PlantModel(Model):

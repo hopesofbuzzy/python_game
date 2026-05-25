@@ -39,8 +39,9 @@ class Scene:
         self._objects_to_add = dict()
 
     def remove_object(self, obj_id, object) -> None:
-        self.object_registry.pop(obj_id)
-        self._objects_to_delete[obj_id] = object
+        if obj_id in self.object_registry:
+            self.object_registry.pop(obj_id)
+            self._objects_to_delete[obj_id] = object
 
     def cleanup(self):
         for obj_id, obj in self._objects_to_delete.items():

@@ -16,7 +16,7 @@ class TestScene(Scene):
             tiles_path=self.LEVEL_PATH,
             tileset_path=self.TILESET_PATH
         )
-        self.cursor.on_click.subscribe(tilemap.controller.on_click)
+        self.cursor.on_left_click.subscribe(tilemap.controller.on_left_click)
         tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
 
         # player_model = PlayerModel(
