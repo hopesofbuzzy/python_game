@@ -27,7 +27,7 @@ class InputManager:
                     self.cursor.global_pos = camera.to_global(self.cursor.pos)
                     self.cursor.rel_pos = event.dict["rel"]
                     self.cursor.buttons = list(event.dict["buttons"])
-                    print(self.cursor.global_pos)
+                    # print(self.cursor.global_pos)
                 case pygame.MOUSEBUTTONDOWN:
                     if event.dict["button"]-1 in range(0, 3):
                         self.cursor.buttons[event.dict["button"]-1] = 1

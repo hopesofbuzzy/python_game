@@ -5,7 +5,10 @@ from src.core.objects import *
 
 @dataclass
 class PathModel(Model):
-    points: list[Vector2]
+    points: list
+
+    def __post_init__(self):
+        self.points = list(map(Vector2, self.points))[::-1]
 
 @dataclass
 class PathBodyModel(AreaModel):
@@ -19,6 +22,7 @@ class PathBodyModel(AreaModel):
 
     def __post_init__(self):
         self._target_point_ref = len(self.path.points) - 1
+        self.position = self.path.points[self._target_point_ref]
 
     def update(self, delta_time: float):
         self.follow_path()

@@ -18,7 +18,7 @@ class TileMapView(View):
             for cidx, tile_idx in enumerate(row):
                 tile = self._tileset[tile_idx]
                 screen.blit(tile, dest=(
-                    pos.x + ridx * model.tile_size, pos.y + cidx * model.tile_size
+                    pos.x + cidx * model.tile_size, pos.y + ridx * model.tile_size
                 ))
 
 @dataclass

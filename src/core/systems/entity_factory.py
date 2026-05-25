@@ -60,11 +60,11 @@ class EntityFactory:
             original_tile_size = tilemap_model.original_tile_size
             tile_size = tilemap_model.tile_size
             tile_idx = 0
-            for col in range(0, tileset_size[0], original_tile_size):
-                for row in range(0, tileset_size[1], original_tile_size):
+            for row in range(0, tileset_size[1], original_tile_size):
+                for col in range(0, tileset_size[0], original_tile_size):
                     tile = surface.subsurface(
                         pygame.Rect(
-                            (row, col), (
+                            (col, row), (
                                 original_tile_size,
                                 original_tile_size
                             )

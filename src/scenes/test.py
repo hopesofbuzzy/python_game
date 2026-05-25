@@ -6,7 +6,7 @@ from src.core.objects import *
 from src.objects import *
 
 class TestScene(Scene):
-    LEVEL_PATH = "res/levels/1.csv"
+    LEVEL_PATH = "res/levels/2.csv"
     TILESET_PATH = "res/tileset.png"
     plants = 0
 
@@ -38,12 +38,21 @@ class TestScene(Scene):
         path = PathModel(
             position=Vector2(0, 0),
             points=[
-                Vector2(200, 200),
-                Vector2(0, 0),
-                Vector2(100, 100),
-                Vector2(0, 0),
-                Vector2(0, 200),
-                Vector2(200, 200),
+                [950, 150],
+                [950, 450],
+                [900, 450],
+                [900, 550],
+                [750, 550],
+                [750, 150],
+                [400, 150],
+                [400, 250],
+                [450, 250],
+                [450, 400],
+                [400, 400],
+                [400, 500],
+                [250, 500],
+                [250, 350],
+                [50, 350]
             ]
         )
         enemy_1 = self.entity_factory.create_enemy(
@@ -57,6 +66,7 @@ class TestScene(Scene):
         # self.camera.target = player_model
 
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
+        print(global_pos)
         plant = self.entity_factory.create_plant(
             position=global_pos
         )

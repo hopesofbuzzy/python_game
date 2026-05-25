@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 from src.core.objects import *
 
-ENEMY_SPEED = 50
+ENEMY_SPEED = 15
 ENEMY_SIZE = Vector2(50, 50)
 ENEMY_COLOR = (255, 25, 25)
 
