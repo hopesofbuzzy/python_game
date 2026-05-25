@@ -7,10 +7,10 @@ class EntityFactory:
         self.scene = scene
 
     def create_plant(self, position):
-        plant_model = ShooterModel(position=position)
+        plant_model = MushroomModel(position=position)
         plant = GameObject(
             model=plant_model,
-            view=PlantView(self.il),
+            view=MushroomView(self.il),
         )
         self.scene.add_object(plant)
         return plant
@@ -28,9 +28,10 @@ class EntityFactory:
         self.scene.add_object(enemy)
         return enemy
 
-    def create_bullet(self, direction, position, owner):
+    def create_bullet(self, direction, position, owner, damage):
         bullet_model = BulletModel(
-            position=position.copy()
+            position=position.copy(),
+            damage=damage
         )
         bullet_model.set_velocity(direction.x, direction.y)
         bullet = GameObject(

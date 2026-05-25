@@ -26,11 +26,11 @@ class SpriteView(View):
     _resized_image: pygame.Surface | None = None
 
     def __post_init__(self):
-        
-        self._resized_image = pygame.transform.scale(
-            self.il.load_image(self.image_path).surface,
-            size=self.size
-        )
+        if self.image_path:
+            self._resized_image = pygame.transform.scale(
+                self.il.load_image(self.image_path).surface,
+                size=self.size
+            )
 
     def draw(
         self,
