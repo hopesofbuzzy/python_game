@@ -40,4 +40,4 @@ class InputManager:
                     self.on_exit.emit()
             for object in scene.object_registry.values():
                 if object.controller:
-                    object.controller.handle_input(event, self.cursor)
+                    object.controller.handle_input(event)

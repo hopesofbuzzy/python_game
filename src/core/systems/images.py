@@ -11,6 +11,10 @@ class ImageLoader:
     def __init__(self):
         self.image_registry: dict[str, Image] = {}
 
+    def load_images(self, objects):
+        for obj in objects:
+            if 
+
     def load_image(self, filename: str) -> Image:
         if not filename in self.image_registry:
             try:

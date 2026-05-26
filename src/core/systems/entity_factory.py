@@ -2,8 +2,13 @@ from src.core.systems.images import ImageLoader
 from src.objects import *
 
 class EntityFactory:
-    def __init__(self, scene):
+    """
+        Универсальная фабрика сборки объектов с доступом
+        к сцене, загрузчику изображений и курсору для контроллера.
+    """
+    def __init__(self, scene, cursor):
         self.il = ImageLoader()
+        self.cursor = cursor
         self.scene = scene
 
     def create_plant(self, position):
@@ -23,8 +28,7 @@ class EntityFactory:
         )
         enemy = GameObject(
             model=enemy_model,
-            view=cls_view(self.il),
-            controller=Controller(enemy_model)
+            view=cls_view(self.il)
         )
         self.scene.add_object(enemy)
         return enemy
@@ -81,7 +85,7 @@ class EntityFactory:
         tilemap = GameObject(
             model=tilemap_model,
             view=tilemap_view,
-            controller=TileMapController(tilemap_model)
+            controller=TileMapController(tilemap_model, self.cursor)
         )
         self.scene.add_object(tilemap)
         return tilemap

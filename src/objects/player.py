@@ -20,7 +20,7 @@ class PlayerController(Controller):
         "right": (pygame.K_RIGHT, pygame.K_d)
     }
 
-    def handle_input(self, event: PygameEvent, cursor):
+    def handle_input(self, event: PygameEvent):
         keys = pygame.key.get_pressed()
         dx = self.direction("right", keys) - self.direction("left", keys)
         dy = self.direction("down", keys) - self.direction("up", keys)

@@ -17,7 +17,7 @@ BULLET_IMAGE_PATH = "res/mushroom.png"
 BULLET_SPEED = 150
 
 # Типы растений.
-
+SUNFLOWER_COOLDOWN = 7
 
 @dataclass
 class PlantModel(Model):
@@ -26,6 +26,14 @@ class PlantModel(Model):
 
 @dataclass
 class PlantView(SpriteView):
+    ...
+
+@dataclass
+class SunflowerModel(PlantModel):
+    ...
+
+@dataclass
+class SunflowerView(PlantView):
     ...
 
 @dataclass

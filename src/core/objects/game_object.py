@@ -11,6 +11,7 @@ from src.core.systems.images import ImageLoader
 class Model:
     local_position: Vector2
     parent = None
+    # Инъекция метода удаления объекта в Scene.
     free = None
 
     @property
@@ -34,6 +35,7 @@ class Model:
 
 @dataclass
 class View:
+    # Инъекция загрузчика изображений в EntityFactory.
     il: ImageLoader
 
     @abstractmethod
@@ -44,9 +46,11 @@ class View:
 @dataclass
 class Controller:
     model: Model
+    # Инъекция объекта курсора в EntityFactory.
+    cursor = None
 
     @abstractmethod
-    def handle_input(self, event: PygameEvent, cursor):
+    def handle_input(self, event: PygameEvent):
         """Читает pygame.event и уведомляет модель по Event"""
         ...
 

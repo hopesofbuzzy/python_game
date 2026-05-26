@@ -51,6 +51,9 @@ class TileMapController(Controller):
     """Контроллер карты тайлов. Считывает нажатия на тайлы карты."""
     on_tile_click: Event = field(default_factory=lambda: Event())
 
+    def __post_init__(self):
+        self.cursor.on_left_click.subscribe(on_left_click)
+
     def on_left_click(self, cursor):
         clicked_tile = self.model.pos_to_tile(cursor.global_pos)
         # print(f"Clicked tile: {self.model.pos_to_tile(cursor.global_pos)}")

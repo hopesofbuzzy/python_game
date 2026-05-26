@@ -15,7 +15,7 @@ class Scene:
         self._objects_to_add: dict[str, GameObject] = {}
         self._objects_to_delete: dict[str, GameObject] = {}
         # Фабрики объектов.
-        self.entity_factory: EntityFactory = EntityFactory(self)
+        self.entity_factory: EntityFactory = EntityFactory(self, cursor)
         self.cursor = cursor
         self.last_uid = 0
         # Все системы включены, запускаем сцену.
