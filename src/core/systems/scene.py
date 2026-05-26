@@ -14,10 +14,13 @@ class Scene:
         # Пул объектов для отложенного добавления.
         self._objects_to_add: dict[str, GameObject] = {}
         self._objects_to_delete: dict[str, GameObject] = {}
-        # Фабрики объектов.
+        # Счётчик реестра объектов.
+        self.last_uid = 0
+        # Реестр изображений для текущей сцены.
+        self.il = ImageLoader()
+        # Фабрика объектов.
         self.entity_factory: EntityFactory = EntityFactory(self, cursor)
         self.cursor = cursor
-        self.last_uid = 0
         # Все системы включены, запускаем сцену.
         self.ready()
 

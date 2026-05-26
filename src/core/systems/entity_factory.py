@@ -1,5 +1,6 @@
 from src.core.systems.images import ImageLoader
 from src.objects import *
+from src.core.systems.level import LevelManager, Level
 
 class EntityFactory:
     """
@@ -7,9 +8,13 @@ class EntityFactory:
         к сцене, загрузчику изображений и курсору для контроллера.
     """
     def __init__(self, scene, cursor):
-        self.il = ImageLoader()
+        # View инъекция (ImageLoader).
+        self.il = scene.il
+        # Controller инъекция.
         self.cursor = cursor
         self.scene = scene
+        # Для фабрики уровней (LevelManager).
+        self.lm = LevelManager(self.il)
 
     def create_plant(self, position):
         plant_model = MushroomModel(local_position=position)
@@ -35,7 +40,7 @@ class EntityFactory:
 
     def create_bullet(self, direction, position, owner, damage):
         bullet_model = BulletModel(
-            local_position=position.copy(),
+            local_position=position,
             damage=damage
         )
         bullet_model.set_velocity(direction.x, direction.y)
@@ -48,44 +53,32 @@ class EntityFactory:
         owner.cooldown = True
         return bullet
 
-    def create_tilemap(self, position, tiles_path, tileset_path):
+    def create_level(self, position, level_name):
+        level = self.lm.load_level(level_name)
         tilemap_model = TileMapModel(
-            local_position=position
+            local_position=position,
+            tiles=level.tiles
         )
         tilemap_view=TileMapView(
-            il=self.il
+            il=self.il,
+            tileset=level.tileset
         )
-        # Загружаем уровень.
-        with open(tiles_path, "r") as f:
-            for line in f.readlines():
-                tilemap_model._tiles.append(list(map(int, line.split(","))))
-        # Делим tileset, извлекая наши тайлы.
-        surface = self.il.load_image(tileset_path).surface
-        if surface:
-            tileset_size = surface.get_size()
-            original_tile_size = tilemap_model.original_tile_size
-            tile_size = tilemap_model.tile_size
-            tile_idx = 0
-            for row in range(0, tileset_size[1], original_tile_size):
-                for col in range(0, tileset_size[0], original_tile_size):
-                    tile = surface.subsurface(
-                        pygame.Rect(
-                            (col, row), (
-                                original_tile_size,
-                                original_tile_size
-                            )
-                        )
-                    )
-                    tile = pygame.transform.scale(
-                        tile,
-                        size=(tile_size, tile_size)
-                    )
-                    tilemap_view._tileset[tile_idx] = tile
-                    tile_idx += 1
         tilemap = GameObject(
             model=tilemap_model,
             view=tilemap_view,
             controller=TileMapController(tilemap_model, self.cursor)
         )
         self.scene.add_object(tilemap)
-        return tilemap
+        return tilemap, level
+
+    def create_inventory(self):
+        model = InventoryModel(
+            local_position=Vector2(0, 0)
+        )
+        inventory = GameObject(
+            model=model,
+            controller=InventoryController(model, self.cursor)
+        )
+        self.scene.add_object(inventory)
+        return inventory
+        

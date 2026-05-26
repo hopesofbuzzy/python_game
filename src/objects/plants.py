@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from pygame.math import Vector2
-import asyncio
 
 from src.core.objects import *
 from src.objects import EnemyModel
@@ -58,7 +57,7 @@ class ShooterModel(PlantModel):
     """Растение, стреляющее во врагов на дистанции."""
     range: int = SHOOTER_RANGE
     damage: int = SHOOTER_DAMAGE
-    cooldown = 1.0
+    cooldown: float = 1.0
     _timer: float = 0.0
     on_bullet_spawn: Event = field(default_factory=lambda: Event())
 

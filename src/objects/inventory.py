@@ -1,3 +1,6 @@
+import pygame
+from dataclasses import dataclass, field
+
 from src.core.objects import Model, Controller
 from src.objects import *
 
@@ -7,15 +10,26 @@ class Slot:
         self.model = model
         self.view = view
 
+@dataclass
 class InventoryModel(Model):
     """Инвентарь для выбора растений."""
-    def __init__(self):
-        # Заглушки
-        self.slots = {
-            1: Slot(MushroomModel, MushroomView),
-            2: Slot(SunflowerModel, SunflowerView)
-        }
-        self.size = 10
+    # Заглушки
+    slots: dict = field(default_factory=lambda: {
+        1: Slot(MushroomModel, MushroomView),
+        2: Slot(SunflowerModel, SunflowerView)
+    })
+    active_slot: int = 0
+    size: int = 10
 
-class InventoryController(Controller):
+@dataclass
+class InventoryView(View):
     ...
+
+@dataclass
+class InventoryController(Controller):
+    def handle_input(self, event):
+        match event.type:
+            case pygame.KEYDOWN:
+                if event.dict["unicode"].isdigit():
+                    self.model.active_slot = int(event.dict["unicode"])
+                    print(self.model.active_slot)

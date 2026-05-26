@@ -1,0 +1,16 @@
+{
+    "waves": [
+        {
+            "timestamps": [0.0],
+            "enemy_type": ["Enemy"],
+            "amount": [3]
+        }
+    ],
+    "tileset_name": "2.png",
+    "map_name": "2.csv",
+    "tile_size": 200,
+    "tiles_to_place": [12, 13, 14, 15],
+    "start_tile": 44,
+    "end_tile": 60,
+    "path_tiles": [28]
+}

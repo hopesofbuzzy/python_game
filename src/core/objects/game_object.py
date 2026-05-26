@@ -1,18 +1,23 @@
 import pygame
 from pygame.math import Vector2
 from pygame.event import Event as PygameEvent
+from typing import Optional, Callable
 
 from dataclasses import dataclass, field
 from abc import abstractmethod
 
 from src.core.systems.images import ImageLoader
+from src.core.systems.input import Cursor
 
 @dataclass
 class Model:
     local_position: Vector2
-    parent = None
+    parent: Optional["Model"] = None
     # Инъекция метода удаления объекта в Scene.
-    free = None
+    free: Optional[Callable] = None
+
+    def __post_init__(self):
+        self.local_position = self.local_position.copy()
 
     @property
     def position(self):
@@ -26,7 +31,7 @@ class Model:
         if self.parent:
             self.local_position =  value - self.parent.position
         else:
-            self.local_position = value
+            self.local_position = value.copy()
 
     @abstractmethod
     def update(self, delta_time: float):
@@ -35,8 +40,9 @@ class Model:
 
 @dataclass
 class View:
-    # Инъекция загрузчика изображений в EntityFactory.
-    il: ImageLoader
+    # Инъекция загрузчика изображений (ImageLoader) в EntityFactory.
+    il: Optional[ImageLoader] = None
+    parent: Optional["Model"] = None
 
     @abstractmethod
     def draw(self, screen: pygame.Surface, model, local_position):
@@ -47,7 +53,7 @@ class View:
 class Controller:
     model: Model
     # Инъекция объекта курсора в EntityFactory.
-    cursor = None
+    cursor: Cursor
 
     @abstractmethod
     def handle_input(self, event: PygameEvent):

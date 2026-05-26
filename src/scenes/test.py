@@ -7,16 +7,14 @@ from src.objects import *
 
 
 class TestScene(Scene):
-    LEVEL_PATH = "res/levels/2.csv"
-    TILESET_PATH = "res/tileset.png"
     plants = 0
 
     def ready(self):
-        tilemap = self.entity_factory.create_tilemap(
+        tilemap, level = self.entity_factory.create_level(
             position=Vector2(0, 0),
-            tiles_path=self.LEVEL_PATH,
-            tileset_path=self.TILESET_PATH
+            level_name="2"
         )
+        print(level)
         tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
         path = PathModel(
             local_position=Vector2(0, 0),
@@ -50,10 +48,10 @@ class TestScene(Scene):
             position=Vector2(200, 200),
             path=path
         )
+        inventory = self.entity_factory.create_inventory()
         # self.camera.target = player_model
 
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
-        print(global_pos)
         plant = self.entity_factory.create_plant(
             position=global_pos
         )

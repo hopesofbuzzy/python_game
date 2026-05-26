@@ -10,13 +10,22 @@ from src.core.systems.event import Event
 
 @dataclass
 class TileMapView(View):
-    _tileset: dict[int, pygame.Surface] = field(default_factory=dict)
+    tileset: dict[int, pygame.Surface] = field(default_factory=dict)
+    tile_size: int = 50
+
+    def __post_init__(self):
+        for tile_idx, tile in self.tileset.items():
+                tile = pygame.transform.scale(
+                    tile,
+                    size=(self.tile_size, self.tile_size)
+                )
+                self.tileset[tile_idx] = tile
 
     def draw(self, screen: pygame.Surface, model, local_position):
         pos = local_position
-        for ridx, row in enumerate(model._tiles):
+        for ridx, row in enumerate(model.tiles):
             for cidx, tile_idx in enumerate(row):
-                tile = self._tileset[tile_idx]
+                tile = self.tileset[tile_idx]
                 screen.blit(tile, dest=(
                     pos.x + cidx * model.tile_size, pos.y + ridx * model.tile_size
                 ))
@@ -30,9 +39,7 @@ class TileMapModel(Model):
         tiles (list[list[int]]): подгруженная карта.
         tileset (Image): изображение со всеми тайлами.
     """
-    _tiles: list[list[int]] = field(default_factory=list)
-    
-    original_tile_size: int = 200
+    tiles: list[list[int]] = field(default_factory=list)
     tile_size: int = 50
 
     def pos_to_tile(self, position: Vector2) -> Vector2:
@@ -44,7 +51,7 @@ class TileMapModel(Model):
         return tile * self.tile_size
 
     def set_tile(self, row: int, col: int, tile_idx: int):
-        self._tiles[row][col] = tile_idx
+        self.tiles[row][col] = tile_idx
 
 @dataclass
 class TileMapController(Controller):
@@ -52,7 +59,7 @@ class TileMapController(Controller):
     on_tile_click: Event = field(default_factory=lambda: Event())
 
     def __post_init__(self):
-        self.cursor.on_left_click.subscribe(on_left_click)
+        self.cursor.on_left_click.subscribe(self.on_left_click)
 
     def on_left_click(self, cursor):
         clicked_tile = self.model.pos_to_tile(cursor.global_pos)
