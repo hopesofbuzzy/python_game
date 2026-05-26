@@ -9,8 +9,23 @@ from src.core.systems.images import ImageLoader
 
 @dataclass
 class Model:
-    position: Vector2
+    local_position: Vector2
+    parent = None
     free = None
+
+    @property
+    def position(self):
+        if self.parent:
+            return self.local_position + self.parent.position
+        else:
+            return self.local_position
+
+    @position.setter
+    def position(self, value):
+        if self.parent:
+            self.local_position =  value - self.parent.position
+        else:
+            self.local_position = value
 
     @abstractmethod
     def update(self, delta_time: float):

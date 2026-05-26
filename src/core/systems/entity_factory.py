@@ -7,7 +7,7 @@ class EntityFactory:
         self.scene = scene
 
     def create_plant(self, position):
-        plant_model = MushroomModel(position=position)
+        plant_model = MushroomModel(local_position=position)
         plant = GameObject(
             model=plant_model,
             view=MushroomView(self.il),
@@ -18,7 +18,7 @@ class EntityFactory:
     def create_enemy(self, cls_model, cls_view, position, path):
         print(cls_model)
         enemy_model = cls_model(
-            position=position,
+            local_position=position,
             path=path
         )
         enemy = GameObject(
@@ -31,7 +31,7 @@ class EntityFactory:
 
     def create_bullet(self, direction, position, owner, damage):
         bullet_model = BulletModel(
-            position=position.copy(),
+            local_position=position.copy(),
             damage=damage
         )
         bullet_model.set_velocity(direction.x, direction.y)
@@ -46,7 +46,7 @@ class EntityFactory:
 
     def create_tilemap(self, position, tiles_path, tileset_path):
         tilemap_model = TileMapModel(
-            position=position
+            local_position=position
         )
         tilemap_view=TileMapView(
             il=self.il

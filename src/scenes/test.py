@@ -36,7 +36,7 @@ class TestScene(Scene):
         # self.add_object("player", player)
 
         path = PathModel(
-            position=Vector2(0, 0),
+            local_position=Vector2(0, 0),
             points=[
                 [950, 150],
                 [950, 450],
