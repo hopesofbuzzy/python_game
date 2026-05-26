@@ -22,7 +22,7 @@ class PathBodyModel(AreaModel):
 
     def __post_init__(self):
         self._target_point_ref = len(self.path.points) - 1
-        self.position = self.path.points[self._target_point_ref]
+        self.position = self.path.points[self._target_point_ref].copy()
 
     def update(self, delta_time: float):
         self.follow_path()

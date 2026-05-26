@@ -37,14 +37,12 @@ class AreaModel(Collidable):
     """Модель зоны с кинематикой движения, но без коллизий (для пуль)."""
     velocity: Vector2 = field(default_factory=lambda: Vector2(0, 0))
     speed: float = 100
-
-    def __post_init__(self):
-        self.resolvable = False
+    resolvable: bool = False
 
     def set_velocity(self, dx: float, dy: float):
         self.velocity = Vector2(dx, dy) * self.speed
-        if self.speed == 300:
-            print(self.velocity)
+        if self.speed > 500:
+            print(self.velocity, self.speed)
 
 @dataclass
 class KinematicBodyModel(Collidable):

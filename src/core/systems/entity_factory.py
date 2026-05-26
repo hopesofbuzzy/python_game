@@ -15,14 +15,15 @@ class EntityFactory:
         self.scene.add_object(plant)
         return plant
 
-    def create_enemy(self, position, path):
-        enemy_model = EnemyModel(
+    def create_enemy(self, cls_model, cls_view, position, path):
+        print(cls_model)
+        enemy_model = cls_model(
             position=position,
             path=path
         )
         enemy = GameObject(
             model=enemy_model,
-            view=EnemyView(self.il),
+            view=cls_view(self.il),
             controller=Controller(enemy_model)
         )
         self.scene.add_object(enemy)

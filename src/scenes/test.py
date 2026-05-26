@@ -55,12 +55,16 @@ class TestScene(Scene):
                 [50, 350]
             ]
         )
-        enemy_1 = self.entity_factory.create_enemy(
+        enemy_2 = self.entity_factory.create_enemy(
+            EnemyModel,
+            EnemyView,
             position=Vector2(200, 200),
             path=path
         )
-        enemy_2 = self.entity_factory.create_enemy(
-            position=Vector2(120, 210),
+        enemy_1 = self.entity_factory.create_enemy(
+            FastEnemyModel,
+            FastEnemyView,
+            position=Vector2(200, 200),
             path=path
         )
         # self.camera.target = player_model
