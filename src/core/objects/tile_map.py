@@ -14,6 +14,7 @@ class TileMapView(View):
     tile_size: int = 50
 
     def __post_init__(self):
+        # Сжимаем изображения тайлов.
         for tile_idx, tile in self.tileset.items():
                 tile = pygame.transform.scale(
                     tile,

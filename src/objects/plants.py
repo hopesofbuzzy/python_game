@@ -69,7 +69,7 @@ class ShooterModel(PlantModel):
 
     def shoot(self, target):
         direction = (target.position - self.position).normalize()
-        self.on_bullet_spawn.emit(direction, self.position + PLANT_SIZE // 2, self, self.damage)
+        self.on_bullet_spawn.emit(direction, self.position + PLANT_SIZE // 2, self.damage)
         self._timer = self.cooldown
 
 @dataclass

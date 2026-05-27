@@ -1,6 +1,7 @@
 from src.core.objects import *
 from src.core.systems.images import ImageLoader
 from src.core.systems.entity_factory import EntityFactory
+from src.core.systems.level_builder import LevelBuilder
 
 from abc import abstractmethod, ABC
 from pygame.event import Event as PygameEvent
@@ -19,7 +20,9 @@ class Scene:
         # Реестр изображений для текущей сцены.
         self.il = ImageLoader()
         # Фабрика объектов.
-        self.entity_factory: EntityFactory = EntityFactory(self, cursor)
+        self.entity_factory: EntityFactory = EntityFactory(self, self.il, cursor)
+        # Строитель уровней.
+        self.level_builder: LevelBuilder = LevelBuilder(self, self.il, cursor)
         self.cursor = cursor
         # Все системы включены, запускаем сцену.
         self.ready()

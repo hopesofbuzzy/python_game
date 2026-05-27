@@ -5,12 +5,13 @@ import pygame
 
 
 @dataclass
-class Level:
+class RawLevel:
     tiles: list[list]
-    tileset: dict[int, pygame.Surface]
+    tileset: pygame.Surface
     metadata: dict
 
-class LevelManager:
+class LevelLoader:
+    """Загрузчик метаданных уровня, тайлсета и карты тайлов."""
     LEVELS_FOLDER = "res/levels"
     TILESET_FOLDER = "res/levels/tilesets"
     MAPS_FOLDER = "res/levels/maps"
@@ -28,41 +29,17 @@ class LevelManager:
         except Exception as e:
             raise Exception(f"Не удалось загрузить уровень: {e}")
         # Подгрузка тайлсета уровня.
-        tileset_surface = self.il.load_image(
+        tileset = self.il.load_image(
             Path(self.TILESET_FOLDER, level_data["tileset_name"])
         ).surface
-        # Разделение тайлсета (без сжатия).
-        tileset = self.split_tileset(tileset_surface, level_data["tile_size"])
         # Подгрузка карты.
         tiles = list()
         with open(Path(self.MAPS_FOLDER, level_data["map_name"]), "r") as f:
             for line in f.readlines():
                 tiles.append(list(map(int, line.split(","))))
-        return Level(
+        return RawLevel(
             tiles=tiles,
             tileset=tileset,
             metadata=level_data
         )
 
-    def split_tileset(
-            self,
-            surface: pygame.Surface,
-            tile_size: int
-    ) -> dict[int, pygame.Surface]:
-        tileset = dict()
-        if surface:
-            tileset_size = surface.get_size()
-            tile_idx = 0
-            for row in range(0, tileset_size[1], tile_size):
-                for col in range(0, tileset_size[0], tile_size):
-                    tile = surface.subsurface(
-                        pygame.Rect(
-                            (col, row), (
-                                tile_size,
-                                tile_size
-                            )
-                        )
-                    )
-                    tileset[tile_idx] = tile
-                    tile_idx += 1
-        return tileset

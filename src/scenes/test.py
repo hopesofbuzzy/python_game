@@ -10,12 +10,11 @@ class TestScene(Scene):
     plants = 0
 
     def ready(self):
-        tilemap, level = self.entity_factory.create_level(
-            position=Vector2(0, 0),
-            level_name="2"
+        level = self.level_builder.load_and_create_level(
+            Vector2(0, 0),
+            "2"
         )
-        print(level)
-        tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
+        level.tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
         path = PathModel(
             local_position=Vector2(0, 0),
             points=[
@@ -53,7 +52,9 @@ class TestScene(Scene):
 
     def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
         plant = self.entity_factory.create_plant(
-            position=global_pos
+            global_pos,
+            MushroomModel,
+            MushroomView
         )
         plant.model.on_bullet_spawn.subscribe(self.entity_factory.create_bullet)
         self.plants += 1

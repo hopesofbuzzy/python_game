@@ -1,32 +1,25 @@
 from src.core.systems.images import ImageLoader
 from src.objects import *
-from src.core.systems.level import LevelManager, Level
 
 class EntityFactory:
-    """
-        Универсальная фабрика сборки объектов с доступом
-        к сцене, загрузчику изображений и курсору для контроллера.
-    """
-    def __init__(self, scene, cursor):
+    """Фабрика сборки объектов сцены."""
+    def __init__(self, scene, image_loader, cursor):
         # View инъекция (ImageLoader).
-        self.il = scene.il
+        self.il = image_loader
         # Controller инъекция.
         self.cursor = cursor
         self.scene = scene
-        # Для фабрики уровней (LevelManager).
-        self.lm = LevelManager(self.il)
 
-    def create_plant(self, position):
-        plant_model = MushroomModel(local_position=position)
+    def create_plant(self, position, cls_model, cls_view):
+        plant_model = cls_model(local_position=position)
         plant = GameObject(
             model=plant_model,
-            view=MushroomView(self.il),
+            view=cls_view(self.il),
         )
         self.scene.add_object(plant)
         return plant
 
     def create_enemy(self, cls_model, cls_view, position, path):
-        print(cls_model)
         enemy_model = cls_model(
             local_position=position,
             path=path
@@ -38,7 +31,7 @@ class EntityFactory:
         self.scene.add_object(enemy)
         return enemy
 
-    def create_bullet(self, direction, position, owner, damage):
+    def create_bullet(self, direction, position, damage):
         bullet_model = BulletModel(
             local_position=position,
             damage=damage
@@ -49,27 +42,7 @@ class EntityFactory:
             view=BulletView(self.il)
         )
         self.scene.add_object(bullet)
-        # print(self.scene.object_registry)
-        owner.cooldown = True
         return bullet
-
-    def create_level(self, position, level_name):
-        level = self.lm.load_level(level_name)
-        tilemap_model = TileMapModel(
-            local_position=position,
-            tiles=level.tiles
-        )
-        tilemap_view=TileMapView(
-            il=self.il,
-            tileset=level.tileset
-        )
-        tilemap = GameObject(
-            model=tilemap_model,
-            view=tilemap_view,
-            controller=TileMapController(tilemap_model, self.cursor)
-        )
-        self.scene.add_object(tilemap)
-        return tilemap, level
 
     def create_inventory(self):
         model = InventoryModel(
