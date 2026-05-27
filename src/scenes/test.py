@@ -17,23 +17,7 @@ class TestScene(Scene):
         level.tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
         path = PathModel(
             local_position=Vector2(0, 0),
-            points=[
-                [950, 150],
-                [950, 450],
-                [900, 450],
-                [900, 550],
-                [750, 550],
-                [750, 150],
-                [400, 150],
-                [400, 250],
-                [450, 250],
-                [450, 400],
-                [400, 400],
-                [400, 500],
-                [250, 500],
-                [250, 350],
-                [50, 350]
-            ]
+            points=list(map(level.tilemap.model.tile_to_pos, list(map(Vector2, level.path))))
         )
         enemy_2 = self.entity_factory.create_enemy(
             EnemyModel,

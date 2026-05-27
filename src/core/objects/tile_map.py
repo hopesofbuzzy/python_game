@@ -44,15 +44,20 @@ class TileMapModel(Model):
     tile_size: int = 50
 
     def pos_to_tile(self, position: Vector2) -> Vector2:
-        """Конвертирует глобальную позицию в тайл."""
+        """Конвертирует локальную позицию в тайл."""
         return position // self.tile_size
 
     def tile_to_pos(self, tile: Vector2) -> Vector2:
-        """Конвертирует тайл в глобальную позицию."""
+        """Конвертирует тайл в локальную позицию."""
         return tile * self.tile_size
 
     def set_tile(self, row: int, col: int, tile_idx: int):
+        """Устанавливает тайл по тайлсету."""
         self.tiles[row][col] = tile_idx
+
+    def get_tile(self, row: int, col: int) -> int:
+        """Возвращает тип тайла по тайлсету."""
+        return self.tiles[row][col]
 
 @dataclass
 class TileMapController(Controller):
