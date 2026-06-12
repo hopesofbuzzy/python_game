@@ -1,8 +1,9 @@
 import pytest
 from pygame.math import Vector2
 
+from src.core.objects import PathModel
 from src.core.systems.scene import Scene
-from src.objects import EnemyModel, EnemyView, PathModel
+from src.objects.enemy import EnemyModel, EnemyView
 
 
 class Scene1(Scene):
@@ -21,5 +22,5 @@ def scene1():
 
 
 def test_path(scene1):
-    """Проверка инициали-ации врага и пути."""
+    """Проверка инициализации врага и пути."""
     return True
