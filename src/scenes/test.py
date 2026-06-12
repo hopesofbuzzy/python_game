@@ -7,17 +7,21 @@ from src.objects import (
     EnemyView,
     FastEnemyModel,
     FastEnemyView,
+    ShooterModel,
     MushroomModel,
     MushroomView,
+    InventoryModel
 )
+from src.core.objects import GameObject
 
 
 class TestScene(Scene):
     plants = 0
+    inventory = None
 
     def ready(self):
         level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
-        level.tilemap.controller.on_tile_click.subscribe(self.on_tile_click)
+        level.tilemap.controller.on_tile_click.subscribe(self.plant)
         path = PathModel(
             local_position=Vector2(0, 0),
             points=list(
@@ -30,11 +34,17 @@ class TestScene(Scene):
         self.entity_factory.create_enemy(
             FastEnemyModel, FastEnemyView, position=Vector2(200, 200), path=path
         )
-        self.entity_factory.create_inventory()
+        self.inventory = self.entity_factory.create_inventory()
 
-    def on_tile_click(self, clicked_tile: Vector2, global_pos: Vector2):
-        plant = self.entity_factory.create_plant(
-            global_pos, MushroomModel, MushroomView
-        )
-        plant.model.on_bullet_spawn.subscribe(self.entity_factory.create_bullet)
-        self.plants += 1
+    def plant(self, clicked_tile: Vector2, global_pos: Vector2):
+        if (
+            isinstance(self.inventory, GameObject)
+            and isinstance(self.inventory.model, InventoryModel)
+        ):
+            slot = self.inventory.model.slots[self.inventory.model.active_slot]
+            plant = self.entity_factory.create_plant(
+                global_pos, slot.model, slot.view
+            )
+            if isinstance(plant.model, ShooterModel):
+                plant.model.on_bullet_spawn.subscribe(self.entity_factory.create_bullet)
+            self.plants += 1

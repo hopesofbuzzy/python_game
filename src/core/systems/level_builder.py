@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 import pygame
@@ -68,7 +69,7 @@ class LevelBuilder:
             or len(parsed_map.path_poses) == 0
             or len(parsed_map.poses_to_place) == 0
         ):
-            print(parsed_map)
+            logging.debug(f"ParsedMap: {parsed_map}")
             raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
         return parsed_map
 

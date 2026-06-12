@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 from pygame.math import Vector2
@@ -25,7 +26,7 @@ class EnemyModel(PathBodyModel):
     def handle_collision(self, other): ...
 
     def damage(self, damage: int):
-        print(damage)
+        logging.debug(f"Урон врагу: {damage}")
         self.health -= damage
         if self.health <= 0:
             self.free()

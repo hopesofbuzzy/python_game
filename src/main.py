@@ -1,12 +1,16 @@
-import asyncio
-
+import logging
 import pygame
 
 from src.core.game import Game
 from src.scenes.test import TestScene
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(filename)s - %(levelname)s - %(message)s'
+)
 
-async def main():
+
+def main():
     pygame.init()
     game = Game(TestScene)
     screen = pygame.display.set_mode(game.WINDOW_SIZE)
@@ -23,4 +27,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

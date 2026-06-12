@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 
 import pygame
@@ -21,7 +22,7 @@ class ImageLoader:
                 image = pygame.image.load(filename)
                 self.image_registry[filename] = Image(filename, image)
             except Exception:
-                raise FileNotFoundError(f"Не удалось найти файл {filename}")
+                logging.warning(f"Не удалось найти файл {filename}")
         return self.image_registry[filename]
 
     def cleanup(self):

@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 import pygame
@@ -22,7 +23,6 @@ class Slot:
 @dataclass
 class InventoryModel(Model):
     """Инвентарь для выбора растений."""
-
     # Заглушки
     slots: dict = field(
         default_factory=lambda: {
@@ -30,7 +30,7 @@ class InventoryModel(Model):
             2: Slot(SunflowerModel, SunflowerView),
         }
     )
-    active_slot: int = 0
+    active_slot: int = 1
     size: int = 10
 
 
@@ -45,4 +45,4 @@ class InventoryController(Controller):
             case pygame.KEYDOWN:
                 if event.dict["unicode"].isdigit():
                     self.model.active_slot = int(event.dict["unicode"])
-                    print(self.model.active_slot)
+                    logging.debug(f"Слот инвентаря: {self.model.active_slot}")

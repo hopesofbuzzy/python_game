@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 import pygame
@@ -24,9 +25,15 @@ class SpriteView(View):
 
     def __post_init__(self):
         if self.image_path:
-            self._resized_image = pygame.transform.scale(
-                self.il.load_image(self.image_path).surface, size=self.size
-            )
+            try:
+                self._resized_image = pygame.transform.scale(
+                    self.il.load_image(self.image_path).surface, size=self.size
+                )
+            except:
+                ...
+        else:
+            logging.warning(f"SpriteView не содержит изображения для визуализации!")
 
     def draw(self, screen: pygame.Surface, model: Model, local_position):
-        screen.blit(self._resized_image, dest=local_position)
+        if isinstance(self._resized_image, pygame.Surface):
+            screen.blit(self._resized_image, dest=local_position)

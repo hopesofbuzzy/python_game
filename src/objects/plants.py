@@ -17,6 +17,7 @@ BULLET_SPEED = 150
 
 # Типы растений.
 SUNFLOWER_COOLDOWN = 7
+SUNFLOWER_IMAGE_PATH = "res/mushroom.png"
 
 
 @dataclass
@@ -25,18 +26,8 @@ class PlantModel(Model):
 
     ...
 
-
 @dataclass
 class PlantView(SpriteView): ...
-
-
-@dataclass
-class SunflowerModel(PlantModel): ...
-
-
-@dataclass
-class SunflowerView(PlantView): ...
-
 
 @dataclass
 class BulletModel(AreaModel):
@@ -81,6 +72,7 @@ class ShooterModel(PlantModel):
         self._timer = self.cooldown
 
 
+# Грибок.
 @dataclass
 class MushroomModel(ShooterModel):
     """Грибок-стрелок."""
@@ -91,4 +83,15 @@ class MushroomModel(ShooterModel):
 @dataclass
 class MushroomView(PlantView):
     image_path: str = PLANT_IMAGE_PATH
+    size: Vector2 = field(default_factory=lambda: PLANT_SIZE)
+
+
+# Подсолнышко.
+@dataclass
+class SunflowerModel(PlantModel): ...
+
+
+@dataclass
+class SunflowerView(PlantView):
+    image_path: str = SUNFLOWER_IMAGE_PATH
     size: Vector2 = field(default_factory=lambda: PLANT_SIZE)
