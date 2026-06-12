@@ -14,7 +14,6 @@
 
 * Идеи: `docs/ideas.md`
 * Технический документ: `docs/techdoc.md`
-* Мои алгоритмы: `docs/my_algorithms.md`
 
 ### Экзаменационная
 

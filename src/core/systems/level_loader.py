@@ -12,9 +12,9 @@ class RawLevel:
 
 class LevelLoader:
     """Загрузчик метаданных уровня, тайлсета и карты тайлов."""
-    LEVELS_FOLDER = "res/levels"
-    TILESET_FOLDER = "res/levels/tilesets"
-    MAPS_FOLDER = "res/levels/maps"
+    LEVELS_FOLDER = "res/levels/"
+    TILESET_FOLDER = LEVELS_FOLDER + "tilesets/"
+    MAPS_FOLDER = LEVELS_FOLDER + "maps/"
 
     def __init__(self, image_loader):
         self.il = image_loader

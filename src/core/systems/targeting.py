@@ -1,6 +1,7 @@
 from src.objects import ShooterModel, EnemyModel
 
 class TargetingSystem:
+    """Система обнаружения целей для стрельбы."""
     def __init__(self, uniform_grod):
         self.uniform_grid = uniform_grod
 
