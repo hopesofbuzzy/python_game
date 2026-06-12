@@ -3,7 +3,12 @@ from dataclasses import dataclass, field
 import pygame
 
 from src.core.objects import Controller, Model, View
-from src.objects import MushroomModel, MushroomView, SunflowerModel, SunflowerView
+from src.objects.plants import (
+    MushroomModel,
+    MushroomView,
+    SunflowerModel,
+    SunflowerView,
+)
 
 
 class Slot:

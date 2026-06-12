@@ -1,4 +1,4 @@
-from src.objects import GameObject, TileMapController, TileMapModel, TileMapView
+from src.core.objects import GameObject, TileMapController, TileMapModel, TileMapView
 
 
 class LevelFactory:

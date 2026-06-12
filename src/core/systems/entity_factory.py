@@ -1,4 +1,8 @@
-from src.objects import *
+from pygame.math import Vector2
+
+from src.core.objects.game_object import GameObject
+from src.objects.inventory import InventoryController, InventoryModel, InventoryView
+from src.objects.plants import BulletModel, BulletView
 
 
 class EntityFactory:

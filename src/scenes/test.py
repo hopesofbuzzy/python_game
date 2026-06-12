@@ -1,5 +1,6 @@
 from pygame.math import Vector2
 
+from src.core.objects.path import PathModel
 from src.core.systems.scene import Scene
 from src.objects import (
     EnemyModel,
@@ -8,7 +9,6 @@ from src.objects import (
     FastEnemyView,
     MushroomModel,
     MushroomView,
-    PathModel,
 )
 
 
