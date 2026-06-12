@@ -10,25 +10,30 @@ from src.core.systems.event import Event
 
 @dataclass
 class TileMapView(View):
+    _scaled_tilesets: dict[float, dict[int, pygame.Surface]] = field(default_factory=dict)
     tileset: dict[int, pygame.Surface] = field(default_factory=dict)
     tile_size: int = 50
 
-    def __post_init__(self):
-        # Сжимаем изображения тайлов.
-        for tile_idx, tile in self.tileset.items():
-            tile = pygame.transform.scale(tile, size=(self.tile_size, self.tile_size))
-            self.tileset[tile_idx] = tile
+    def get_scaled_tileset(self, size: float):
+        if size not in self._scaled_tilesets.keys():
+            self._scaled_tilesets[size] = dict()
+            for tile_idx, tile in self.tileset.items():
+                overall_size = (self.tile_size * size, self.tile_size * size)
+                tile = pygame.transform.scale(tile, size=overall_size)
+                self._scaled_tilesets[size][tile_idx] = tile
+        return self._scaled_tilesets[size]
 
-    def draw(self, screen: pygame.Surface, model, local_position):
+    def draw(self, screen: pygame.Surface, model, local_position, zoom):
         pos = local_position
+        scaled_tileset = self.get_scaled_tileset(zoom)
         for ridx, row in enumerate(model.tiles):
             for cidx, tile_idx in enumerate(row):
-                tile = self.tileset[tile_idx]
+                tile = scaled_tileset[tile_idx]
                 screen.blit(
                     tile,
                     dest=(
-                        pos.x + cidx * model.tile_size,
-                        pos.y + ridx * model.tile_size,
+                        pos.x + cidx * model.tile_size * zoom,
+                        pos.y + ridx * model.tile_size * zoom,
                     ),
                 )
 

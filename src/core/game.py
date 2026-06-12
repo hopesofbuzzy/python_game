@@ -20,7 +20,10 @@ class Game:
         # Systems
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
-        self.camera: Camera = Camera(size=Vector2(self.WINDOW_SIZE))
+        self.camera: Camera = Camera(
+            size=Vector2(self.WINDOW_SIZE),
+            cursor=self.input.cursor
+        )
         self.uniform_grid = UniformGrid()
         self.collision = CollisionSystem(self.uniform_grid)
         self.targeting = TargetingSystem(self.uniform_grid)
@@ -50,7 +53,7 @@ class Game:
         # Game Logic
         self.scene.update(delta_time)
         # Camera
-        self.camera.handle_drag(self.input.cursor)
+        self.camera.handle_drag()
         # Cleanup
         self.scene.cleanup()
         # Add objects after all logics.

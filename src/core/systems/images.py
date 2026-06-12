@@ -7,7 +7,7 @@ import pygame
 @dataclass
 class Image:
     filename: str
-    surface: pygame.Surface | None
+    surface: pygame.Surface
 
 
 class ImageLoader:

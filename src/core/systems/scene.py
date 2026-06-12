@@ -10,7 +10,9 @@ from src.core.systems.level_builder import LevelBuilder
 
 # FSM для сцен.
 class Scene:
-    """Класс для контейнеризации игрового мира в виде сцены."""
+    """
+    Класс для контейнеризации игрового мира в виде сцены.
+    """
 
     def __init__(self, cursor):
         self.object_registry: dict[str, GameObject] = {}

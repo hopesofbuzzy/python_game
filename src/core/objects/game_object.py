@@ -47,7 +47,7 @@ class View:
     parent: Optional["Model"] = None
 
     @abstractmethod
-    def draw(self, screen: pygame.Surface, model, local_position):
+    def draw(self, screen: pygame.Surface, model, local_position, zoom):
         """Отрисовывает по модели."""
         ...
 

@@ -10,5 +10,8 @@ class Renderer:
         for object in scene.object_registry.values():
             if object.view:
                 object.view.draw(
-                    screen, object.model, camera.to_local(object.model.position)
+                    screen,
+                    object.model,
+                    camera.to_local(object.model.position),
+                    camera.zoom
                 )

@@ -17,7 +17,7 @@ BULLET_SPEED = 150
 
 # Типы растений.
 SUNFLOWER_COOLDOWN = 7
-SUNFLOWER_IMAGE_PATH = "res/mushroom.png"
+SUNFLOWER_IMAGE_PATH = "res/sunflower.png"
 
 
 @dataclass
