@@ -1,0 +1,31 @@
+name: Python CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Выделяет виртуальный сервер на Linux
+
+    steps:
+      - name: Скачиваем код репозитория
+        uses: actions/checkout@v4
+
+      - name: Устанавливаем Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Устанавливаем зависимости
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Запуск автотестов (pytest)
+        run: python -m pytest
+
+      - name: Проверка кода линтером (Ruff)
+        run: ruff check .
