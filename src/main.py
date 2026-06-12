@@ -1,5 +1,6 @@
-import pygame
 import asyncio
+
+import pygame
 
 from src.core.game import Game
 from src.scenes.test import TestScene

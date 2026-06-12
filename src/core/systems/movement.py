@@ -1,5 +1,6 @@
-from src.core.systems.scene import Scene
 from src.core.objects import *
+from src.core.systems.scene import Scene
+
 
 class MovementSystem:
     """

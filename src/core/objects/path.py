@@ -1,7 +1,9 @@
 from dataclasses import dataclass, field
+
 from pygame.math import Vector2
 
 from src.core.objects import *
+
 
 @dataclass
 class PathModel(Model):

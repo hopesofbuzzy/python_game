@@ -1,14 +1,12 @@
-from pygame.math import Vector2
-import pygame
-
 from src.core.objects import GameObject
 
 
 class UniformGrid:
     """
-        Пространственная структура для эффективных столкновений
-        и проверок соседей объектов.
+    Пространственная структура для эффективных столкновений
+    и проверок соседей объектов.
     """
+
     CELL_SIZE = 50
     SIZE = 100
 
@@ -44,8 +42,10 @@ class UniformGrid:
         candidates = self.query_rect(object, radius, radius)
         center = object.model.position
         return [
-            cndt for cndt in candidates
-            if (center - cndt.model.position).length_squared() < (radius * self.CELL_SIZE)**2
+            cndt
+            for cndt in candidates
+            if (center - cndt.model.position).length_squared()
+            < (radius * self.CELL_SIZE) ** 2
         ]
 
     def update(self, scene):

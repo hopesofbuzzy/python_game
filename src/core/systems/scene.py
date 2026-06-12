@@ -1,10 +1,11 @@
-from src.core.objects import *
-from src.core.systems.images import ImageLoader
-from src.core.systems.entity_factory import EntityFactory
-from src.core.systems.level_builder import LevelBuilder
+from abc import abstractmethod
 
-from abc import abstractmethod, ABC
 from pygame.event import Event as PygameEvent
+
+from src.core.objects import *
+from src.core.systems.entity_factory import EntityFactory
+from src.core.systems.images import ImageLoader
+from src.core.systems.level_builder import LevelBuilder
 
 
 # FSM для сцен.

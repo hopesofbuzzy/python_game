@@ -1,5 +1,5 @@
-from src.core.systems.images import ImageLoader
-from src.objects import TileMapController, TileMapModel, TileMapView, GameObject
+from src.objects import GameObject, TileMapController, TileMapModel, TileMapView
+
 
 class LevelFactory:
     """Фабрика сборки объектов уровня (карта)."""

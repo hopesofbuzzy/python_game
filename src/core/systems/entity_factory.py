@@ -1,5 +1,5 @@
-from src.core.systems.images import ImageLoader
 from src.objects import *
+
 
 class EntityFactory:
     """Фабрика сборки объектов сцены."""

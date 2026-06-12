@@ -1,6 +1,7 @@
-from dataclasses import dataclass, field
-from pathlib import Path
 import json
+from dataclasses import dataclass
+from pathlib import Path
+
 import pygame
 
 

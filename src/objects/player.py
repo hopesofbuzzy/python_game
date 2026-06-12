@@ -1,9 +1,10 @@
-import pygame
-from pygame.event import Event as PygameEvent
 from dataclasses import dataclass
 
-from src.core.objects.collidable import Collidable
-from src.core.objects import KinematicBodyModel, RectView, Controller
+import pygame
+from pygame.event import Event as PygameEvent
+
+from src.core.objects import Controller, KinematicBodyModel
+
 
 @dataclass
 class PlayerModel(KinematicBodyModel):

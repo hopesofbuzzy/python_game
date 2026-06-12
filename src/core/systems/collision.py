@@ -1,11 +1,11 @@
-from pygame.math import Vector2
-from math import sqrt
-from itertools import combinations
 from dataclasses import dataclass
+from math import sqrt
 
-from src.core.systems.scene import Scene
-from src.core.systems.uniform_grid import UniformGrid
+from pygame.math import Vector2
+
 from src.core.objects import *
+from src.core.systems.scene import Scene
+
 
 @dataclass
 class Overlap:
@@ -135,9 +135,13 @@ class CollisionSystem:
         for object, other, overlap, resolve in self.collisions:
             if resolve:
                 if isinstance(object, KinematicBodyModel) and object.velocity:
-                    object.position += Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+                    object.position += (
+                        Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+                    )
                 if isinstance(other, KinematicBodyModel) and other.velocity:
-                    other.position -= Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+                    other.position -= (
+                        Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
+                    )
             object.handle_collision(other)
             other.handle_collision(object)
         self.collisions = []

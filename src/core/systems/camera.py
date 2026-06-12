@@ -1,7 +1,9 @@
-from pygame.math import Vector2
 from dataclasses import dataclass, field
 
+from pygame.math import Vector2
+
 from src.core.objects import Model
+
 
 @dataclass
 class Camera:

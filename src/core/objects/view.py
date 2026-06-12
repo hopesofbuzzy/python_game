@@ -1,9 +1,10 @@
-import pygame
-from pygame.math import Vector2
 from dataclasses import dataclass, field
 
-from src.core.objects.game_object import View, Model
-from src.core.systems.images import Image
+import pygame
+from pygame.math import Vector2
+
+from src.core.objects.game_object import Model, View
+
 
 @dataclass
 class RectView(View):

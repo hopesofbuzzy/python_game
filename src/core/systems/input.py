@@ -1,8 +1,10 @@
-import pygame
-from pygame.math import Vector2
 from dataclasses import dataclass, field
 
+import pygame
+from pygame.math import Vector2
+
 from src.core.systems.event import Event
+
 
 @dataclass
 class Cursor:

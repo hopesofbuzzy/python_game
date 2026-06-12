@@ -1,8 +1,7 @@
-from src.core.systems.uniform_grid import UniformGrid
-from src.core.objects import *
 import pygame
 from pygame.math import Vector2
 
+from src.core.objects import *
 
 # ug = UniformGrid()
 # # ug.insert()

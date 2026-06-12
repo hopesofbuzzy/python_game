@@ -1,4 +1,4 @@
-from .player import PlayerController, PlayerModel
 from .enemy import *
-from .plants import *
 from .inventory import *
+from .plants import *
+from .player import PlayerController, PlayerModel

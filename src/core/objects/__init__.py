@@ -1,5 +1,13 @@
-from .game_object import Model, View, Controller, GameObject
-from .view import RectView, SpriteView
-from .collidable import KinematicBodyModel, Collidable, CircleShape, RectShape, StaticBodyModel, AreaModel, CollisionShape
-from .tile_map import TileMapModel, TileMapView, TileMapController
+from .collidable import (
+    AreaModel,
+    CircleShape,
+    Collidable,
+    CollisionShape,
+    KinematicBodyModel,
+    RectShape,
+    StaticBodyModel,
+)
+from .game_object import Controller, GameObject, Model, View
 from .path import PathBodyModel, PathModel
+from .tile_map import TileMapController, TileMapModel, TileMapView
+from .view import RectView, SpriteView

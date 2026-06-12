@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
+
 from pygame.math import Vector2
 
-from src.core.objects import *
-from src.objects import EnemyModel
+from src.core.objects import AreaModel, CollisionShape, Model, RectShape, SpriteView
 from src.core.systems.event import Event
-
+from src.objects import EnemyModel
 
 PLANT_SIZE = Vector2(50, 50)
 PLANT_IMAGE_PATH = "res/mushroom.png"
@@ -69,7 +69,9 @@ class ShooterModel(PlantModel):
 
     def shoot(self, target):
         direction = (target.position - self.position).normalize()
-        self.on_bullet_spawn.emit(direction, self.position + PLANT_SIZE // 2, self.damage)
+        self.on_bullet_spawn.emit(
+            direction, self.position + PLANT_SIZE // 2, self.damage
+        )
         self._timer = self.cooldown
 
 @dataclass

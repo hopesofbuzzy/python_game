@@ -2,7 +2,7 @@ import pytest
 from pygame.math import Vector2
 
 from src.core.systems.scene import Scene
-from src.objects import *
+from src.objects import EnemyModel, EnemyView, PathModel
 
 
 class Scene1(Scene):
@@ -21,6 +21,7 @@ class Scene1(Scene):
             position=Vector2(200, 200),
             path=path
         )
+        print(enemy)
 
 @pytest.fixture
 def scene1():

@@ -1,8 +1,10 @@
-import pygame
 from dataclasses import dataclass, field
 
-from src.core.objects import Model, Controller
-from src.objects import *
+import pygame
+
+from src.core.objects import Controller, Model, View
+from src.objects import MushroomModel, MushroomView, SunflowerModel, SunflowerView
+
 
 class Slot:
     """Слот инвентаря с растением для посадки."""

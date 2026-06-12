@@ -1,5 +1,7 @@
-import pygame
 from dataclasses import dataclass
+
+import pygame
+
 
 @dataclass
 class Image:
@@ -12,11 +14,11 @@ class ImageLoader:
         self.image_registry: dict[str, Image] = {}
 
     def load_image(self, filename: str) -> Image:
-        if not filename in self.image_registry:
+        if filename not in self.image_registry:
             try:
                 image = pygame.image.load(filename)
                 self.image_registry[filename] = Image(filename, image)
-            except Exception as e:
+            except Exception:
                 raise FileNotFoundError(f"Не удалось найти файл {filename}")
         return self.image_registry[filename]
 

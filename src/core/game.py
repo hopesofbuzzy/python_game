@@ -1,16 +1,14 @@
 import pygame
 from pygame.math import Vector2
 
-from src.core.systems.input import InputManager
 from src.core.systems.camera import Camera
-from src.core.systems.movement import MovementSystem
-from src.core.systems.uniform_grid import UniformGrid
 from src.core.systems.collision import CollisionSystem
-from src.core.systems.targeting import TargetingSystem
-from src.core.systems.images import ImageLoader, Image
+from src.core.systems.input import InputManager
+from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
 from src.core.systems.scene import Scene
-
+from src.core.systems.targeting import TargetingSystem
+from src.core.systems.uniform_grid import UniformGrid
 
 
 class Game:

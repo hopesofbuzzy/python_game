@@ -1,0 +1,9 @@
+line-length = 88
+
+[lint]
+select = ["E501", "I"]  # Включаем правило E501 (длина строки) и все правила категории I (сортировка импортов)
+ignore = ["F401"]
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 72  # Ограничение длины докстроков

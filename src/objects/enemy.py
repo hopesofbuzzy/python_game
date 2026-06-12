@@ -1,9 +1,8 @@
-import pygame
-from pygame.math import Vector2
-from pygame.event import Event as PygameEvent
 from dataclasses import dataclass, field
 
-from src.core.objects import *
+from pygame.math import Vector2
+
+from src.core.objects import CollisionShape, PathBodyModel, RectShape, RectView
 
 ENEMY_SPEED = 35
 ENEMY_HEALTH = 100

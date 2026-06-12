@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
-import pygame
-from pygame.math import Vector2
 
-from src.core.systems.level_loader import LevelLoader
-from src.core.systems.level_factory import LevelFactory
+import pygame
+
 from src.core.objects import GameObject
+from src.core.systems.level_factory import LevelFactory
+from src.core.systems.level_loader import LevelLoader
+
 
 @dataclass
 class ParsedMap:

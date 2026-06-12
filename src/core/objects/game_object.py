@@ -1,13 +1,14 @@
-import pygame
-from pygame.math import Vector2
-from pygame.event import Event as PygameEvent
-from typing import Optional, Callable
-
-from dataclasses import dataclass, field
 from abc import abstractmethod
+from dataclasses import dataclass
+from typing import Callable, Optional
+
+import pygame
+from pygame.event import Event as PygameEvent
+from pygame.math import Vector2
 
 from src.core.systems.images import ImageLoader
 from src.core.systems.input import Cursor
+
 
 @dataclass
 class Model:

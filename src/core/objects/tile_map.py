@@ -1,12 +1,12 @@
+from dataclasses import dataclass, field
+
 import pygame
 from pygame.event import Event
 from pygame.math import Vector2
-from dataclasses import dataclass, field
-from pathlib import Path
 
 from src.core.objects import *
-from src.core.systems.images import Image
 from src.core.systems.event import Event
+
 
 @dataclass
 class TileMapView(View):

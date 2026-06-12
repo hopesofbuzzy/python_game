@@ -1,7 +1,8 @@
-from pygame.math import Vector2
 from dataclasses import dataclass, field
 
-from src.core.objects.game_object import Model, GameObject
+from pygame.math import Vector2
+
+from src.core.objects.game_object import Model
 
 
 # Хитбоксы

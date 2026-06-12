@@ -1,8 +1,8 @@
 import pygame
 
-from src.core.objects.game_object import GameObject
-from src.core.systems.scene import Scene
 from src.core.systems.camera import Camera
+from src.core.systems.scene import Scene
+
 
 class Renderer:
     def draw(

@@ -1,4 +1,5 @@
-from src.objects import ShooterModel, EnemyModel
+from src.objects import EnemyModel, ShooterModel
+
 
 class TargetingSystem:
     """Система обнаружения целей для стрельбы."""
