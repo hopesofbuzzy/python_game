@@ -10,7 +10,7 @@ from src.core.systems.event import Event
 
 @dataclass
 class TileMapView(View):
-    _scaled_tilesets: dict[float, dict[int, pygame.Surface]] = field(default_factory=dict)
+    _scaled_tilesets: dict[float, dict] = field(default_factory=dict)
     tileset: dict[int, pygame.Surface] = field(default_factory=dict)
     tile_size: int = 50
 
