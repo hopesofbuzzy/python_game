@@ -30,7 +30,7 @@ class Model:
     @position.setter
     def position(self, value):
         if self.parent:
-            self.local_position =  value - self.parent.position
+            self.local_position = value - self.parent.position
         else:
             self.local_position = value.copy()
 
@@ -38,6 +38,7 @@ class Model:
     def update(self, delta_time: float):
         """Регулярно обновляет модель."""
         ...
+
 
 @dataclass
 class View:
@@ -50,6 +51,7 @@ class View:
         """Отрисовывает по модели."""
         ...
 
+
 @dataclass
 class Controller:
     model: Model
@@ -60,6 +62,7 @@ class Controller:
     def handle_input(self, event: PygameEvent):
         """Читает pygame.event и уведомляет модель по Event"""
         ...
+
 
 @dataclass
 class GameObject:

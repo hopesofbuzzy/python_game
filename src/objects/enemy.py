@@ -15,20 +15,21 @@ FAST_ENEMY_HEALTH = 40
 FAST_ENEMY_SPEED = 60
 FAST_ENEMY_SIZE = Vector2(30, 30)
 
+
 @dataclass
 class EnemyModel(PathBodyModel):
     shape: CollisionShape = field(default_factory=lambda: RectShape(size=ENEMY_SIZE))
     speed: float = field(default_factory=lambda: ENEMY_SPEED)
     health: int = ENEMY_HEALTH
 
-    def handle_collision(self, other):
-        ...
+    def handle_collision(self, other): ...
 
     def damage(self, damage: int):
         print(damage)
         self.health -= damage
         if self.health <= 0:
             self.free()
+
 
 @dataclass
 class EnemyView(RectView):
@@ -40,6 +41,7 @@ class EnemyView(RectView):
 class FastEnemyModel(EnemyModel):
     speed: float = FAST_ENEMY_SPEED
     health: int = FAST_ENEMY_HEALTH
+
 
 @dataclass
 class FastEnemyView(EnemyView):

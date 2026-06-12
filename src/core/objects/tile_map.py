@@ -16,20 +16,22 @@ class TileMapView(View):
     def __post_init__(self):
         # Сжимаем изображения тайлов.
         for tile_idx, tile in self.tileset.items():
-                tile = pygame.transform.scale(
-                    tile,
-                    size=(self.tile_size, self.tile_size)
-                )
-                self.tileset[tile_idx] = tile
+            tile = pygame.transform.scale(tile, size=(self.tile_size, self.tile_size))
+            self.tileset[tile_idx] = tile
 
     def draw(self, screen: pygame.Surface, model, local_position):
         pos = local_position
         for ridx, row in enumerate(model.tiles):
             for cidx, tile_idx in enumerate(row):
                 tile = self.tileset[tile_idx]
-                screen.blit(tile, dest=(
-                    pos.x + cidx * model.tile_size, pos.y + ridx * model.tile_size
-                ))
+                screen.blit(
+                    tile,
+                    dest=(
+                        pos.x + cidx * model.tile_size,
+                        pos.y + ridx * model.tile_size,
+                    ),
+                )
+
 
 @dataclass
 class TileMapModel(Model):
@@ -40,6 +42,7 @@ class TileMapModel(Model):
         tiles (list[list[int]]): подгруженная карта.
         tileset (Image): изображение со всеми тайлами.
     """
+
     tiles: list[list[int]] = field(default_factory=list)
     tile_size: int = 50
 
@@ -59,9 +62,11 @@ class TileMapModel(Model):
         """Возвращает тип тайла по тайлсету."""
         return self.tiles[row][col]
 
+
 @dataclass
 class TileMapController(Controller):
     """Контроллер карты тайлов. Считывает нажатия на тайлы карты."""
+
     on_tile_click: Event = field(default_factory=lambda: Event())
 
     def __post_init__(self):

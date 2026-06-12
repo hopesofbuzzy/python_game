@@ -13,24 +13,30 @@ from src.objects.plants import (
 
 class Slot:
     """Слот инвентаря с растением для посадки."""
+
     def __init__(self, model, view):
         self.model = model
         self.view = view
 
+
 @dataclass
 class InventoryModel(Model):
     """Инвентарь для выбора растений."""
+
     # Заглушки
-    slots: dict = field(default_factory=lambda: {
-        1: Slot(MushroomModel, MushroomView),
-        2: Slot(SunflowerModel, SunflowerView)
-    })
+    slots: dict = field(
+        default_factory=lambda: {
+            1: Slot(MushroomModel, MushroomView),
+            2: Slot(SunflowerModel, SunflowerView),
+        }
+    )
     active_slot: int = 0
     size: int = 10
 
+
 @dataclass
-class InventoryView(View):
-    ...
+class InventoryView(View): ...
+
 
 @dataclass
 class InventoryController(Controller):

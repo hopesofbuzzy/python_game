@@ -10,23 +10,26 @@ from src.core.systems.scene import Scene
 @dataclass
 class Overlap:
     """
-        Контейнер данных о направлении и глубине пересечения
-        коллизий.
+    Контейнер данных о направлении и глубине пересечения
+    коллизий.
     """
+
     # Направление разрешения
     nx: float
     ny: float
     # Глубина
     depth: float
 
+
 class CollisionSystem:
     """
-        Система коллизий и столкновений.
-        Регулирует состояние коллизий и столкновений.
-        Эффективно разрешает столкновения.
+    Система коллизий и столкновений.
+    Регулирует состояние коллизий и столкновений.
+    Эффективно разрешает столкновения.
 
-        Владеет UniformGrid x Collisions (Single responsibility).
+    Владеет UniformGrid x Collisions (Single responsibility).
     """
+
     def __init__(self, uniform_grid):
         self.collisions: list[tuple] = []
         self.uniform_grid = uniform_grid
@@ -48,18 +51,11 @@ class CollisionSystem:
                             continue
                         checks += 1
                         overlap = self.check_overlap(
-                            object.model,
-                            other.model,
-                            resolve=resolve
+                            object.model, other.model, resolve=resolve
                         )
                         if overlap:
                             self.collisions.append(
-                                (
-                                    object.model,
-                                    other.model,
-                                    overlap,
-                                    resolve
-                                )
+                                (object.model, other.model, overlap, resolve)
                             )
         # print(checks)
 
@@ -68,12 +64,12 @@ class CollisionSystem:
         dx = pos1.x - pos2.x
         dy = pos1.y - pos2.y
         dist = dx**2 + dy**2
-        min_dist = (r1 + r2)**2
+        min_dist = (r1 + r2) ** 2
         if dist <= min_dist:
             if not resolve:
                 return True
             n = Vector2(dx, dy).normalize()
-            return Overlap(nx=n.x, ny=n.y, depth=(r1+r2)-sqrt(dist))
+            return Overlap(nx=n.x, ny=n.y, depth=(r1 + r2) - sqrt(dist))
 
     @staticmethod
     def aabb_collide(pos1, size1, pos2, size2, resolve) -> Overlap | None | bool:
@@ -102,11 +98,8 @@ class CollisionSystem:
             return Overlap(nx=0, ny=n.y, depth=depth_y)
 
     def check_overlap(
-            self,
-            object: Collidable,
-            other: Collidable,
-            resolve: bool
-        ) -> Overlap | None | bool:
+        self, object: Collidable, other: Collidable, resolve: bool
+    ) -> Overlap | None | bool:
         obj = object.shape
         oth = other.shape
         obj_position = object.position + obj.position
@@ -114,20 +107,12 @@ class CollisionSystem:
         # Circle x Circle
         if isinstance(obj, CircleShape) and isinstance(oth, CircleShape):
             return self.circles_collide(
-                obj_position,
-                obj.radius,
-                oth_position,
-                oth.radius,
-                resolve
+                obj_position, obj.radius, oth_position, oth.radius, resolve
             )
         # Rect x Rect
         elif isinstance(obj, RectShape) and isinstance(oth, RectShape):
             return self.aabb_collide(
-                obj_position,
-                obj.size,
-                oth_position,
-                oth.size,
-                resolve
+                obj_position, obj.size, oth_position, oth.size, resolve
             )
 
     def resolve(self, delta_time: float):

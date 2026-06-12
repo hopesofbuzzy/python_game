@@ -11,8 +11,10 @@ class RawLevel:
     tileset: pygame.Surface
     metadata: dict
 
+
 class LevelLoader:
     """Загрузчик метаданных уровня, тайлсета и карты тайлов."""
+
     LEVELS_FOLDER = "res/levels/"
     TILESET_FOLDER = LEVELS_FOLDER + "tilesets/"
     MAPS_FOLDER = LEVELS_FOLDER + "maps/"
@@ -38,9 +40,4 @@ class LevelLoader:
         with open(Path(self.MAPS_FOLDER, level_data["map_name"]), "r") as f:
             for line in f.readlines():
                 tiles.append(list(map(int, line.split(","))))
-        return RawLevel(
-            tiles=tiles,
-            tileset=tileset,
-            metadata=level_data
-        )
-
+        return RawLevel(tiles=tiles, tileset=tileset, metadata=level_data)

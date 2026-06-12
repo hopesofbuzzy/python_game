@@ -7,25 +7,18 @@ from src.objects import EnemyModel, EnemyView, PathModel
 
 class Scene1(Scene):
     def ready(self):
-        points = [
-            [0, 0],
-            [100, 100]
-        ]
-        path = PathModel(
-            local_position=Vector2(0, 0),
-            points=points
-        )
+        points = [[0, 0], [100, 100]]
+        path = PathModel(local_position=Vector2(0, 0), points=points)
         enemy = self.entity_factory.create_enemy(
-            EnemyModel,
-            EnemyView,
-            position=Vector2(200, 200),
-            path=path
+            EnemyModel, EnemyView, position=Vector2(200, 200), path=path
         )
         print(enemy)
+
 
 @pytest.fixture
 def scene1():
     return Scene1(None)
+
 
 def test_path(scene1):
     """Проверка инициали-ации врага и пути."""

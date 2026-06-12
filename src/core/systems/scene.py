@@ -11,6 +11,7 @@ from src.core.systems.level_builder import LevelBuilder
 # FSM для сцен.
 class Scene:
     """Класс для контейнеризации игрового мира в виде сцены."""
+
     def __init__(self, cursor):
         self.object_registry: dict[str, GameObject] = {}
         # Пул объектов для отложенного добавления.
@@ -54,14 +55,13 @@ class Scene:
         for obj_id, obj in self._objects_to_delete.items():
             del obj
         self._objects_to_delete = dict()
-        
 
     @abstractmethod
     def ready(self):
         """
-            Инициализация сцены.
-            
-            Описание объектов сцены.
+        Инициализация сцены.
+
+        Описание объектов сцены.
         """
         ...
 

@@ -3,6 +3,7 @@ from src.objects import EnemyModel, ShooterModel
 
 class TargetingSystem:
     """Система обнаружения целей для стрельбы."""
+
     def __init__(self, uniform_grod):
         self.uniform_grid = uniform_grod
 
@@ -12,8 +13,9 @@ class TargetingSystem:
             if isinstance(object.model, ShooterModel):
                 others = self.uniform_grid.query_circle(object, object.model.range)
                 enemies = [
-                     other.model for other in others
-                     if isinstance(other.model, EnemyModel) and object._uid >= other._uid
+                    other.model
+                    for other in others
+                    if isinstance(other.model, EnemyModel) and object._uid >= other._uid
                 ]
                 if enemies:
                     object.model.handle_targets(enemies, delta_time)

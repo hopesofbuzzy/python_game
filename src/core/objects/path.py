@@ -12,13 +12,14 @@ class PathModel(Model):
     def __post_init__(self):
         self.points = list(map(Vector2, self.points))[::-1]
 
+
 @dataclass
 class PathBodyModel(AreaModel):
     """Модель объекта следования по пути."""
-    path: PathModel = field(default_factory=lambda: PathModel(
-        local_position=Vector2(0, 0), 
-        points=list()
-    ))
+
+    path: PathModel = field(
+        default_factory=lambda: PathModel(local_position=Vector2(0, 0), points=list())
+    )
     point_radius: int = 3
     _target_point_ref: int = -1
 
@@ -36,7 +37,7 @@ class PathBodyModel(AreaModel):
             dx = target_point.x - self.position.x
             dy = target_point.y - self.position.y
             dist = dx**2 + dy**2
-            min_dist = (self.point_radius)**2
+            min_dist = (self.point_radius) ** 2
             if dist <= min_dist:
                 self.choose_next_point()
                 # print(self.position, "->", target_point)

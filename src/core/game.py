@@ -13,6 +13,7 @@ from src.core.systems.uniform_grid import UniformGrid
 
 class Game:
     """Базовый класс для состояния игры."""
+
     WINDOW_SIZE = (720, 720)
 
     def __init__(self, scene_class):

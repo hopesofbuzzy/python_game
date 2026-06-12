@@ -18,22 +18,25 @@ BULLET_SPEED = 150
 # Типы растений.
 SUNFLOWER_COOLDOWN = 7
 
+
 @dataclass
 class PlantModel(Model):
     """Универсальное растение."""
+
     ...
 
-@dataclass
-class PlantView(SpriteView):
-    ...
 
 @dataclass
-class SunflowerModel(PlantModel):
-    ...
+class PlantView(SpriteView): ...
+
 
 @dataclass
-class SunflowerView(PlantView):
-    ...
+class SunflowerModel(PlantModel): ...
+
+
+@dataclass
+class SunflowerView(PlantView): ...
+
 
 @dataclass
 class BulletModel(AreaModel):
@@ -47,14 +50,17 @@ class BulletModel(AreaModel):
             other.damage(self.damage)
             self.free()
 
+
 @dataclass
 class BulletView(SpriteView):
     image_path: str = BULLET_IMAGE_PATH
     size: Vector2 = field(default_factory=lambda: BULLET_SIZE)
 
+
 @dataclass
 class ShooterModel(PlantModel):
     """Растение, стреляющее во врагов на дистанции."""
+
     range: int = SHOOTER_RANGE
     damage: int = SHOOTER_DAMAGE
     cooldown: float = 1.0
@@ -74,10 +80,13 @@ class ShooterModel(PlantModel):
         )
         self._timer = self.cooldown
 
+
 @dataclass
 class MushroomModel(ShooterModel):
     """Грибок-стрелок."""
+
     ...
+
 
 @dataclass
 class MushroomView(PlantView):

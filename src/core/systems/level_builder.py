@@ -14,14 +14,17 @@ class ParsedMap:
     path_poses: set[tuple] = field(default_factory=set)
     poses_to_place: set[tuple] = field(default_factory=set)
 
+
 @dataclass
 class Level:
     tilemap: GameObject
     path: list
     parsed_map: ParsedMap
 
+
 class LevelBuilder:
     """Центральный оркестратор строительства уровня."""
+
     def __init__(self, scene, image_loader, cursor):
         # Загрузчик уровней.
         self.lm = LevelLoader(image_loader)
@@ -37,22 +40,13 @@ class LevelBuilder:
             raw_level.metadata["start_tile"],
             raw_level.metadata["end_tile"],
             raw_level.metadata["path_tiles"],
-            raw_level.metadata["tiles_to_place"]
+            raw_level.metadata["tiles_to_place"],
         )
         path = self.build_pathes(tilemap, parsed_map)
-        return Level(
-            tilemap,
-            path,
-            parsed_map
-        )
+        return Level(tilemap, path, parsed_map)
 
     def parse_map(
-            self,
-            tilemap,
-            start_tile,
-            end_tile,
-            path_tiles,
-            tiles_to_place
+        self, tilemap, start_tile, end_tile, path_tiles, tiles_to_place
     ) -> ParsedMap:
         """Парсит карту, извлекая сущности по idx тайлов из тайлсета."""
         parsed_map = ParsedMap()
@@ -75,29 +69,32 @@ class LevelBuilder:
             or len(parsed_map.poses_to_place) == 0
         ):
             print(parsed_map)
-            raise Exception("Не удалось распарсить карту, не найденые нужные сущности.") 
+            raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
         return parsed_map
 
     def build_pathes(self, tilemap, parsed_map: ParsedMap) -> list:
         """
-            Строит путь для врагов по тайлам карты.
-            Путь может разветвляться для более интересного тавер дефенса,
-            поэтому мы будем хранить карту возможных направлений движения для врага.
+        Строит путь для врагов по тайлам карты.
+        Путь может разветвляться для более интересного тавер дефенса,
+        поэтому мы будем хранить карту возможных направлений движения для врага.
         """
-        queue = [parsed_map.start_pos,]
+        queue = [
+            parsed_map.start_pos,
+        ]
         visited = set()
         for tile_pos in queue:
             for direction in ((0, 1), (0, -1), (1, 0), (-1, 0)):
                 new_tile_pos = (tile_pos[0] + direction[0], tile_pos[1] + direction[1])
-                if (new_tile_pos in parsed_map.path_poses or new_tile_pos == parsed_map.end_pos) and new_tile_pos not in visited:
+                if (
+                    new_tile_pos in parsed_map.path_poses
+                    or new_tile_pos == parsed_map.end_pos
+                ) and new_tile_pos not in visited:
                     queue.append(new_tile_pos)
                     visited.add(new_tile_pos)
         return queue
 
     def split_tileset(
-            self,
-            surface: pygame.Surface,
-            tile_size: int
+        self, surface: pygame.Surface, tile_size: int
     ) -> dict[int, pygame.Surface]:
         """Деление изображения тайлсета на тайлы."""
         tileset = dict()
@@ -107,12 +104,7 @@ class LevelBuilder:
             for row in range(0, tileset_size[1], tile_size):
                 for col in range(0, tileset_size[0], tile_size):
                     tile = surface.subsurface(
-                        pygame.Rect(
-                            (col, row), (
-                                tile_size,
-                                tile_size
-                            )
-                        )
+                        pygame.Rect((col, row), (tile_size, tile_size))
                     )
                     tileset[tile_idx] = tile
                     tile_idx += 1

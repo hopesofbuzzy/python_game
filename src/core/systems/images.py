@@ -8,8 +8,10 @@ class Image:
     filename: str
     surface: pygame.Surface | None
 
+
 class ImageLoader:
     """Регистр подгрузки изображения для переиспользования."""
+
     def __init__(self):
         self.image_registry: dict[str, Image] = {}
 
