@@ -4,8 +4,9 @@ from dataclasses import dataclass, field
 import pygame
 
 from src.core.objects.tile_map import TileMap
-from src.core.systems.level_factory import LevelFactory
-from src.core.systems.level_loader import LevelLoader
+from src.tools.level_factory import LevelFactory
+from src.tools.level_loader import LevelLoader
+from src.tools.wave_manager import Wave, ParsedWaves, WaveObject
 
 
 @dataclass
@@ -15,16 +16,23 @@ class ParsedMap:
     path_poses: set[tuple] = field(default_factory=set)
     poses_to_place: set[tuple] = field(default_factory=set)
 
-
 @dataclass
 class Level:
     tilemap: TileMap
     path: list
     parsed_map: ParsedMap
+    parsed_waves: ParsedWaves
 
 
 class LevelBuilder:
-    """Центральный оркестратор строительства уровня."""
+    """
+        Центральный оркестратор строительства уровня
+
+        Инъекции:
+            scene: add_object(...),
+            image_loader: load_image(...),
+            cursor: ...
+    """
 
     def __init__(self, scene, image_loader, cursor):
         # Загрузчик уровней.
@@ -43,8 +51,9 @@ class LevelBuilder:
             raw_level.metadata["path_tiles"],
             raw_level.metadata["tiles_to_place"],
         )
+        parsed_waves = self.parse_waves(raw_level.metadata)
         path = self.build_pathes(tilemap, parsed_map)
-        return Level(tilemap, path, parsed_map)
+        return Level(tilemap, path, parsed_map, parsed_waves)
 
     def parse_map(
         self, tilemap, start_tile, end_tile, path_tiles, tiles_to_place
@@ -72,6 +81,19 @@ class LevelBuilder:
             logging.debug(f"ParsedMap: {parsed_map}")
             raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
         return parsed_map
+
+    def parse_waves(self, metadata: dict):
+        waves: list[dict] = metadata["waves"]
+        parsed_waves = list()
+        for wave_dict in waves:
+            wave = Wave(wave_dict["timestamp"], list())
+            enemy_amount_pairs = list(
+                zip(wave_dict["enemy_type"], wave_dict["enemy_amount"])
+            )
+            for enemy, amount in enemy_amount_pairs:
+                wave.wave_objects.append(WaveObject(enemy, amount))
+            parsed_waves.append(wave)
+        return ParsedWaves(parsed_waves)
 
     def build_pathes(self, tilemap, parsed_map: ParsedMap) -> list:
         """

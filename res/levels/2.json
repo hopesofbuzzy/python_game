@@ -1,9 +1,14 @@
 {
     "waves": [
         {
-            "timestamps": [0.0],
-            "enemy_type": ["Enemy"],
-            "amount": [3]
+            "timestamp": 15.0,
+            "enemy_type": ["Enemy", "FastEnemy"],
+            "enemy_amount": [1, 1]
+        },
+        {
+            "timestamp": 50.0,
+            "enemy_type": ["Enemy", "FastEnemy"],
+            "enemy_amount": [2, 3]
         }
     ],
     "tileset_name": "2.png",

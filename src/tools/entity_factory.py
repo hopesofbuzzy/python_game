@@ -11,7 +11,14 @@ from src.objects.plants import Bullet, BulletModel, BulletView, Plant
 
 
 class EntityFactory:
-    """Фабрика сборки объектов сцены."""
+    """
+        Фабрика сборки объектов сцены
+
+        Инъекции:
+        scene: add_object(...),
+        image_loader: load_image(...),
+        cursor: ...
+    """
 
     def __init__(self, scene, image_loader, cursor):
         # View инъекция (ImageLoader).

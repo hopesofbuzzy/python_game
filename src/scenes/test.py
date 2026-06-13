@@ -4,7 +4,9 @@ from pygame.math import Vector2
 
 from src.core.objects import GameObject
 from src.core.objects.path import PathModel
-from src.core.systems.level_builder import Level, ParsedMap
+from src.tools.level_builder import Level, ParsedMap, LevelBuilder
+from src.tools.entity_factory import EntityFactory
+from src.tools.wave_manager import WaveManager
 from src.core.systems.scene import Scene
 from src.objects import (
     EnemyModel,
@@ -22,6 +24,11 @@ from src.objects import (
 
 class TestScene(Scene):
     def ready(self):
+        # Фабрика объектов.
+        self.entity_factory: EntityFactory = EntityFactory(self, self.il, self.cursor)
+        # Строитель уровней.
+        self.level_builder: LevelBuilder = LevelBuilder(self, self.il, self.cursor)
+
         self.level: Level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
         self.plants: int = 0
         self.suns: int = 50
@@ -40,13 +47,22 @@ class TestScene(Scene):
                 )
             ),
         )
-        self.entity_factory.create_enemy(
-            EnemyModel, EnemyView, position=Vector2(200, 200), path=path
+        # Оркестратор волн
+        self.wave_manager: WaveManager = WaveManager(
+            self.level.parsed_waves,
+            self.entity_factory.create_enemy,
+            path
         )
-        self.entity_factory.create_enemy(
-            FastEnemyModel, FastEnemyView, position=Vector2(200, 200), path=path
-        )
+        # self.entity_factory.create_enemy(
+        #     EnemyModel, EnemyView, position=Vector2(200, 200), path=path
+        # )
+        # self.entity_factory.create_enemy(
+        #     FastEnemyModel, FastEnemyView, position=Vector2(200, 200), path=path
+        # )
 
+    def update(self, delta_time: float):
+        self.wave_manager.update(delta_time)
+        return super().update(delta_time)
 
     def plant(self, tile_pos: Vector2, tile_type: int, global_pos: Vector2):
         slot = self.inventory.model.slots[self.inventory.model.active_slot]

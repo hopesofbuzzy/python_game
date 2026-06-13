@@ -1,4 +1,5 @@
-from src.core.objects import GameObject, TileMapController, TileMapModel, TileMapView
+from src.core.objects import TileMapController, TileMapModel, TileMapView
+from src.core.objects.tile_map import TileMap
 
 
 class LevelFactory:
@@ -15,7 +16,7 @@ class LevelFactory:
     def create_tilemap(self, position, tiles, tileset):
         tilemap_model = TileMapModel(local_position=position, tiles=tiles)
         tilemap_view = TileMapView(il=self.il, tileset=tileset)
-        tilemap = GameObject(
+        tilemap = TileMap(
             model=tilemap_model,
             view=tilemap_view,
             controller=TileMapController(tilemap_model, self.cursor),
