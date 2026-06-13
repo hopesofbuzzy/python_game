@@ -17,8 +17,8 @@ class Camera:
         self.cursor: Cursor = cursor
         cursor.on_mouse_wheel.subscribe(self.change_zoom)
 
-        self.zoom_idx: int = 1
-        self.zoom: float = 1.0
+        self.zoom_idx: int = 2
+        self.zoom: float = 1.5
 
         self.position: Vector2 = Vector2(0, 0)
 

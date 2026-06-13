@@ -21,6 +21,8 @@ from src.objects import (
     SunflowerModel,
 )
 
+START_SUNS = 150
+
 
 class TestScene(Scene):
     def ready(self):
@@ -31,7 +33,7 @@ class TestScene(Scene):
 
         self.level: Level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
         self.plants: int = 0
-        self.suns: int = 50
+        self.suns: int = START_SUNS
         self.inventory: Inventory = self.entity_factory.create_inventory()
 
         self.path = self.level.path
@@ -53,12 +55,6 @@ class TestScene(Scene):
             self.entity_factory.create_enemy,
             path
         )
-        # self.entity_factory.create_enemy(
-        #     EnemyModel, EnemyView, position=Vector2(200, 200), path=path
-        # )
-        # self.entity_factory.create_enemy(
-        #     FastEnemyModel, FastEnemyView, position=Vector2(200, 200), path=path
-        # )
 
     def update(self, delta_time: float):
         self.wave_manager.update(delta_time)
