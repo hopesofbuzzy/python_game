@@ -3,18 +3,25 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import CollisionShape, PathBodyModel, RectShape, RectView
+from src.core.objects import (
+    CollisionShape,
+    Controller,
+    GameObject,
+    PathBodyModel,
+    RectShape,
+    RectView,
+)
 
 ENEMY_SPEED = 35
-ENEMY_HEALTH = 100
+ENEMY_HEALTH = 50
 ENEMY_SIZE = Vector2(40, 40)
 ENEMY_COLOR = (255, 25, 25)
 
 # FastEnemy
-FAST_ENEMY_COLOR = (80, 80, 255)
-FAST_ENEMY_HEALTH = 40
-FAST_ENEMY_SPEED = 60
+FAST_ENEMY_SPEED = 45
+FAST_ENEMY_HEALTH = 25
 FAST_ENEMY_SIZE = Vector2(30, 30)
+FAST_ENEMY_COLOR = (80, 80, 255)
 
 
 @dataclass
@@ -48,3 +55,8 @@ class FastEnemyModel(EnemyModel):
 class FastEnemyView(EnemyView):
     color: tuple = FAST_ENEMY_COLOR
     size: Vector2 = field(default_factory=lambda: FAST_ENEMY_SIZE)
+
+
+@dataclass
+class Enemy(GameObject[EnemyModel, EnemyView, Controller]):
+    ...

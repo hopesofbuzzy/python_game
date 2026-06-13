@@ -2,7 +2,15 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import AreaModel, CollisionShape, Model, RectShape, SpriteView
+from src.core.objects import (
+    AreaModel,
+    CollisionShape,
+    Controller,
+    GameObject,
+    Model,
+    RectShape,
+    SpriteView,
+)
 from src.core.systems.event import Event
 from src.objects import EnemyModel
 
@@ -16,23 +24,39 @@ BULLET_IMAGE_PATH = "res/mushroom.png"
 BULLET_SPEED = 150
 
 # Типы растений.
-SUNFLOWER_COOLDOWN = 7
+# Подсолнышко
+SUNFLOWER_COOLDOWN = 10.0
 SUNFLOWER_IMAGE_PATH = "res/sunflower.png"
+SUNFLOWER_GIVEN_SUN = 25
+SUNFLOWER_PRICE = 50
+
+# Гриб
+MUSHROOM_PRICE = 50
+
+# Пуля
+BULLET_COOLDOWN = 2.0
 
 
+# Базовое растение
 @dataclass
 class PlantModel(Model):
     """Универсальное растение."""
-
-    ...
+    price: int = 0
 
 @dataclass
 class PlantView(SpriteView): ...
 
 @dataclass
+class Plant(GameObject[PlantModel, PlantView, Controller]):
+    ...
+
+# Пуля
+@dataclass
 class BulletModel(AreaModel):
     shape: CollisionShape = field(default_factory=lambda: RectShape(size=BULLET_SIZE))
     speed: float = BULLET_SPEED
+
+    _timer: float = BULLET_COOLDOWN
     damage: int = 0
 
     def handle_collision(self, other):
@@ -41,12 +65,20 @@ class BulletModel(AreaModel):
             other.damage(self.damage)
             self.free()
 
+    def update(self, delta_time):
+        self._timer -= delta_time
+        if self._timer <= 0.0:
+            self.free()
+
 
 @dataclass
 class BulletView(SpriteView):
     image_path: str = BULLET_IMAGE_PATH
     size: Vector2 = field(default_factory=lambda: BULLET_SIZE)
 
+@dataclass
+class Bullet(GameObject[BulletModel, BulletView, Controller]):
+    ...
 
 @dataclass
 class ShooterModel(PlantModel):
@@ -76,8 +108,7 @@ class ShooterModel(PlantModel):
 @dataclass
 class MushroomModel(ShooterModel):
     """Грибок-стрелок."""
-
-    ...
+    price: int = MUSHROOM_PRICE
 
 
 @dataclass
@@ -88,7 +119,20 @@ class MushroomView(PlantView):
 
 # Подсолнышко.
 @dataclass
-class SunflowerModel(PlantModel): ...
+class SunflowerModel(PlantModel):
+    """Подсолнышко, дающее солнышки."""
+    price: int = SUNFLOWER_PRICE
+    cooldown: float = SUNFLOWER_COOLDOWN
+    _timer: float = SUNFLOWER_COOLDOWN
+    given_sun: int = SUNFLOWER_GIVEN_SUN
+
+    on_given_sun: Event = field(default_factory=lambda: Event())
+
+    def update(self, delta_time):
+        self._timer -= delta_time
+        if self._timer <= 0.0:
+            self.on_given_sun.emit(self.given_sun)
+            self._timer = self.cooldown
 
 
 @dataclass

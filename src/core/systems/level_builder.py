@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 import pygame
 
-from src.core.objects import GameObject
+from src.core.objects.tile_map import TileMap
 from src.core.systems.level_factory import LevelFactory
 from src.core.systems.level_loader import LevelLoader
 
@@ -18,7 +18,7 @@ class ParsedMap:
 
 @dataclass
 class Level:
-    tilemap: GameObject
+    tilemap: TileMap
     path: list
     parsed_map: ParsedMap
 

@@ -1,8 +1,13 @@
 from pygame.math import Vector2
 
-from src.core.objects.game_object import GameObject
-from src.objects.inventory import InventoryController, InventoryModel, InventoryView
-from src.objects.plants import BulletModel, BulletView
+from src.objects.enemy import Enemy
+from src.objects.inventory import (
+    Inventory,
+    InventoryController,
+    InventoryModel,
+    InventoryView,
+)
+from src.objects.plants import Bullet, BulletModel, BulletView, Plant
 
 
 class EntityFactory:
@@ -17,7 +22,7 @@ class EntityFactory:
 
     def create_plant(self, position, cls_model, cls_view):
         plant_model = cls_model(local_position=position)
-        plant = GameObject(
+        plant = Plant(
             model=plant_model,
             view=cls_view(self.il),
         )
@@ -26,20 +31,20 @@ class EntityFactory:
 
     def create_enemy(self, cls_model, cls_view, position, path):
         enemy_model = cls_model(local_position=position, path=path)
-        enemy = GameObject(model=enemy_model, view=cls_view(self.il))
+        enemy = Enemy(model=enemy_model, view=cls_view(self.il))
         self.scene.add_object(enemy)
         return enemy
 
     def create_bullet(self, direction, position, damage):
         bullet_model = BulletModel(local_position=position, damage=damage)
         bullet_model.set_velocity(direction.x, direction.y)
-        bullet = GameObject(model=bullet_model, view=BulletView(self.il))
+        bullet = Bullet(model=bullet_model, view=BulletView(self.il))
         self.scene.add_object(bullet)
         return bullet
 
     def create_inventory(self):
         model = InventoryModel(local_position=Vector2(0, 0))
-        inventory = GameObject(
+        inventory = Inventory(
             model=model, controller=InventoryController(model, self.cursor)
         )
         self.scene.add_object(inventory)

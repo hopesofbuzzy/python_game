@@ -6,7 +6,7 @@ from src.core.game import Game
 from src.scenes.test import TestScene
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(filename)s - %(levelname)s - %(message)s'
 )
 

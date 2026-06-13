@@ -20,7 +20,7 @@ class Scene:
         self._objects_to_add: dict[str, GameObject] = {}
         self._objects_to_delete: dict[str, GameObject] = {}
         # Счётчик реестра объектов.
-        self.last_uid = 0
+        self.lastuid = 0
         # Реестр изображений для текущей сцены.
         self.il = ImageLoader()
         # Фабрика объектов.
@@ -34,12 +34,12 @@ class Scene:
     def add_object(self, obj: GameObject, obj_id: str | None = None) -> GameObject:
         if obj_id in self.object_registry:
             raise KeyError("Объект с таким obj_id уже существует")
-        obj._uid = self.last_uid + 1
-        self.last_uid += 1
+        obj.uid = self.lastuid + 1
+        self.lastuid += 1
         if obj_id is None:
-            obj_id = f"{obj._uid}"
+            obj_id = f"{obj.uid}"
         self._objects_to_add[obj_id] = obj
-        obj.model.free = lambda o=obj: self.remove_object(str(o._uid), 0)
+        obj.model.free = lambda o=obj: self.remove_object(str(o.uid), 0)
         return obj
 
     def add_objects(self):
@@ -50,12 +50,13 @@ class Scene:
 
     def remove_object(self, obj_id, object) -> None:
         if obj_id in self.object_registry:
-            self.object_registry.pop(obj_id)
             self._objects_to_delete[obj_id] = object
 
     def cleanup(self):
         for obj_id, obj in self._objects_to_delete.items():
-            del obj
+            if obj_id in self.object_registry:
+                self.object_registry.pop(obj_id)
+                del obj
         self._objects_to_delete = dict()
 
     @abstractmethod

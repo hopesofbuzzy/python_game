@@ -47,7 +47,7 @@ class CollisionSystem:
                         if other.model.resolvable and object.model.resolvable:
                             resolve = True
                         # Их мы вычисляем по упрощённой схеме.
-                        if object._uid >= other._uid:
+                        if object.uid >= other.uid:
                             continue
                         checks += 1
                         overlap = self.check_overlap(

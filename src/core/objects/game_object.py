@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable, Generic, Optional, TypeVar
 
 import pygame
 from pygame.event import Event as PygameEvent
@@ -8,6 +8,10 @@ from pygame.math import Vector2
 
 from src.core.systems.images import ImageLoader
 from src.core.systems.input import Cursor
+
+M = TypeVar("M", bound="Model")
+V = TypeVar("V", bound="View")
+C = TypeVar("C", bound="Controller")
 
 
 @dataclass
@@ -65,9 +69,8 @@ class Controller:
 
 
 @dataclass
-class GameObject:
-    model: Model
-    view: View | None = None
-    controller: Controller | None = None
-    _active: bool = True
-    _uid: int = -1
+class GameObject(Generic[M, V, C]):
+    model: M
+    view: V | None = None
+    controller: C | None = None
+    uid: int = -1

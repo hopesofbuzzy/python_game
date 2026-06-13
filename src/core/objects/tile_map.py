@@ -70,7 +70,12 @@ class TileMapModel(Model):
 
 @dataclass
 class TileMapController(Controller):
-    """Контроллер карты тайлов. Считывает нажатия на тайлы карты."""
+    """
+    Контроллер карты тайлов. Считывает нажатия на тайлы карты.
+
+    Args:
+    on_tile_click(tile_pos: Vector2, tile_type: int, global_pos)
+    """
 
     on_tile_click: Event = field(default_factory=lambda: Event())
 
@@ -78,6 +83,15 @@ class TileMapController(Controller):
         self.cursor.on_left_click.subscribe(self.on_left_click)
 
     def on_left_click(self, cursor):
-        clicked_tile = self.model.pos_to_tile(cursor.global_pos)
-        # print(f"Clicked tile: {self.model.pos_to_tile(cursor.global_pos)}")
-        self.on_tile_click.emit(clicked_tile, self.model.tile_to_pos(clicked_tile))
+        if isinstance(self.model, TileMapModel):
+            tile_pos = self.model.pos_to_tile(cursor.global_pos)
+            tile_type = self.model.get_tile(int(tile_pos.y), int(tile_pos.x))
+            self.on_tile_click.emit(
+                tile_pos,
+                tile_type,
+                self.model.tile_to_pos(tile_pos)
+            )
+
+@dataclass
+class TileMap(GameObject[TileMapModel, TileMapView, TileMapController]):
+    ...
