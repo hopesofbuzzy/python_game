@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 from pygame.math import Vector2
@@ -9,16 +10,22 @@ from src.core.objects import (
     GameObject,
     Model,
     RectShape,
+    CircleShape,
     SpriteView,
+    StaticBodyModel
 )
 from src.core.systems.event import Event
-from src.objects import EnemyModel
+from src.objects.enemy import EnemyModel
 
+# Растения
 PLANT_SIZE = Vector2(50, 50)
+PLANT_HITBOX_SIZE = Vector2(0, 0)
+PLANT_HITBOX_POSITION = PLANT_SIZE // 2
 PLANT_IMAGE_PATH = "res/mushroom.png"
 
+# Стрелки
 SHOOTER_RANGE = 2
-SHOOTER_DAMAGE = 3
+SHOOTER_ATTACK = 3
 BULLET_SIZE = Vector2(15, 15)
 BULLET_IMAGE_PATH = "res/mushroom.png"
 BULLET_SPEED = 150
@@ -29,6 +36,7 @@ SUNFLOWER_COOLDOWN = 10.0
 SUNFLOWER_IMAGE_PATH = "res/sunflower.png"
 SUNFLOWER_GIVEN_SUN = 25
 SUNFLOWER_PRICE = 50
+SUNFLOWER_HEALTH = 25
 
 # Гриб
 MUSHROOM_PRICE = 50
@@ -44,6 +52,22 @@ class PlantModel(Model):
     price: int = 0
 
 @dataclass
+class RoadPlantModel(StaticBodyModel):
+    """Растение на дороге (+коллизия)"""
+    shape: CollisionShape = field(
+        default_factory=lambda: RectShape(
+                position=PLANT_HITBOX_POSITION,
+                size=PLANT_HITBOX_SIZE
+            )
+        )
+    health: float = SUNFLOWER_HEALTH
+
+    def handle_collision(self, other):
+        logging.debug(self.shape)
+        if isinstance(other, EnemyModel):
+            other.handle_plant_collision(self)
+
+@dataclass
 class PlantView(SpriteView): ...
 
 @dataclass
@@ -57,12 +81,12 @@ class BulletModel(AreaModel):
     speed: float = BULLET_SPEED
 
     _timer: float = BULLET_COOLDOWN
-    damage: int = 0
+    attack: int = 0
 
     def handle_collision(self, other):
         """Работает с объектом столкновения."""
         if isinstance(other, EnemyModel):
-            other.damage(self.damage)
+            other.damage(self.attack)
             self.free()
 
     def update(self, delta_time):
@@ -85,7 +109,7 @@ class ShooterModel(PlantModel):
     """Растение, стреляющее во врагов на дистанции."""
 
     range: int = SHOOTER_RANGE
-    damage: int = SHOOTER_DAMAGE
+    damage: int = SHOOTER_ATTACK
     cooldown: float = 1.0
     _timer: float = 0.0
     on_bullet_spawn: Event = field(default_factory=lambda: Event())
@@ -119,12 +143,13 @@ class MushroomView(PlantView):
 
 # Подсолнышко.
 @dataclass
-class SunflowerModel(PlantModel):
+class SunflowerModel(RoadPlantModel):
     """Подсолнышко, дающее солнышки."""
     price: int = SUNFLOWER_PRICE
     cooldown: float = SUNFLOWER_COOLDOWN
     _timer: float = SUNFLOWER_COOLDOWN
     given_sun: int = SUNFLOWER_GIVEN_SUN
+    health: float = SUNFLOWER_HEALTH
 
     on_given_sun: Event = field(default_factory=lambda: Event())
 
@@ -133,6 +158,12 @@ class SunflowerModel(PlantModel):
         if self._timer <= 0.0:
             self.on_given_sun.emit(self.given_sun)
             self._timer = self.cooldown
+
+    def damage(self, damage: int):
+        logging.debug(f"Урон растению: {damage}")
+        self.health -= damage
+        if self.health <= 0:
+            self.free()
 
 
 @dataclass

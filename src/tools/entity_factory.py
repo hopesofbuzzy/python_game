@@ -42,8 +42,8 @@ class EntityFactory:
         self.scene.add_object(enemy)
         return enemy
 
-    def create_bullet(self, direction, position, damage):
-        bullet_model = BulletModel(local_position=position, damage=damage)
+    def create_bullet(self, direction, position, attack):
+        bullet_model = BulletModel(local_position=position, attack=attack)
         bullet_model.set_velocity(direction.x, direction.y)
         bullet = Bullet(model=bullet_model, view=BulletView(self.il))
         self.scene.add_object(bullet)

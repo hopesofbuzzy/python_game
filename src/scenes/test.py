@@ -9,14 +9,7 @@ from src.tools.entity_factory import EntityFactory
 from src.tools.wave_manager import WaveManager
 from src.core.systems.scene import Scene
 from src.objects import (
-    EnemyModel,
-    EnemyView,
-    FastEnemyModel,
-    FastEnemyView,
     Inventory,
-    InventoryModel,
-    MushroomModel,
-    MushroomView,
     ShooterModel,
     SunflowerModel,
 )
@@ -32,7 +25,7 @@ class TestScene(Scene):
         self.level_builder: LevelBuilder = LevelBuilder(self, self.il, self.cursor)
 
         self.level: Level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
-        self.plants: int = 0
+        self.plants: list[tuple] = list()
         self.suns: int = START_SUNS
         self.inventory: Inventory = self.entity_factory.create_inventory()
 
@@ -61,9 +54,14 @@ class TestScene(Scene):
         return super().update(delta_time)
 
     def plant(self, tile_pos: Vector2, tile_type: int, global_pos: Vector2):
+        # Свободно?
+        if global_pos in self.plants:
+            return
         slot = self.inventory.model.slots[self.inventory.model.active_slot]
+        # Достаочно солнышек?
         if not slot.model.price <= self.suns:
             return
+        # Та ли клетка?
         plant_cond = (
             tuple(tile_pos) in self.parsed_map.poses_to_place
             and slot.model is not SunflowerModel
@@ -81,7 +79,7 @@ class TestScene(Scene):
                 plant.model.on_given_sun.subscribe(self.give_sun)
             elif isinstance(plant.model, ShooterModel):
                 plant.model.on_bullet_spawn.subscribe(self.entity_factory.create_bullet)
-            self.plants += 1
+            self.plants.append(tuple(global_pos))
 
     def give_sun(self, suns: int):
         self.suns += suns

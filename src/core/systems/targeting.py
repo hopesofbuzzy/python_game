@@ -15,7 +15,7 @@ class TargetingSystem:
                 enemies = [
                     other.model
                     for other in others
-                    if isinstance(other.model, EnemyModel) and object.uid >= other.uid
+                    if isinstance(other.model, EnemyModel)
                 ]
                 if enemies:
                     object.model.handle_targets(enemies, delta_time)
