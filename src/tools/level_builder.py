@@ -6,7 +6,7 @@ import pygame
 from src.core.objects.tile_map import TileMap
 from src.tools.level_factory import LevelFactory
 from src.tools.level_loader import LevelLoader
-from src.tools.wave_manager import Wave, ParsedWaves, WaveObject
+from src.tools.wave_manager import ParsedWaves, Wave, WaveObject
 
 
 @dataclass

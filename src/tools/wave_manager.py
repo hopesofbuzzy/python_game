@@ -1,15 +1,11 @@
 import logging
 from dataclasses import dataclass
-from typing import Callable
 from random import randrange
+from typing import Callable
+
 from pygame.math import Vector2
 
-from src.objects.enemy import (
-    EnemyModel,
-    EnemyView,
-    FastEnemyModel,
-    FastEnemyView
-)
+from src.objects.enemy import EnemyModel, EnemyView, FastEnemyModel, FastEnemyView
 
 ENEMIES = {
     "Enemy": (EnemyModel, EnemyView),

@@ -5,14 +5,14 @@ from pygame.math import Vector2
 
 from src.core.objects import (
     AreaModel,
+    CircleShape,
     CollisionShape,
     Controller,
     GameObject,
     Model,
     RectShape,
-    CircleShape,
     SpriteView,
-    StaticBodyModel
+    StaticBodyModel,
 )
 from src.core.systems.event import Event
 from src.objects.enemy import EnemyModel
