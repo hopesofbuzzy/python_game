@@ -9,5 +9,5 @@ class Event:
         self.listeners.remove(listener)
 
     def emit(self, *args):
-        for listener in self.listeners:
+        for listener in self.listeners[:]:
             listener(*args)

@@ -48,7 +48,6 @@ class Model:
 class View:
     # Инъекция загрузчика изображений (ImageLoader) в EntityFactory.
     il: Optional[ImageLoader] = None
-    parent: Optional["Model"] = None
 
     @abstractmethod
     def draw(self, screen: pygame.Surface, model, local_position, zoom):

@@ -14,6 +14,13 @@ from src.core.objects import (
     SpriteView,
     StaticBodyModel,
 )
+from src.core.objects.ui import (
+    Button,
+    ButtonModel,
+    Dialog,
+    DialogModel,
+    DialogView
+)
 from src.core.systems.event import Event
 from src.scenes.main.objects.enemy import EnemyModel
 
@@ -47,20 +54,21 @@ BULLET_COOLDOWN = 2.0
 
 # Базовое растение
 @dataclass
-class PlantModel(Model):
+class PlantModel(AreaModel):
     """Универсальное растение."""
     price: int = 0
+    upgrade_description: str = "Ура!"
     tile_pos: tuple = field(default_factory=tuple)
 
+
 @dataclass
-class RoadPlantModel(StaticBodyModel):
+class RoadPlantModel(PlantModel):
     """Растение на дороге (+коллизия)"""
     shape: CollisionShape = field(
         default_factory=lambda: RectShape(
                 size=PLANT_HITBOX_SIZE
             )
         )
-    tile_pos: tuple = field(default_factory=tuple)
     health: float = SUNFLOWER_HEALTH
 
     on_death: Event = field(default_factory=lambda: Event())
@@ -136,7 +144,7 @@ class ShooterModel(PlantModel):
             self._timer -= delta_time
 
     def shoot(self, target):
-        direction = (target.position - self.position).normalize()
+        direction = (target.position - self.position - PLANT_SIZE // 2).normalize()
         self.on_bullet_spawn.emit(
             direction, self.position + PLANT_SIZE // 2, self.damage
         )
