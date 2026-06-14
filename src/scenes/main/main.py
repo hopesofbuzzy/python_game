@@ -5,15 +5,15 @@ from pygame.math import Vector2
 from src.core.objects import GameObject
 from src.core.objects.path import PathModel
 from src.core.systems.scene import Scene
+from src.scenes.main.entity_factory import EntityFactory
+from src.scenes.main.game_map import GameMap
+from src.scenes.main.level_builder import Level, LevelBuilder
 from src.scenes.main.objects import (
     Inventory,
     ShooterModel,
     SunflowerModel,
 )
-from src.scenes.main.entity_factory import EntityFactory
-from src.scenes.main.level_builder import Level, LevelBuilder
 from src.scenes.main.wave_manager import WaveManager
-from src.scenes.main.game_map import GameMap
 
 START_SUNS = 150
 

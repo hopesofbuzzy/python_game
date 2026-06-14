@@ -1,14 +1,14 @@
 import logging
 from dataclasses import dataclass, field
 
+from src.core.objects.game_object import GameObject
 from src.core.objects.tile_map import (
     TileMap,
+    TileMapController,
     TileMapModel,
     TileMapView,
-    TileMapController
 )
 
-from src.core.objects.game_object import GameObject
 
 @dataclass
 class GameMapModel(TileMapModel):

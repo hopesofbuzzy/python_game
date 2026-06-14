@@ -5,8 +5,13 @@ from typing import Callable
 
 from pygame.math import Vector2
 
-from src.scenes.main.objects.enemy import EnemyModel, EnemyView, FastEnemyModel, FastEnemyView
 from src.core.systems.event import Event
+from src.scenes.main.objects.enemy import (
+    EnemyModel,
+    EnemyView,
+    FastEnemyModel,
+    FastEnemyView,
+)
 
 ENEMIES = {
     "Enemy": (EnemyModel, EnemyView),
@@ -80,7 +85,9 @@ class WaveManager:
                     Vector2(200, 200),
                     self.path
                 )
-                enemy.model.on_reach_end.subscribe(lambda: self.on_enemy_reach_end.emit())
+                enemy.model.on_reach_end.subscribe(
+                    lambda: self.on_enemy_reach_end.emit()
+                )
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)
                     if len(wave_objects) == 0:

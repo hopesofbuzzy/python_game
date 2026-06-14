@@ -1,9 +1,5 @@
 from src.core.objects import TileMapView
-from src.scenes.main.game_map import (
-    GameMap,
-    GameMapModel,
-    GameMapController
-)
+from src.scenes.main.game_map import GameMap, GameMapController, GameMapModel
 
 
 class LevelFactory:
