@@ -5,7 +5,6 @@ from src.scenes.main.objects.inventory import (
     Inventory,
     InventoryController,
     InventoryModel,
-    InventoryView,
 )
 from src.scenes.main.objects.plants import Bullet, BulletModel, BulletView, Plant
 
@@ -27,8 +26,8 @@ class EntityFactory:
         self.cursor = cursor
         self.add_object = add_object
 
-    def create_plant(self, position, cls_model, cls_view):
-        plant_model = cls_model(local_position=position)
+    def create_plant(self, position, tile_pos, cls_model, cls_view):
+        plant_model = cls_model(local_position=position, tile_pos=tile_pos)
         plant = Plant(
             model=plant_model,
             view=cls_view(self.il),

@@ -63,6 +63,7 @@ class MainScene(Scene):
         return super().update(delta_time)
 
     def plant(self, tile_pos: Vector2, tile_type: int, global_pos: Vector2):
+        """Посадка растения."""
         slot = self.inventory.model.get_active_slot()
         # Условия посадки.
         if (
@@ -75,10 +76,11 @@ class MainScene(Scene):
             ):
                 self.suns -= slot.model.price
                 plant = self.entity_factory.create_plant(
-                    global_pos, slot.model, slot.view
+                    global_pos, tuple(tile_pos), slot.model, slot.view
                 )
                 if isinstance(plant.model, SunflowerModel):
                     plant.model.on_given_sun.subscribe(self.give_sun)
+                    plant.model.on_death.subscribe(self.gamemap.model.remove_plant)
                 elif isinstance(plant.model, ShooterModel):
                     plant.model.on_bullet_spawn.subscribe(
                         self.entity_factory.create_bullet
@@ -86,8 +88,10 @@ class MainScene(Scene):
                 self.gamemap.controller.add_plant(plant, tuple(tile_pos))
 
     def give_sun(self, suns: int):
+        """Выдача солыншек."""
         self.suns += suns
         logging.info(f"Солнышки: {self.suns}")
 
     def game_over(self):
+        """Проигрыш."""
         self.exit()

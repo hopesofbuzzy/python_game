@@ -50,6 +50,7 @@ BULLET_COOLDOWN = 2.0
 class PlantModel(Model):
     """Универсальное растение."""
     price: int = 0
+    tile_pos: tuple = field(default_factory=tuple)
 
 @dataclass
 class RoadPlantModel(StaticBodyModel):
@@ -59,12 +60,22 @@ class RoadPlantModel(StaticBodyModel):
                 size=PLANT_HITBOX_SIZE
             )
         )
+    tile_pos: tuple = field(default_factory=tuple)
     health: float = SUNFLOWER_HEALTH
+
+    on_death: Event = field(default_factory=lambda: Event())
 
     def handle_collision(self, other):
         logging.debug(self.shape)
         if isinstance(other, EnemyModel):
             other.handle_plant_collision(self)
+
+    def damage(self, damage: int):
+        logging.debug(f"Урон растению: {damage}")
+        self.health -= damage
+        if self.health <= 0:
+            self.on_death.emit(self.tile_pos)
+            self.free()
 
 @dataclass
 class PlantView(SpriteView):
@@ -158,12 +169,6 @@ class SunflowerModel(RoadPlantModel):
         if self._timer <= 0.0:
             self.on_given_sun.emit(self.given_sun)
             self._timer = self.cooldown
-
-    def damage(self, damage: int):
-        logging.debug(f"Урон растению: {damage}")
-        self.health -= damage
-        if self.health <= 0:
-            self.free()
 
 
 @dataclass

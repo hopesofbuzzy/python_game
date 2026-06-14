@@ -48,6 +48,8 @@ class WaveManager:
         self._spawn_timer: float = SPAWN_COOLDOWN
         self.on_enemy_reach_end: Event = Event()
         self.path = path
+        # Статистика
+        self.current_wave_number = 0
         logging.debug(self.waves)
 
     def update(self, delta_time):
@@ -55,8 +57,12 @@ class WaveManager:
         if not self.process_wave(delta_time):
             for wave in self.waves:
                 if self._time > wave.timestamp:
-                    self.current_wave = wave
+                    self.start_wave(wave)
                     logging.info(f"Волна монстров!")
+
+    def start_wave(self, wave):
+        self.current_wave = wave
+        self.current_wave_number += 1
 
     def process_wave(self, delta_time):
         if self.current_wave:

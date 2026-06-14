@@ -27,16 +27,20 @@ class GameMapModel(TileMapModel):
     end_pos: tuple = field(default_factory=tuple)
 
     def is_position_to_place_plant(self, position: tuple) -> bool:
-        return position in self.poses_to_place
+        return tuple(position) in self.poses_to_place
 
     def is_position_to_place_road_plant(self, position: tuple) -> bool:
-        return position in self.path_poses
+        return tuple(position) in self.path_poses
 
     def is_position_free(self, position: tuple) -> bool:
-        return position not in self.plants
+        return tuple(position) not in self.plants
 
     def add_plant(self, plant, tile_pos):
-        self.plants.add(tile_pos)
+        self.plants.add(tuple(tile_pos))
+
+    def remove_plant(self, tile_pos):
+        if tuple(tile_pos) in self.plants:
+            self.plants.remove(tile_pos)
 
     def parse_map(
         self, start_tile, end_tile, path_tiles, tiles_to_place
