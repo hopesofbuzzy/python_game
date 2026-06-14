@@ -1,8 +1,10 @@
+import logging
 from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
 from src.core.objects import *
+from src.core.systems.event import Event
 
 
 @dataclass
@@ -23,6 +25,8 @@ class PathBodyModel(AreaModel):
     point_radius: int = 3
     _target_point_ref: int = -1
 
+    on_reach_end: Event = field(default_factory=lambda: Event())
+
     def __post_init__(self):
         self._target_point_ref = len(self.path.points) - 1
         self.position = self.path.points[self._target_point_ref]
@@ -32,7 +36,7 @@ class PathBodyModel(AreaModel):
 
     def follow_path(self):
         """Следует по пути."""
-        if self._target_point_ref > 0:
+        if self._target_point_ref >= 0:
             target_point = self.path.points[self._target_point_ref]
             dx = target_point.x - self.position.x
             dy = target_point.y - self.position.y
@@ -47,9 +51,11 @@ class PathBodyModel(AreaModel):
         elif self._target_point_ref == -1:
             self.choose_next_point()
         else:
+            self.on_reach_end.emit()
             self.set_velocity(0, 0)
 
     def choose_next_point(self) -> int | None:
         """Выбирает следующую целевую точку пути."""
         self._target_point_ref -= 1
+        logging.debug(f"Target Point: {self.path.points[self._target_point_ref]}")
         return self._target_point_ref

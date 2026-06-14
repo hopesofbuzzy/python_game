@@ -1,9 +1,9 @@
 {
     "waves": [
         {
-            "timestamp": 15.0,
-            "enemy_type": ["Enemy", "FastEnemy"],
-            "enemy_amount": [1, 1]
+            "timestamp": 5.0,
+            "enemy_type": ["FastEnemy"],
+            "enemy_amount": [5]
         },
         {
             "timestamp": 50.0,

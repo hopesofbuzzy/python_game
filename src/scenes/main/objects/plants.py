@@ -15,11 +15,11 @@ from src.core.objects import (
     StaticBodyModel,
 )
 from src.core.systems.event import Event
-from src.objects.enemy import EnemyModel
+from src.scenes.main.objects.enemy import EnemyModel
 
 # Растения
 PLANT_SIZE = Vector2(50, 50)
-PLANT_HITBOX_SIZE = Vector2(0, 0)
+PLANT_HITBOX_SIZE = Vector2(25, 25)
 PLANT_HITBOX_POSITION = PLANT_SIZE // 2
 PLANT_IMAGE_PATH = "res/mushroom.png"
 
@@ -56,7 +56,6 @@ class RoadPlantModel(StaticBodyModel):
     """Растение на дороге (+коллизия)"""
     shape: CollisionShape = field(
         default_factory=lambda: RectShape(
-                position=PLANT_HITBOX_POSITION,
                 size=PLANT_HITBOX_SIZE
             )
         )
@@ -68,7 +67,8 @@ class RoadPlantModel(StaticBodyModel):
             other.handle_plant_collision(self)
 
 @dataclass
-class PlantView(SpriteView): ...
+class PlantView(SpriteView):
+    centred: bool = False
 
 @dataclass
 class Plant(GameObject[PlantModel, PlantView, Controller]):

@@ -1,11 +1,12 @@
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from random import randrange
 from typing import Callable
 
 from pygame.math import Vector2
 
-from src.objects.enemy import EnemyModel, EnemyView, FastEnemyModel, FastEnemyView
+from src.scenes.main.objects.enemy import EnemyModel, EnemyView, FastEnemyModel, FastEnemyView
+from src.core.systems.event import Event
 
 ENEMIES = {
     "Enemy": (EnemyModel, EnemyView),
@@ -35,6 +36,7 @@ class WaveManager:
         Управляет волнами монстров.
 
         Инъекции:
+            parsed_waves
             create_enemy(cls_model, cls_view, position, path),
             path: PathModel
     """
@@ -44,6 +46,7 @@ class WaveManager:
         self.waves: list[Wave] = parsed_waves.waves
         self.create_enemy: Callable = create_enemy
         self._spawn_timer: float = SPAWN_COOLDOWN
+        self.on_enemy_reach_end: Event = Event()
         self.path = path
         logging.debug(self.waves)
 
@@ -65,12 +68,13 @@ class WaveManager:
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
                 enemy_cls_model, enemy_cls_view = ENEMIES[wave_object.enemy]
-                self.create_enemy(
+                enemy = self.create_enemy(
                     enemy_cls_model,
                     enemy_cls_view,
                     Vector2(200, 200),
                     self.path
                 )
+                enemy.model.on_reach_end.subscribe(lambda: self.on_enemy_reach_end.emit())
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)
                     if len(wave_objects) == 0:

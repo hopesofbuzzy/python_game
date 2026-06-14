@@ -59,6 +59,10 @@ class TileMapModel(Model):
         """Конвертирует тайл в локальную позицию."""
         return tile * self.tile_size
 
+    def tile_to_pos_centred(self, tile: Vector2) -> Vector2:
+        """Конвертирует тайл в локальную позицию по центру тайла."""
+        return tile * self.tile_size + Vector2(1, 1) * self.tile_size // 2
+
     def set_tile(self, row: int, col: int, tile_idx: int):
         """Устанавливает тайл по тайлсету."""
         self.tiles[row][col] = tile_idx

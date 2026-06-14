@@ -3,84 +3,48 @@ from dataclasses import dataclass, field
 
 import pygame
 
-from src.core.objects.tile_map import TileMap
-from src.tools.level_factory import LevelFactory
-from src.tools.level_loader import LevelLoader
-from src.tools.wave_manager import ParsedWaves, Wave, WaveObject
+from src.scenes.main.game_map import GameMap
+from src.scenes.main.level_factory import LevelFactory
+from src.scenes.main.level_loader import LevelLoader
+from src.scenes.main.wave_manager import ParsedWaves, Wave, WaveObject
 
-
-@dataclass
-class ParsedMap:
-    start_pos: tuple = field(default_factory=tuple)
-    end_pos: tuple = field(default_factory=tuple)
-    path_poses: set[tuple] = field(default_factory=set)
-    poses_to_place: set[tuple] = field(default_factory=set)
 
 @dataclass
 class Level:
-    tilemap: TileMap
+    gamemap: GameMap
     path: list
-    parsed_map: ParsedMap
     parsed_waves: ParsedWaves
 
 
 class LevelBuilder:
     """
-        Центральный оркестратор строительства уровня
+        Центр строительства уровня.
 
         Инъекции:
-            scene: add_object(...),
+            add_object(...),
             image_loader: load_image(...),
             cursor: ...
     """
 
-    def __init__(self, scene, image_loader, cursor):
+    def __init__(self, add_object, image_loader, cursor):
         # Загрузчик уровней.
         self.lm = LevelLoader(image_loader)
         # Фабрика уровней.
-        self.lf = LevelFactory(scene, image_loader, cursor)
+        self.lf = LevelFactory(add_object, image_loader, cursor)
 
     def load_and_create_level(self, position, level_name) -> Level:
         raw_level = self.lm.load_level(level_name)
         tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
-        tilemap = self.lf.create_tilemap(position, raw_level.tiles, tileset)
-        parsed_map = self.parse_map(
-            tilemap,
+        gamemap = self.lf.create_gamemap(position, raw_level.tiles, tileset)
+        gamemap.model.parse_map(
             raw_level.metadata["start_tile"],
             raw_level.metadata["end_tile"],
             raw_level.metadata["path_tiles"],
-            raw_level.metadata["tiles_to_place"],
+            raw_level.metadata["tiles_to_place"]
         )
         parsed_waves = self.parse_waves(raw_level.metadata)
-        path = self.build_pathes(tilemap, parsed_map)
-        return Level(tilemap, path, parsed_map, parsed_waves)
-
-    def parse_map(
-        self, tilemap, start_tile, end_tile, path_tiles, tiles_to_place
-    ) -> ParsedMap:
-        """Парсит карту, извлекая сущности по idx тайлов из тайлсета."""
-        parsed_map = ParsedMap()
-        for ridx, row in enumerate(tilemap.model.tiles):
-            for cidx, tile_idx in enumerate(row):
-                x = cidx  # * tile_size
-                y = ridx  # * tile_size
-                if tile_idx == start_tile:
-                    parsed_map.start_pos = (x, y)
-                elif tile_idx == end_tile:
-                    parsed_map.end_pos = (x, y)
-                elif tile_idx in path_tiles:
-                    parsed_map.path_poses.add((x, y))
-                elif tile_idx in tiles_to_place:
-                    parsed_map.poses_to_place.add((x, y))
-        if (
-            parsed_map.start_pos == tuple()
-            or parsed_map.end_pos == tuple()
-            or len(parsed_map.path_poses) == 0
-            or len(parsed_map.poses_to_place) == 0
-        ):
-            logging.debug(f"ParsedMap: {parsed_map}")
-            raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
-        return parsed_map
+        path = self.build_pathes(gamemap)
+        return Level(gamemap, path, parsed_waves)
 
     def parse_waves(self, metadata: dict):
         waves: list[dict] = metadata["waves"]
@@ -95,25 +59,27 @@ class LevelBuilder:
             parsed_waves.append(wave)
         return ParsedWaves(parsed_waves)
 
-    def build_pathes(self, tilemap, parsed_map: ParsedMap) -> list:
+    def build_pathes(self, gamemap) -> list:
         """
         Строит путь для врагов по тайлам карты.
         Путь может разветвляться для более интересного тавер дефенса,
         поэтому мы будем хранить карту возможных направлений движения для врага.
         """
         queue = [
-            parsed_map.start_pos,
+            gamemap.model.start_pos,
         ]
         visited = set()
+        
         for tile_pos in queue:
             for direction in ((0, 1), (0, -1), (1, 0), (-1, 0)):
                 new_tile_pos = (tile_pos[0] + direction[0], tile_pos[1] + direction[1])
                 if (
-                    new_tile_pos in parsed_map.path_poses
-                    or new_tile_pos == parsed_map.end_pos
+                    new_tile_pos in gamemap.model.path_poses
+                    or new_tile_pos == gamemap.model.end_pos
                 ) and new_tile_pos not in visited:
                     queue.append(new_tile_pos)
                     visited.add(new_tile_pos)
+        logging.debug(f"{queue}")
         return queue
 
     def split_tileset(

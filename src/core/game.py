@@ -34,7 +34,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(self.input.cursor)
+        self.scene: Scene = scene_class(self.input.cursor, self.exit)
 
     def update(self, delta_time: float):
         # Input

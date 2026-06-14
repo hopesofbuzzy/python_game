@@ -11,6 +11,7 @@ from src.core.objects import (
     RectShape,
     RectView,
 )
+from src.core.systems.event import Event
 
 # Enemy
 ENEMY_SPEED = 35
@@ -21,7 +22,7 @@ ENEMY_ATTACK_COOLDOWN = 0.5
 ENEMY_ATTACK = 5
 
 # FastEnemy
-FAST_ENEMY_SPEED = 45
+FAST_ENEMY_SPEED = 50
 FAST_ENEMY_HEALTH = 25
 FAST_ENEMY_SIZE = Vector2(30, 30)
 FAST_ENEMY_COLOR = (80, 80, 255)
@@ -29,7 +30,11 @@ FAST_ENEMY_COLOR = (80, 80, 255)
 
 @dataclass
 class EnemyModel(PathBodyModel):
-    shape: CollisionShape = field(default_factory=lambda: RectShape(size=ENEMY_SIZE))
+    shape: CollisionShape = field(default_factory=lambda: RectShape(
+        size=ENEMY_SIZE,
+        centred=True
+        )
+    )
     speed: float = field(default_factory=lambda: ENEMY_SPEED)
     health: int = ENEMY_HEALTH
     _attack_timer: float = 0.0
@@ -61,10 +66,16 @@ class EnemyModel(PathBodyModel):
 class EnemyView(RectView):
     color: tuple = ENEMY_COLOR
     size: Vector2 = field(default_factory=lambda: ENEMY_SIZE)
+    centred: bool = True
 
 
 @dataclass
 class FastEnemyModel(EnemyModel):
+    shape: CollisionShape = field(default_factory=lambda: RectShape(
+        size=FAST_ENEMY_SIZE,
+        centred=True
+        )
+    )
     speed: float = FAST_ENEMY_SPEED
     health: int = FAST_ENEMY_HEALTH
 

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import pygame
 
 from src.core.objects import Controller, GameObject, Model, View
-from src.objects.plants import (
+from src.scenes.main.objects.plants import (
     MushroomModel,
     MushroomView,
     PlantModel,
@@ -20,19 +20,21 @@ class Slot:
         self.model: PlantModel = model
         self.view: PlantView = view
 
+PLANTS = {
+    1: Slot(MushroomModel, MushroomView),
+    2: Slot(SunflowerModel, SunflowerView),
+}
+
 
 @dataclass
 class InventoryModel(Model):
     """Инвентарь для выбора растений."""
     # Заглушки
-    slots: dict[int, Slot] = field(
-        default_factory=lambda: {
-            1: Slot(MushroomModel, MushroomView),
-            2: Slot(SunflowerModel, SunflowerView),
-        }
-    )
     active_slot: int = 1
     size: int = 10
+
+    def get_active_slot(self):
+        return PLANTS[self.active_slot]
 
 
 @dataclass

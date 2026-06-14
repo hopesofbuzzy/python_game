@@ -3,7 +3,7 @@ from pygame.math import Vector2
 
 from src.core.objects import PathModel
 from src.core.systems.scene import Scene
-from src.objects.enemy import EnemyModel, EnemyView
+from scenes.main.objects.enemy import EnemyModel, EnemyView
 
 
 class Scene1(Scene):

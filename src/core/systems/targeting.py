@@ -1,4 +1,4 @@
-from src.objects import EnemyModel, ShooterModel
+from src.scenes.main.objects import EnemyModel, ShooterModel
 
 
 class TargetingSystem:

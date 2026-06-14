@@ -1,13 +1,13 @@
 from pygame.math import Vector2
 
-from src.objects.enemy import Enemy
-from src.objects.inventory import (
+from src.scenes.main.objects.enemy import Enemy
+from src.scenes.main.objects.inventory import (
     Inventory,
     InventoryController,
     InventoryModel,
     InventoryView,
 )
-from src.objects.plants import Bullet, BulletModel, BulletView, Plant
+from src.scenes.main.objects.plants import Bullet, BulletModel, BulletView, Plant
 
 
 class EntityFactory:
@@ -15,17 +15,17 @@ class EntityFactory:
         Фабрика сборки объектов сцены
 
         Инъекции:
-        scene: add_object(...),
-        image_loader: load_image(...),
-        cursor: ...
+            add_object(...),
+            image_loader: load_image(...),
+            cursor: ...
     """
 
-    def __init__(self, scene, image_loader, cursor):
+    def __init__(self, add_object, image_loader, cursor):
         # View инъекция (ImageLoader).
         self.il = image_loader
         # Controller инъекция.
         self.cursor = cursor
-        self.scene = scene
+        self.add_object = add_object
 
     def create_plant(self, position, cls_model, cls_view):
         plant_model = cls_model(local_position=position)
@@ -33,20 +33,20 @@ class EntityFactory:
             model=plant_model,
             view=cls_view(self.il),
         )
-        self.scene.add_object(plant)
+        self.add_object(plant)
         return plant
 
     def create_enemy(self, cls_model, cls_view, position, path):
         enemy_model = cls_model(local_position=position, path=path)
         enemy = Enemy(model=enemy_model, view=cls_view(self.il))
-        self.scene.add_object(enemy)
+        self.add_object(enemy)
         return enemy
 
     def create_bullet(self, direction, position, attack):
         bullet_model = BulletModel(local_position=position, attack=attack)
         bullet_model.set_velocity(direction.x, direction.y)
         bullet = Bullet(model=bullet_model, view=BulletView(self.il))
-        self.scene.add_object(bullet)
+        self.add_object(bullet)
         return bullet
 
     def create_inventory(self):
@@ -54,5 +54,5 @@ class EntityFactory:
         inventory = Inventory(
             model=model, controller=InventoryController(model, self.cursor)
         )
-        self.scene.add_object(inventory)
+        self.add_object(inventory)
         return inventory

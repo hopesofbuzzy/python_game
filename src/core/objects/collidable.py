@@ -9,19 +9,31 @@ from src.core.objects.game_object import Model
 @dataclass
 class CollisionShape:
     """Форма коллизии."""
-
-    position: Vector2 = field(default_factory=lambda: Vector2(0, 0))
+    _position: Vector2 = field(default_factory=lambda: Vector2(0, 0))
 
 
 @dataclass
 class CircleShape(CollisionShape):
     radius: float = 0.0
 
-
 @dataclass
 class RectShape(CollisionShape):
     size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
+    centred: bool = False
 
+    @property
+    def position(self):
+        if self.centred:
+            return self._position - self.size // 2
+        else:
+            return self._position
+
+    @position.setter
+    def position(self, value):
+        if self.centred:
+            self._position = value + self.size // 2
+        else:
+            self._position = value
 
 # Объекты с коллизией
 @dataclass
