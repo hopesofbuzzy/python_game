@@ -16,6 +16,14 @@ class CollisionShape:
 class CircleShape(CollisionShape):
     radius: float = 0.0
 
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, value):
+        self._position = value
+
 @dataclass
 class RectShape(CollisionShape):
     size: Vector2 = field(default_factory=lambda: Vector2(0, 0))

@@ -6,6 +6,7 @@ from src.core.systems.collision import CollisionSystem
 from src.core.systems.input import InputManager
 from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
+from src.core.systems.debug_renderer import DebugRenderer
 from src.core.systems.scene import Scene
 from src.core.systems.targeting import TargetingSystem
 from src.core.systems.uniform_grid import UniformGrid
@@ -16,7 +17,7 @@ class Game:
 
     WINDOW_SIZE = (720, 720)
 
-    def __init__(self, scene_class):
+    def __init__(self, scene_class, debug: bool = False):
         # Systems
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
@@ -28,6 +29,8 @@ class Game:
         self.collision = CollisionSystem(self.uniform_grid)
         self.targeting = TargetingSystem(self.uniform_grid)
         self.renderer: Renderer = Renderer()
+        self.debug: bool = debug
+        self.debug_renderer: DebugRenderer = DebugRenderer()
         # State
         self.paused: bool = False
         self.running: bool = True
@@ -61,6 +64,8 @@ class Game:
 
     def draw(self, screen: pygame.Surface):
         self.renderer.draw(screen, self.scene, self.camera)
+        if self.debug:
+            self.debug_renderer.draw(screen, self.scene, self.camera)
 
     def exit(self):
         self.running = False

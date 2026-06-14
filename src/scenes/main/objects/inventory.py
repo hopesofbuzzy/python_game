@@ -21,6 +21,7 @@ class Slot:
         self.view: PlantView = view
 
 PLANTS = {
+    0: None,
     1: Slot(MushroomModel, MushroomView),
     2: Slot(SunflowerModel, SunflowerView),
 }
@@ -32,6 +33,11 @@ class InventoryModel(Model):
     # Заглушки
     active_slot: int = 1
     size: int = 10
+
+    def set_active_slot(self, key: str):
+        if key.isdigit():
+            self.active_slot = int(key)
+            logging.debug(f"Слот инвентаря: {self.active_slot}")
 
     def get_active_slot(self):
         return PLANTS[self.active_slot]
@@ -47,8 +53,7 @@ class InventoryController(Controller):
         match event.type:
             case pygame.KEYDOWN:
                 if event.dict["unicode"].isdigit():
-                    self.model.active_slot = int(event.dict["unicode"])
-                    logging.debug(f"Слот инвентаря: {self.model.active_slot}")
+                    self.model.set_active_slot(event.dict["unicode"])
 
 @dataclass
 class Inventory(GameObject[InventoryModel, InventoryView, InventoryController]):

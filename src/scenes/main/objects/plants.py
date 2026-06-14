@@ -88,7 +88,10 @@ class Plant(GameObject[PlantModel, PlantView, Controller]):
 # Пуля
 @dataclass
 class BulletModel(AreaModel):
-    shape: CollisionShape = field(default_factory=lambda: RectShape(size=BULLET_SIZE))
+    shape: CollisionShape = field(default_factory=lambda: RectShape(
+        size=BULLET_SIZE,
+        centred=True
+    ))
     speed: float = BULLET_SPEED
 
     _timer: float = BULLET_COOLDOWN
@@ -110,6 +113,7 @@ class BulletModel(AreaModel):
 class BulletView(SpriteView):
     image_path: str = BULLET_IMAGE_PATH
     size: Vector2 = field(default_factory=lambda: BULLET_SIZE)
+    centred: bool = True
 
 @dataclass
 class Bullet(GameObject[BulletModel, BulletView, Controller]):
