@@ -90,7 +90,17 @@ class PlantView(SpriteView):
     centred: bool = False
 
 @dataclass
-class Plant(GameObject[PlantModel, PlantView, Controller]):
+class PlantController(Controller):
+    on_dialog_requested: Event = field(default_factory=lambda: Event())
+
+    def attach_button(self, button_controller):
+        button_controller.on_button_pressed.subscribe(self.on_button_pressed)
+
+    def on_button_pressed(self):
+        self.on_dialog_requested.emit(self.model)
+
+@dataclass
+class Plant(GameObject[PlantModel, PlantView, PlantController]):
     ...
 
 # Пуля

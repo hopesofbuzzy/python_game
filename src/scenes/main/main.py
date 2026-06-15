@@ -9,7 +9,7 @@ from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
-from src.scenes.main.builders.plant_builder import PlantBuilder, InteractivePlant
+from src.scenes.main.builders.plant_builder import PlantBuilder
 from src.scenes.main.game_map import GameMap
 from src.scenes.main.level_builder import Level, LevelBuilder
 from src.scenes.main.objects import (
@@ -83,16 +83,15 @@ class MainScene(Scene):
             ):
                 self.suns -= slot.model.price
                 # Создание растения.
-                iplant = (PlantBuilder(self.add_object, self.il, self.cursor)
+                plant = (PlantBuilder(self.add_object, self.il, self.cursor)
                     .with_plant(
                         global_pos, tuple(tile_pos), slot.model, slot.view
                     )
                     .with_button()
                     .build()
                 )
-                plant = iplant.plant
                 # События
-                iplant.on_plant_clicked.subscribe(self.create_dialog)
+                plant.controller.on_dialog_requested.subscribe(self.create_dialog)
                 if isinstance(plant.model, SunflowerModel):
                     plant.model.on_given_sun.subscribe(self.give_sun)
                     plant.model.on_death.subscribe(self.gamemap.model.remove_plant)
@@ -109,7 +108,7 @@ class MainScene(Scene):
         logging.info(f"Солнышки: {self.suns}")
 
     def create_dialog(self, plant_model):
-        ...
+        logging.debug("Появляется диалог")
 
     def game_over(self):
         """Проигрыш."""

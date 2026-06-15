@@ -21,8 +21,7 @@ class ButtonModel(Model):
     # Модель содержит конкретную область клика.
     # size в ButtonView отвечает чисто за визуал!
     size: Vector2 = field(default_factory=lambda: Vector2(35, 35))
-
-    on_button_pressed: Event = field(default_factory=lambda: Event())
+    is_pressed: bool = False
 
     def contains(self, mouse_x, mouse_y) -> bool:
         """Проверка координат на вхождение в зону нажатия."""
@@ -35,7 +34,7 @@ class ButtonModel(Model):
 
     def press(self):
         """Нажатие кнопки."""
-        self.on_button_pressed.emit()
+        self.is_pressed = True
         logging.debug("Кнопка нажата!")
 
 @dataclass
@@ -45,6 +44,8 @@ class ButtonView(RectView):
 
 @dataclass
 class ButtonController(Controller):
+    on_button_pressed: Event = field(default_factory=lambda: Event())
+
     def __post_init__(self):
         self.cursor.on_left_click.subscribe(self.on_left_click)
 
@@ -52,6 +53,7 @@ class ButtonController(Controller):
         cursor_pos = cursor.global_pos
         if self.model.contains(cursor_pos.x, cursor_pos.y):
             self.model.press()
+            self.on_button_pressed.emit()
 
 @dataclass
 class Button(GameObject[ButtonModel, View, ButtonController]):
