@@ -130,6 +130,7 @@ class MainScene(Scene):
                 )
 
     def level_up(self, plant: BasePlant, target_plant_name):
+        """Трансформация растения после уровня улучшения."""
         global_pos_centred = (
             self.gamemap
             .get(MapModelComponent)
@@ -162,6 +163,7 @@ class MainScene(Scene):
         plant.free()
 
     def upgrade(self, plant: BasePlant):
+        """Одноразовое улучшение растения."""
         upgrade_cost = plant.get(UpgradeComponent).get_upgrade_cost()
         if self.suns >= upgrade_cost:
             logging.debug("Растение улучшено!")
