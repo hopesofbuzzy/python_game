@@ -49,6 +49,9 @@ class EnemyFactory:
             enemy.tags.add("enemy")
             self.add_object(enemy)
             enemy.get(HealthComponent).on_death.subscribe(enemy.free)
+            enemy.get(CollisionComponent).on_collision.subscribe(
+                enemy.get(AttackComponent).handle_collision
+            )
             return enemy
         else:
             raise ValueError("Неизвестный враг!")
@@ -64,7 +67,7 @@ class EnemyFactory:
             .add(movement_comp)
             .add(PatrolComponent(position_comp, movement_comp, path))
             .add(RectComponent(ENEMY_COLOR, ENEMY_SIZE, True))
-            .add(AttackComponent("plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(AttackComponent(movement_comp, "plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
             .add(HealthComponent(ENEMY_HEALTH))
         )
         return enemy
@@ -84,7 +87,7 @@ class EnemyFactory:
             .add(movement_comp)
             .add(PatrolComponent(position_comp, movement_comp, path))
             .add(RectComponent(FAST_ENEMY_COLOR, FAST_ENEMY_SIZE, True))
-            .add(AttackComponent("plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(AttackComponent(movement_comp, "plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
             .add(HealthComponent(FAST_ENEMY_HEALTH))
         )
         return enemy

@@ -5,6 +5,7 @@ from pygame.math import Vector2
 
 from src.core.objects import (
     GameObject,
+    Event
 )
 
 SUNFLOWER_COOLDOWN = 10.0
@@ -41,4 +42,16 @@ class Mushroom(BasePlant):
 # Подсолнышко.
 class Sunflower(BasePlant):
     """Подсолнышко, дающее солнышки."""
-    ...
+    def __init__(
+            self,
+            tile_pos: tuple,
+            price: int = 0,
+            upgrade_description: str = "Ура!"
+        ):
+        super().__init__(tile_pos, price, upgrade_description)
+        self.on_plant_destroy: Event = Event()
+
+    def destroy(self):
+        """Гибель цветка :("""
+        self.on_plant_destroy.emit(self.tile_pos)
+        self.free()

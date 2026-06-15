@@ -1,3 +1,5 @@
+import logging
+
 from src.core.objects.game_object import GameObject
 from src.core.objects.event import Event
 from src.scenes.main.objects.components.health import HealthComponent
@@ -5,7 +7,14 @@ from src.scenes.main.objects.components.health import HealthComponent
 DEFAULT_ATTACK_COOLDOWN = 0.5
 
 class AttackComponent:
-    def __init__(self, target_tag: str, attack: int, cooldown: float):
+    def __init__(
+            self,
+            movement,
+            target_tag: str,
+            attack: int,
+            cooldown: float
+        ):
+        self.movement = movement
         self.target_tag = target_tag
         self.attack = attack
         self.cooldown = cooldown
@@ -24,7 +33,8 @@ class AttackComponent:
         return False
 
     def update(self, delta_time):
-        if self._attack_timer >= 0.0:
+        if self._attack_timer > 0.0:
+            self.movement.set_velocity(0, 0)
             self._attack_timer -= delta_time
         else:
             self.in_attack = False

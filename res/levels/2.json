@@ -3,12 +3,12 @@
         {
             "timestamp": 5.0,
             "enemy_type": ["FastEnemy"],
-            "enemy_amount": [5]
+            "enemy_amount": [4]
         },
         {
-            "timestamp": 10.0,
+            "timestamp": 20.0,
             "enemy_type": ["Enemy", "FastEnemy"],
-            "enemy_amount": [2, 3]
+            "enemy_amount": [4, 3]
         }
     ],
     "tileset_name": "2.png",

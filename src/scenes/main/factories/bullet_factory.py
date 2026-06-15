@@ -35,12 +35,13 @@ class BulletFactory:
             False
         )
         timer_remove = TimerComponent(BULLET_COOLDOWN)
-        attack_component = AttackComponent("enemy", attack, BULLET_COOLDOWN)
+        movement = MovementComponent(direction * BULLET_SPEED, BULLET_SPEED)
+        attack_component = AttackComponent(movement, "enemy", attack, BULLET_COOLDOWN)
         bullet = (
             Bullet()
             .add(PositionComponent(position, None))
             .add(collision)
-            .add(MovementComponent(direction * BULLET_SPEED, BULLET_SPEED))
+            .add(movement)
             .add(timer_remove)
             .add(attack_component)
             .add(RectComponent(BULLET_COLOR, BULLET_SIZE, centred=True))

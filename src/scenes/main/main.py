@@ -1,19 +1,22 @@
 import logging
 
 from pygame.math import Vector2
-from src.scenes.main.level.level_builder import Level, LevelBuilder
 
-# Компоненты.
-from src.core.objects.components.map import Map, MapControllerComponent, MapModelComponent
-from src.core.objects.components.targeting import TargetingComponent
 from src.core.resources.image_loader import image_loader
 from src.core.systems.input import cursor
 
 # Составляющие сцены.
 from src.core.objects.scene import Scene
+from src.scenes.main.level.level_builder import Level, LevelBuilder
+
+# Компоненты.
+from src.core.objects.components.map import Map, MapControllerComponent, MapModelComponent
+from src.core.objects.components.targeting import TargetingComponent
 from src.scenes.main.objects.components.cycle_timer import CycleTimerComponent
 from src.scenes.main.objects.components.health import HealthComponent
 from src.scenes.main.factories.bullet_factory import BulletFactory
+
+from src.scenes.main.objects import Sunflower
 
 # Фабрики.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
@@ -94,8 +97,8 @@ class MainScene(Scene):
                 )
                 # События
                 # plant.controller.on_dialog_requested.subscribe(self.create_dialog)
-                if plant.has(HealthComponent):
-                    plant.get(HealthComponent).on_death.subscribe(
+                if plant.has(HealthComponent) and isinstance(plant, Sunflower):
+                    plant.on_plant_destroy.subscribe(
                         self.gamemap.get(MapLevelDataComponent).remove_plant
                     )
                 if plant.has(CycleTimerComponent):

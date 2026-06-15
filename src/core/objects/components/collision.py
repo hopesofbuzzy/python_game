@@ -61,3 +61,6 @@ class MovementComponent():
 
     def set_velocity(self, dx: float, dy: float):
         self.velocity = Vector2(dx, dy) * self.speed
+
+    def stop(self):
+        self.velocity = Vector2(0, 0)

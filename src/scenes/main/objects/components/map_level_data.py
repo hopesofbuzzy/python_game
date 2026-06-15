@@ -32,7 +32,7 @@ class MapLevelDataComponent:
 
     def remove_plant(self, tile_pos):
         if tuple(tile_pos) in self.plants:
-            self.plants.remove(tile_pos)
+            self.plants.remove(tuple(tile_pos))
 
     def parse_map(
         self, tiles, start_tile, end_tile, path_tiles, tiles_to_place

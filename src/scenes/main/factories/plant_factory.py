@@ -38,7 +38,7 @@ SUNFLOWER_COOLDOWN = 10.0
 SUNFLOWER_IMAGE_PATH = "res/sunflower.png"
 SUNFLOWER_GIVEN_SUN = 25
 SUNFLOWER_PRICE = 50
-SUNFLOWER_HEALTH = 25
+SUNFLOWER_HEALTH = 15
 
 # Гриб
 MUSHROOM_RANGE = 2
@@ -99,7 +99,7 @@ class PlantFactory:
             .add(CycleTimerComponent(SUNFLOWER_COOLDOWN, SUNFLOWER_GIVEN_SUN))
             .add(HealthComponent(SUNFLOWER_HEALTH))
         )
-        sunflower.get(HealthComponent).on_death.subscribe(sunflower.free)
+        sunflower.get(HealthComponent).on_death.subscribe(sunflower.destroy)
         return sunflower
 
     # def with_plant(self, position, tile_pos, cls_model, cls_view):
