@@ -1,8 +1,20 @@
-from src.scenes.main.objects import PLANTS_LEVEL_UPS
+from src.core.objects import Event
+from src.scenes.main.objects.plants import PLANTS_LEVEL_UPS
+
+DEFAULT_UPGRADE_SPEED = 25
 
 class UpgradeComponent:
-    def __init__(self):
+    def __init__(self, plant, target_name: str, target_suns: int):
         self.suns: int = 0
+        self.plant = plant
+        self.target_name = target_name
+        self.target_suns = target_suns
+        self.on_level_up: Event = Event()
 
-    def upgrade(self, suns: int):
-        self.suns += suns
+    def upgrade(self):
+        self.suns += DEFAULT_UPGRADE_SPEED
+        if self.suns >= self.target_suns:
+            self.on_level_up.emit(self.plant, self.target_name)
+
+    def get_upgrade_cost(self):
+        return DEFAULT_UPGRADE_SPEED

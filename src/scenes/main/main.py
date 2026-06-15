@@ -14,8 +14,9 @@ from src.core.objects import (
     MapControllerComponent,
     MapModelComponent,
     Event,
-    TextRenderComponent
+    TextRenderComponent,
 )
+from src.scenes.main.objects import UpgradeComponent, BasePlant
 # Фабрики.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
@@ -106,19 +107,66 @@ class MainScene(Scene):
             ):
                 self.decrease_suns(self.get_plant_price(slot))
                 # Создание растения.
-                plant = PlantBuilder(
-                    self.add_object,
-                    self.bullet_factory,
-                    self.give_sun,
-                    self.gamemap.get(MapLevelDataComponent).remove_plant
-                ).with_plant(
-                    slot,
-                    global_pos_centred,
-                    tile_pos
-                ).with_button().build()
+                plant = (
+                    PlantBuilder(
+                        self.add_object,
+                        self.bullet_factory,
+                        self.give_sun,
+                        self.gamemap.get(MapLevelDataComponent).remove_plant,
+                        self.level_up,
+                        self.upgrade
+                    )
+                    .with_plant(
+                        slot,
+                        global_pos_centred,
+                        tile_pos
+                    )
+                    .with_button()
+                    .with_upgrade()
+                    .build()
+                )
                 self.gamemap.get(MapLevelDataComponent).add_plant(
                     tuple(tile_pos)
                 )
+
+    def level_up(self, plant: BasePlant, target_plant_name):
+        global_pos_centred = (
+            self.gamemap
+            .get(MapModelComponent)
+            .tile_to_pos_centred(Vector2(plant.tile_pos))
+        )
+        new_plant = (
+            PlantBuilder(
+                self.add_object,
+                self.bullet_factory,
+                self.give_sun,
+                self.gamemap.get(MapLevelDataComponent).remove_plant,
+                self.level_up,
+                self.upgrade
+            )
+            .with_replace(plant.tile_pos)
+            .with_plant(
+                target_plant_name,
+                global_pos_centred,
+                plant.tile_pos
+            )
+            .with_button()
+            .build()
+        )
+        self.gamemap.get(MapLevelDataComponent).add_plant(
+            tuple(new_plant.tile_pos)
+        )
+        self.gamemap.get(MapLevelDataComponent).remove_plant(
+            plant.tile_pos
+        )
+        plant.free()
+
+    def upgrade(self, plant: BasePlant):
+        upgrade_cost = plant.get(UpgradeComponent).get_upgrade_cost()
+        if self.suns >= upgrade_cost:
+            logging.debug("Растение улучшено!")
+            self.decrease_suns(upgrade_cost)
+            plant.get(UpgradeComponent).upgrade()
 
     def check_suns(self, plant: str) -> bool:
         return self.suns >= PLANTS_PRICES[plant]

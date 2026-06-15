@@ -27,7 +27,7 @@ class MapLevelDataComponent:
     def is_position_free(self, position: tuple) -> bool:
         return tuple(position) not in self.plants
 
-    def add_plant(self, tile_pos):
+    def add_plant(self, tile_pos, plant = None):
         self.plants.add(tuple(tile_pos))
 
     def remove_plant(self, tile_pos):

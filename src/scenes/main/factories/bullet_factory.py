@@ -28,14 +28,14 @@ class BulletFactory:
     def __init__(self, add_object):
         self.add_object = add_object
 
-    def create_bullet(self, direction, position, attack):
+    def create_bullet(self, direction, position, attack, speed):
         logging.debug("Пуля создана!")
         collision = CollisionComponent(
             RectShape(Vector2(0, 0), BULLET_SIZE, True),
             False
         )
         timer_remove = TimerComponent(BULLET_COOLDOWN)
-        movement = MovementComponent(direction * BULLET_SPEED, BULLET_SPEED)
+        movement = MovementComponent(direction * speed, speed)
         attack_component = AttackComponent(movement, "enemy", attack, BULLET_COOLDOWN)
         bullet = (
             Bullet()

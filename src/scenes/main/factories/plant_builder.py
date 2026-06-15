@@ -18,8 +18,13 @@ from src.scenes.main.objects import (
     HealthComponent,
     BasePlant,
     Mushroom,
-    Sunflower
+    Sunflower,
+    UpgradeComponent,
+    LongMushroom,
+    BigMushroom
 )
+
+from src.scenes.main.objects import PLANTS_LEVEL_UPS
 
 # from src.core.objects.ui import Button, ButtonController, ButtonModel, ButtonView
 # from src.core.objects.game_object import View
@@ -51,30 +56,58 @@ MUSHROOM_PRICE = 50
 MUSHROOM_IMAGE_PATH = "res/mushroom.png"
 MUSHROOM_RANGE = 2
 
+LONG_MUSHROOM_ATTACK = 1
+LONG_MUSHROOM_COOLDOWN = 0.25
+LONG_MUSHROOM_IMAGE_PATH = "res/mushroom.png"
+LONG_MUSHROOM_RANGE = 4
+LONG_MUSHROOM_BULLET_SPEED = 250
+
 
 class PlantBuilder:
     """Строитель растений."""
 
-    def __init__(self, add_object, bullet_factory, give_sun, remove_plant):
+    def __init__(self, add_object, bullet_factory, give_sun, remove_plant, level_up, upgrade):
         self.add_object = add_object
         self.give_sun = give_sun
         self.bullet_factory = bullet_factory
         self.remove_plant = remove_plant
+        self.level_up = level_up
+        self.upgrade = upgrade
         self._plant = None
+        self.plant_name = ""
         self.PLANTS = {
             "Mushroom": self.create_mushroom,
-            "Sunflower": self.create_sunflower
+            "Sunflower": self.create_sunflower,
+            "LongMushroom": self.create_long_mushroom,
+            # "BigMushroom": self.create_big_mushroom
         }
+
+    def with_replace(self, tile_pos: tuple):
+        self.remove_plant(tile_pos)
+        return self
 
     def with_plant(self, name: str, *args):
         if name in self.PLANTS:
             plant = self.PLANTS[name](*args)
+            self.plant_name = name
             plant.tags.add("plant")
             self.add_object(plant)
             self._plant = plant
             return self
         else:
             raise KeyError("Неизвестное растение!")
+
+    def with_upgrade(self):
+        if not self._plant:
+            raise ValueError("Строителю нужно растение!")
+        upgrade = UpgradeComponent(
+            self._plant,
+            PLANTS_LEVEL_UPS[self.plant_name]["plant_name"],
+            PLANTS_LEVEL_UPS[self.plant_name]["cost"]
+        )
+        self._plant.add(upgrade)
+        upgrade.on_level_up.subscribe(self.level_up)
+        return self
 
     def with_button(self):
         if not self._plant:
@@ -89,7 +122,7 @@ class PlantBuilder:
             )
         )
         self._plant.add(click_handler)
-        click_handler.on_button_pressed.subscribe(lambda: logging.debug("Растение нажато"))
+        click_handler.on_button_pressed.subscribe(lambda: self.upgrade(self._plant))
         return self
 
     def build(self) -> BasePlant:
@@ -111,6 +144,28 @@ class PlantBuilder:
                 )
             )
         )
+        logging.debug("Тут ничего не надо!")
+        mushroom.get(TargetingComponent).on_shoot.subscribe(
+            self.bullet_factory.create_bullet
+        )
+        return mushroom
+
+    def create_long_mushroom(self, position, tile_pos):
+        position_comp = PositionComponent(position, None)
+        mushroom = (
+            LongMushroom(tile_pos, MUSHROOM_PRICE)
+            .add(position_comp)
+            .add(SpriteComponent(LONG_MUSHROOM_IMAGE_PATH, PLANT_SIZE, True))
+            .add(TargetingComponent(
+                    position_comp,
+                    LONG_MUSHROOM_RANGE,
+                    LONG_MUSHROOM_ATTACK,
+                    cooldown=LONG_MUSHROOM_COOLDOWN,
+                    speed=LONG_MUSHROOM_BULLET_SPEED
+                )
+            )
+        )
+        logging.debug(f"{mushroom.get(TargetingComponent).cooldown}")
         mushroom.get(TargetingComponent).on_shoot.subscribe(
             self.bullet_factory.create_bullet
         )
@@ -137,40 +192,3 @@ class PlantBuilder:
         sunflower.get(HealthComponent).on_death.subscribe(lambda: sunflower.free())
         sunflower.get(CycleTimerComponent).on_timeout.subscribe(self.give_sun)
         return sunflower
-
-    # def with_plant(self, position, tile_pos, cls_model, cls_view):
-    #     plant_model = cls_model(local_position=position, tile_pos=tile_pos)
-    #     plant = Plant(
-    #         model=plant_model,
-    #         view=cls_view(self.il),
-    #         controller=PlantController(plant_model, cursor)
-    #     )
-    #     self.add_object(plant)
-    #     self._plant = plant
-    #     return self
-
-    # def with_button(self):
-    #     """Кнопка для взаимодействия с растением."""
-    #     if not self._plant:
-    #         raise ValueError("Сначала нужно растенеи!")
-    #     else:
-    #         logging.debug("Рождение кнопки")
-    #         button_model = ButtonModel(
-    #             local_position=Vector2(0, 0),
-    #             parent=self._plant.model
-    #         )
-    #         button = Button(
-    #             model=button_model,
-    #             view=View(self.il),
-    #             controller=ButtonController(button_model, cursor)
-    #         )
-    #         if self._plant.controller:
-    #             self._plant.controller.attach_button(button.controller)
-    #         self.add_object(button)
-    #         self._button = button
-    #         return self
-
-    # def build(self):
-    #     if not self._plant:
-    #         raise ValueError("Растение обязательно!")
-    #     return self._plant

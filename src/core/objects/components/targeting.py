@@ -8,7 +8,8 @@ from src.core.objects.event import Event
 
 DEFAULT_SHOOTER_RANGE = 2
 DEFAULT_SHOOTER_ATTACK = 3
-DEFAULT_SHOOTER_COOLDOWN = 1.0
+DEFAULT_SHOOTER_COOLDOWN = 3.0
+DEFAULT_SHOOTER_BULLET_SPEED = 150
 
 class TargetingComponent:
     def __init__(
@@ -16,12 +17,15 @@ class TargetingComponent:
         position,
         range: int = DEFAULT_SHOOTER_RANGE,
         damage: int = DEFAULT_SHOOTER_ATTACK,
-        cooldown: float = DEFAULT_SHOOTER_COOLDOWN
+        cooldown: float = DEFAULT_SHOOTER_COOLDOWN,
+        speed: float = DEFAULT_SHOOTER_BULLET_SPEED
     ):
         self.position = position
         self.range = range
         self.damage = damage
         self.cooldown = cooldown
+        logging.debug(self.cooldown)
+        self.speed = speed
         self._timer: float = 0.0
         self.current_target = None
         self.on_shoot: Event = Event()
@@ -37,10 +41,11 @@ class TargetingComponent:
             if self.current_target:
                 target_pos = self.current_target.get(PositionComponent).position
                 direction = (target_pos - self.position.position).normalize()
-                logging.debug(direction)
                 self.on_shoot.emit(
-                    direction, self.position.position, self.damage
+                    direction, self.position.position, self.damage, self.speed
                 )
+                self.current_target = None
+                
                 self._timer = self.cooldown
         else:
             self._timer -= delta_time

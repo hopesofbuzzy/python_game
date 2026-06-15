@@ -23,8 +23,9 @@ PLANTS_PRICES = {
 }
 
 PLANTS_LEVEL_UPS = {
-    "Mushroom": {"plant": "LongMushroom", "cost": 50},
-    "LongMushroom": {"plant": "BigMushroom", "cost": 50}
+    "Sunflower": {"plant_name": "", "cost": 500},
+    "Mushroom": {"plant_name": "LongMushroom", "cost": 50},
+    "LongMushroom": {"plant_name": "BigMushroom", "cost": 50}
 }
 
 # Базовое растение
