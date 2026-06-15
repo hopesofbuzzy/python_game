@@ -44,7 +44,6 @@ class EnemyFactory:
         }
 
     def create_enemy(self, name: str, *args) -> Enemy:
-        logging.debug(f"{name} {args}")
         if name in self.ENEMIES:
             enemy = self.ENEMIES[name](*args)
             enemy.tags.add("enemy")

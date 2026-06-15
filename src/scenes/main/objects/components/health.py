@@ -1,3 +1,5 @@
+import logging
+
 from src.core.objects.event import Event
 
 
@@ -10,5 +12,6 @@ class HealthComponent:
     def damage(self, hp):
         self.hp -= hp
         if self.hp <= 0:
+            logging.debug("Смерть!")
             self.on_death.emit()
         self.on_damage.emit(self.hp)

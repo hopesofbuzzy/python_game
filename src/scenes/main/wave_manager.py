@@ -69,7 +69,6 @@ class WaveManager:
                 rand_wave_obj_idx = randrange(0, len(wave_objects))
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
-                logging.debug(wave_object)
                 enemy = self.create_enemy(
                     wave_object.enemy,
                     Vector2(200, 200),
