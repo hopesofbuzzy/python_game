@@ -22,6 +22,11 @@ PLANTS_PRICES = {
     "Sunflower": 50
 }
 
+PLANTS_LEVEL_UPS = {
+    "Mushroom": {"plant": "LongMushroom", "cost": 50},
+    "LongMushroom": {"plant": "BigMushroom", "cost": 50}
+}
+
 # Базовое растение
 class BasePlant(GameObject):
     """Универсальное растение."""
@@ -36,22 +41,18 @@ class BasePlant(GameObject):
         self.upgrade_description = upgrade_description
 
 class Mushroom(BasePlant):
-    """Грибок-стрелок"""
+    """Небольшой грибок-стрелок"""
+    ...
+
+class LongMushroom(BasePlant):
+    """Длинный грибок-снайпер"""
+    ...
+
+class BigMushroom(BasePlant):
+    """Большой гриб"""
     ...
 
 # Подсолнышко.
 class Sunflower(BasePlant):
     """Подсолнышко, дающее солнышки."""
-    def __init__(
-            self,
-            tile_pos: tuple,
-            price: int = 0,
-            upgrade_description: str = "Ура!"
-        ):
-        super().__init__(tile_pos, price, upgrade_description)
-        self.on_plant_destroy: Event = Event()
-
-    def destroy(self):
-        """Гибель цветка :("""
-        self.on_plant_destroy.emit(self.tile_pos)
-        self.free()
+    ...

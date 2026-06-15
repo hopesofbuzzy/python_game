@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Self, Type, TypeVar
+from typing import Self, Type, TypeVar, Optional
 
 from pygame.event import Event as PygameEvent
 

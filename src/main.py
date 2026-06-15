@@ -13,7 +13,7 @@ logging.basicConfig(
 
 def main():
     pygame.init()
-    game = Game(MainScene, debug=True)
+    game = Game(MainScene, debug=False)
     screen = pygame.display.set_mode(game.WINDOW_SIZE)
     clock = pygame.time.Clock()
     delta_time = 0.0

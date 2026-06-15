@@ -9,20 +9,20 @@ from src.core.systems.input import cursor
 from src.core.objects.scene import Scene
 from src.scenes.main.level.level_builder import Level, LevelBuilder
 
-# Компоненты.
-from src.core.objects.components.map import Map, MapControllerComponent, MapModelComponent
-from src.core.objects.components.targeting import TargetingComponent
-from src.scenes.main.objects.components.cycle_timer import CycleTimerComponent
-from src.scenes.main.objects.components.health import HealthComponent
-from src.scenes.main.factories.bullet_factory import BulletFactory
-
-from src.scenes.main.objects import Sunflower
-
+from src.core.objects import (
+    Map,
+    MapControllerComponent,
+    MapModelComponent,
+    Event,
+    TextRenderComponent
+)
 # Фабрики.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
-from src.scenes.main.factories.plant_factory import PlantFactory
+from src.scenes.main.factories.plant_builder import PlantBuilder
+from src.scenes.main.factories.bullet_factory import BulletFactory
+from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import Inventory, InventoryModelComponent
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 
@@ -37,32 +37,48 @@ class MainScene(Scene):
     def ready(self):
         # Статистика уровня.
         self.suns: int = START_SUNS
+        self.on_suns_update: Event = Event()
         # Загрузка уровня.
+        self.setup_level()
+        # Фабрики объектов.
+        self.setup_factories()
+        self.inventory: Inventory = self.inventory_factory.create_inventory()
+        # Оркестратор волн и спавна врагов.
+        self.setup_waves()
+        self.build_interface()
+
+    def setup_factories(self):
+        self.enemy_factory: EnemyFactory = EnemyFactory(self.add_object )
+        self.bullet_factory: BulletFactory = BulletFactory(self.add_object,)
+        self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
+        self.path_factory: PathFactory = PathFactory()
+        self.ui_factory: UIFactory = UIFactory(self.add_object)
+
+    def setup_level(self):
         self.level_builder: LevelBuilder = LevelBuilder(
             self.add_object,
         )
         self.level: Level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
         self.gamemap: Map = self.level.map
         self.gamemap.get(MapControllerComponent).on_tile_click.subscribe(self.plant)
-        # Фабрики объектов.
-        self.enemy_factory: EnemyFactory = EnemyFactory(self.add_object )
-        self.bullet_factory: BulletFactory = BulletFactory(self.add_object,)
-        self.plant_factory = PlantFactory(self.add_object)
-        self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
-        self.inventory: Inventory = self.inventory_factory.create_inventory()
-        self.path_factory: PathFactory = PathFactory()
-        # Путь
+
+    def setup_waves(self):
         path = self.path_factory.create_path_component(
             self.level.path,
             self.gamemap.get(MapModelComponent).tile_to_pos_centred
         )
-        # Оркестратор волн и спавна врагов.
         self.wave_manager: WaveManager = WaveManager(
             self.level.parsed_waves,
             self.enemy_factory.create_enemy,
             path
         )
         self.wave_manager.on_enemy_reached_end.subscribe(self.game_over)
+
+    def build_interface(self):
+        self.suns_text = self.ui_factory.create_text(f"Солнышки: {self.suns}", 20)
+        self.on_suns_update.subscribe(
+            lambda s: self.suns_text.get(TextRenderComponent).set_text(f"Солнышки: {s}")
+        )
 
     def update(self, delta_time: float):
         self.wave_manager.update(delta_time)
@@ -88,27 +104,19 @@ class MainScene(Scene):
                 map_level_data.is_position_to_place_plant(tuple(tile_pos))
                 or map_level_data.is_position_to_place_road_plant(tuple(tile_pos))
             ):
-                self.suns -= self.get_plant_price(slot)
+                self.decrease_suns(self.get_plant_price(slot))
                 # Создание растения.
-                plant = self.plant_factory.create_plant(
+                plant = PlantBuilder(
+                    self.add_object,
+                    self.bullet_factory,
+                    self.give_sun,
+                    self.gamemap.get(MapLevelDataComponent).remove_plant
+                ).with_plant(
                     slot,
                     global_pos_centred,
                     tile_pos
-                )
-                # События
-                # plant.controller.on_dialog_requested.subscribe(self.create_dialog)
-                if plant.has(HealthComponent) and isinstance(plant, Sunflower):
-                    plant.on_plant_destroy.subscribe(
-                        self.gamemap.get(MapLevelDataComponent).remove_plant
-                    )
-                if plant.has(CycleTimerComponent):
-                    plant.get(CycleTimerComponent).on_timeout.subscribe(self.give_sun)
-                if plant.has(TargetingComponent):
-                    plant.get(TargetingComponent).on_shoot.subscribe(
-                        self.bullet_factory.create_bullet
-                    )
+                ).with_button().build()
                 self.gamemap.get(MapLevelDataComponent).add_plant(
-                    plant,
                     tuple(tile_pos)
                 )
 
@@ -121,7 +129,11 @@ class MainScene(Scene):
     def give_sun(self, suns: int):
         """Выдача солыншек."""
         self.suns += suns
-        logging.info(f"Солнышки: {self.suns}")
+        self.on_suns_update.emit(self.suns)
+
+    def decrease_suns(self, suns: int):
+        self.suns -= suns
+        self.on_suns_update.emit(self.suns)
 
     def create_dialog(self, plant_model):
         logging.debug("Появляется диалог")

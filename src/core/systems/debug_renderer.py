@@ -9,16 +9,18 @@ from src.core.objects import (
     RectShape,
     PositionComponent,
     Camera,
-    Scene
+    Scene,
+    UITransform
 )
 
 COLLISION_COLOR = (255, 127, 80)
+UI_COLOR = (20, 250, 50)
 POSITION_POINT_RADIUS = 3
 POSITION_POINT_COLOR = (255, 127, 255)
 
 class DebugRenderer:
     """
-        Визуальная отладка коллизий, позиций.
+        Визуальная отладка коллизий, позиций, интерфейса.
 
         Отрисовка происходит исключительно тут во избежание
         нарушения SRP.
@@ -48,6 +50,23 @@ class DebugRenderer:
                     camera.to_local(position),
                     camera.zoom
                 )
+        for object in scene.object_registry.values():
+            for c in object.components.values():
+                if hasattr(c, "ui_transform"):
+                    if c.ui_transform.screen_anchor:
+                        self.draw_ui_transform(
+                            screen,
+                            c.ui_transform.size,
+                            c.ui_transform.position,
+                            1
+                        )
+                    else:
+                        self.draw_ui_transform(
+                            screen,
+                            c.ui_transform.size,
+                            camera.to_local(c.ui_transform.position),
+                            camera.zoom
+                        )
 
     def draw_collision_rect(
             self,
@@ -91,3 +110,18 @@ class DebugRenderer:
             local_position,
             POSITION_POINT_RADIUS * zoom
         )
+
+    def draw_ui_transform(
+            self,
+            screen: pygame.Surface,
+            size: Vector2,
+            local_position: Vector2,
+            zoom: float
+        ):
+        rect = pygame.Rect(
+            local_position.x,
+            local_position.y,
+            size.x * zoom,
+            size.y * zoom
+        )
+        pygame.draw.rect(screen, UI_COLOR, rect)

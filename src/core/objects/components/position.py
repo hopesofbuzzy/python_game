@@ -9,7 +9,7 @@ class PositionComponent:
         self.parent = parent
 
     @property
-    def position(self):
+    def position(self) -> Vector2:
         if self.parent:
             return self.local_position + self.parent.position
         else:

@@ -10,3 +10,4 @@ from .path import PathComponent, PatrolComponent
 from .view import RectComponent, SpriteComponent
 from .position import PositionComponent
 from .targeting import TargetingComponent
+from .ui import *
