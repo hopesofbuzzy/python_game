@@ -3,13 +3,13 @@ import logging
 import pygame
 from pygame.math import Vector2
 
-from src.core.systems.scene import Scene
-from src.core.systems.camera import Camera
-from src.core.objects.collidable import (
-    Collidable,
-    CollisionShape,
+from src.core.objects import (
     CircleShape,
-    RectShape
+    CollisionComponent,
+    RectShape,
+    PositionComponent,
+    Camera,
+    Scene
 )
 
 COLLISION_COLOR = (255, 127, 80)
@@ -25,27 +25,29 @@ class DebugRenderer:
     """
     def draw(self, screen: pygame.Surface, scene: Scene, camera: Camera):
         for object in scene.object_registry.values():
-            if isinstance(object.model, Collidable):
-                shape = object.model.shape
-                if isinstance(shape, RectShape):
-                    self.draw_collision_rect(
-                        screen,
-                        camera.to_local(object.model.position + shape.position),
-                        shape,
-                        camera.zoom
-                    )
-                elif isinstance(shape, CircleShape):
-                    self.draw_collision_circle(
-                        screen,
-                        camera.to_local(object.model.position + shape.position),
-                        shape,
-                        camera.zoom
-                    )
-            self.draw_position_point(
-                screen,
-                camera.to_local(object.model.position),
-                camera.zoom
-            )
+            if object.has(PositionComponent):
+                position = object.get(PositionComponent).position
+                if object.has(CollisionComponent):
+                    shape = object.get(CollisionComponent).shape
+                    if isinstance(shape, RectShape):
+                        self.draw_collision_rect(
+                            screen,
+                            camera.to_local(position + shape.position),
+                            shape,
+                            camera.zoom
+                        )
+                    elif isinstance(shape, CircleShape):
+                        self.draw_collision_circle(
+                            screen,
+                            camera.to_local(position + shape.position),
+                            shape,
+                            camera.zoom
+                        )
+                self.draw_position_point(
+                    screen,
+                    camera.to_local(position),
+                    camera.zoom
+                )
 
     def draw_collision_rect(
             self,

@@ -1,0 +1,9 @@
+import logging
+
+from src.core.objects.components.collision import MovementComponent
+from src.core.objects.game_object import GameObject
+
+
+class Bullet(GameObject):
+    def update(self, delta_time: float):
+        return super().update(delta_time)

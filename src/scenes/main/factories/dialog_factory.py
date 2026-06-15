@@ -1,16 +1,17 @@
 import logging
+
 from pygame.math import Vector2
 
-from src.core.objects.ui import (
+from src.core.objects.game_object import View
+from src.core.objects.components.ui import (
     Button,
+    ButtonController,
     ButtonModel,
     ButtonView,
-    ButtonController,
     Dialog,
     DialogModel,
-    DialogView
+    DialogView,
 )
-from src.core.objects.game_object import View
 from src.scenes.main.objects.plants import Bullet, BulletModel, BulletView, Plant
 
 
@@ -28,7 +29,7 @@ class DialogFactory:
         # View инъекция (ImageLoader).
         self.il = image_loader
         # Controller инъекция.
-        self.cursor = cursor
+        cursor = cursor
         self.add_object = add_object
 
     def create_dialog(self, plant_model):

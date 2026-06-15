@@ -3,9 +3,15 @@ from math import sqrt
 
 from pygame.math import Vector2
 
-from src.core.objects import *
-from src.core.systems.scene import Scene
-
+from src.core.objects import (
+    CircleShape,
+    CollisionComponent,
+    MovementComponent,
+    RectShape,
+    GameObject,
+    PositionComponent,
+    Scene
+)
 
 @dataclass
 class Overlap:
@@ -38,26 +44,28 @@ class CollisionSystem:
         """Проверка коллизий и определение столкновений."""
         checks = 0
         for object in scene.object_registry.values():
-            if isinstance(object.model, Collidable):
+            if object.has(PositionComponent, CollisionComponent):
                 others = self.uniform_grid.query_rect(object, 1, 1)
                 for other in others:
-                    if isinstance(other.model, Collidable):
+                    if other.has(PositionComponent, CollisionComponent):
                         # Некоторым объектам не нужно вычислять выталкивание.
                         resolve = False
-                        if other.model.resolvable and object.model.resolvable:
+                        if (
+                            object.get(CollisionComponent).resolvable
+                            and other.get(CollisionComponent).resolvable
+                        ):
                             resolve = True
                         # Их мы вычисляем по упрощённой схеме.
                         if object.uid >= other.uid:
                             continue
                         checks += 1
                         overlap = self.check_overlap(
-                            object.model, other.model, resolve=resolve
+                            object, other, resolve=resolve
                         )
                         if overlap:
                             self.collisions.append(
-                                (object.model, other.model, overlap, resolve)
+                                (object, other, overlap, resolve)
                             )
-        # print(checks)
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2, resolve) -> Overlap | None | bool:
@@ -98,35 +106,35 @@ class CollisionSystem:
             return Overlap(nx=0, ny=n.y, depth=depth_y)
 
     def check_overlap(
-        self, object: Collidable, other: Collidable, resolve: bool
+        self, object: GameObject, other: GameObject, resolve: bool
     ) -> Overlap | None | bool:
-        obj = object.shape
-        oth = other.shape
-        obj_position = object.position + obj.position
-        oth_position = other.position + oth.position
+        obj_shape = object.get(CollisionComponent).shape
+        oth_shape = other.get(CollisionComponent).shape
+        obj_position = object.get(PositionComponent).position + obj_shape.position
+        oth_position = other.get(PositionComponent).position + oth_shape.position
         # Circle x Circle
-        if isinstance(obj, CircleShape) and isinstance(oth, CircleShape):
+        if isinstance(obj_shape, CircleShape) and isinstance(oth_shape, CircleShape):
             return self.circles_collide(
-                obj_position, obj.radius, oth_position, oth.radius, resolve
+                obj_position, obj_shape.radius, oth_position, oth_shape.radius, resolve
             )
         # Rect x Rect
-        elif isinstance(obj, RectShape) and isinstance(oth, RectShape):
+        elif isinstance(obj_shape, RectShape) and isinstance(oth_shape, RectShape):
             return self.aabb_collide(
-                obj_position, obj.size, oth_position, oth.size, resolve
+                obj_position, obj_shape.size, oth_position, oth_shape.size, resolve
             )
 
     def resolve(self, delta_time: float):
         """Разрешение столкновений."""
         for object, other, overlap, resolve in self.collisions:
             if resolve:
-                if isinstance(object, KinematicBodyModel) and object.velocity:
-                    object.position += (
+                if object.has(MovementComponent):
+                    object.get(PositionComponent).position += (
                         Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
                     )
-                if isinstance(other, KinematicBodyModel) and other.velocity:
-                    other.position -= (
+                if other.has(MovementComponent):
+                    other.get(PositionComponent).position -= (
                         Vector2(overlap.nx, overlap.ny) * overlap.depth * 0.5
                     )
-            object.handle_collision(other)
-            other.handle_collision(object)
+            object.get(CollisionComponent).handle_collision(other)
+            other.get(CollisionComponent).handle_collision(object)
         self.collisions = []

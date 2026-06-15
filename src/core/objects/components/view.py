@@ -4,20 +4,21 @@ from dataclasses import dataclass, field
 import pygame
 from pygame.math import Vector2
 
-from src.core.objects.game_object import Model, View
+from src.core.objects.game_object import GameObject
+from src.core.resources.image_loader import image_loader as il
 from src.core.systems.images import Image
 
 
-@dataclass
-class RectView(View):
-    color: tuple[int, int, int] = (255, 255, 255)
-    size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
-    centred: bool = False
+class RectComponent:
+    def __init__(self, color: tuple[int, int, int], size: Vector2, centred: bool):
+        self.color = color
+        self.size = size
+        self.centred = centred
 
     def get_centred_local_position(self, local_position, zoom):
         return local_position - (self.size * zoom // 2)
 
-    def draw(self, screen: pygame.Surface, model: Model, local_position, zoom):
+    def draw(self, screen: pygame.Surface, model, local_position, zoom):
         if self.centred:
             local_position = self.get_centred_local_position(local_position, zoom)
         rect = pygame.Rect(
@@ -28,19 +29,18 @@ class RectView(View):
         )
         pygame.draw.rect(screen, self.color, rect)
 
-
-@dataclass
-class SpriteView(View):
-    image_path: str = ""
-    centred: bool = False
-    size: Vector2 = field(default_factory=lambda: Vector2(0, 0))
-    _original_image: Image | None = None
-    _scaled_images: dict[float, pygame.Surface] = field(default_factory=dict)
+class SpriteComponent:
+    def __init__(self, image_path: str, size: Vector2, centred: bool):
+        self.image_path = image_path
+        self.centred = centred
+        self.size = size
+        self._original_image = il.load_image(self.image_path)
+        self._scaled_images: dict[float, pygame.Surface] = dict()
 
     def __post_init__(self):
         if self.image_path:
             try:
-                self._original_image = self.il.load_image(self.image_path)
+                self._original_image = il.load_image(self.image_path)
             except:
                 ...
         else:
@@ -57,7 +57,7 @@ class SpriteView(View):
     def get_centred_local_position(self, local_position, zoom):
         return local_position - (self.size * zoom // 2)
 
-    def draw(self, screen: pygame.Surface, model: Model, local_position, zoom):
+    def draw(self, screen: pygame.Surface, model, local_position, zoom):
         scaled_image = self.get_scaled_image(zoom)
         if self.centred:
             local_position = self.get_centred_local_position(local_position, zoom)

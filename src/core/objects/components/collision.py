@@ -1,0 +1,63 @@
+from pygame.math import Vector2
+
+from src.core.objects.game_object import GameObject
+from src.core.objects.event import Event
+
+
+# Хитбоксы
+class CollisionShape:
+    """Форма коллизии."""
+    def __init__(self, position: Vector2):
+        self._position = position
+
+
+class CircleShape(CollisionShape):
+    def __init__(self, position: Vector2, radius: float):
+        self.radius = radius
+        super().__init__(position)
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, value):
+        self._position = value
+
+class RectShape(CollisionShape):
+    def __init__(self, position: Vector2, size: Vector2, centred: bool):
+        self.size = size
+        self.centred = centred
+        super().__init__(position)
+
+    @property
+    def position(self):
+        if self.centred:
+            return self._position - self.size // 2
+        else:
+            return self._position
+
+    @position.setter
+    def position(self, value):
+        if self.centred:
+            self._position = value + self.size // 2
+        else:
+            self._position = value
+
+# Компоненты.
+class CollisionComponent():
+    def __init__(self, shape: CollisionShape, resolvable: bool):
+        self.shape = shape
+        self.resolvable = resolvable
+        self.on_collision: Event = Event()
+
+    def handle_collision(self, other: GameObject):
+        self.on_collision.emit(other)
+
+class MovementComponent():
+    def __init__(self, velocity: Vector2, speed: float):
+        self.velocity = velocity
+        self.speed = speed
+
+    def set_velocity(self, dx: float, dy: float):
+        self.velocity = Vector2(dx, dy) * self.speed

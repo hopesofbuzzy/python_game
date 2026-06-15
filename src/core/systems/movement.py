@@ -1,5 +1,6 @@
 from src.core.objects import *
-from src.core.systems.scene import Scene
+from src.core.objects.components.collision import MovementComponent
+from src.core.objects.scene import Scene
 
 
 class MovementSystem:
@@ -9,8 +10,8 @@ class MovementSystem:
     """
 
     def update(self, scene: Scene, delta_time: float):
-        # print("КАДР")
         for object in scene.object_registry.values():
-            model = object.model
-            if isinstance(model, KinematicBodyModel) or isinstance(model, AreaModel):
-                model.position += model.velocity * delta_time
+            if object.has(MovementComponent, PositionComponent):
+                object.get(PositionComponent).position += (
+                    object.get(MovementComponent).velocity * delta_time
+                )

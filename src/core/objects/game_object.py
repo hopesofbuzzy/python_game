@@ -1,75 +1,44 @@
-from abc import abstractmethod
-from dataclasses import dataclass
-from typing import Callable, Generic, Optional, TypeVar
+from abc import ABC
+from typing import Self, Type, TypeVar
 
-import pygame
 from pygame.event import Event as PygameEvent
-from pygame.math import Vector2
 
-from src.core.systems.images import ImageLoader
-from src.core.systems.input import Cursor
-
-M = TypeVar("M", bound="Model")
-V = TypeVar("V", bound="View")
-C = TypeVar("C", bound="Controller")
+from src.core.objects.event import Event
 
 
-@dataclass
-class Model:
-    local_position: Vector2
-    parent: Optional["Model"] = None
-    # Инъекция метода удаления объекта в Scene.
-    free: Optional[Callable] = None
+CT = TypeVar('CT')
 
-    def __post_init__(self):
-        self.local_position = self.local_position.copy()
+class GameObject(ABC):
+    def __init__(self):
+        self.components = dict()
+        self.uid = -1
+        self.on_destroy: Event = Event()
+        self.tags: set[str] = set()
 
-    @property
-    def position(self):
-        if self.parent:
-            return self.local_position + self.parent.position
-        else:
-            return self.local_position
+    def add(self, component) -> Self:
+        self.components[type(component)] = component
+        return self
 
-    @position.setter
-    def position(self, value):
-        if self.parent:
-            self.local_position = value - self.parent.position
-        else:
-            self.local_position = value.copy()
+    def get(self, component_type: Type[CT]) -> CT:
+        return self.components[component_type]
 
-    @abstractmethod
+    def has(self, *component_types) -> bool:
+        return all(ct in self.components for ct in component_types)
+
     def update(self, delta_time: float):
-        """Регулярно обновляет модель."""
-        ...
+        for c_type, c in self.components.items():
+            if hasattr(c, "update"):
+                c.update(delta_time)
 
+    def draw(self, screen, local_position, zoom):
+        for c_type, c in self.components.items():
+            if hasattr(c, "draw"):
+                c.draw(screen, None, local_position, zoom)
 
-@dataclass
-class View:
-    # Инъекция загрузчика изображений (ImageLoader) в EntityFactory.
-    il: Optional[ImageLoader] = None
-
-    @abstractmethod
-    def draw(self, screen: pygame.Surface, model, local_position, zoom):
-        """Отрисовывает по модели."""
-        ...
-
-
-@dataclass
-class Controller:
-    model: Model
-    # Инъекция объекта курсора в EntityFactory.
-    cursor: Cursor
-
-    @abstractmethod
     def handle_input(self, event: PygameEvent):
-        """Читает pygame.event и уведомляет модель по Event"""
-        ...
+        for c_type, c in self.components.items():
+            if hasattr(c, "handle_input"):
+                c.handle_input(event)
 
-
-@dataclass
-class GameObject(Generic[M, V, C]):
-    model: M
-    view: V | None = None
-    controller: C | None = None
-    uid: int = -1
+    def free(self):
+        self.on_destroy.emit(self)

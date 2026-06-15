@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pygame
 
+from src.core.resources.image_loader import image_loader as il
+
 
 @dataclass
 class RawLevel:
@@ -19,9 +21,6 @@ class LevelLoader:
     TILESET_FOLDER = LEVELS_FOLDER + "tilesets/"
     MAPS_FOLDER = LEVELS_FOLDER + "maps/"
 
-    def __init__(self, image_loader):
-        self.il = image_loader
-
     def load_level(self, level_name: str):
         """Загружает уровень из папки уровней с соответствующим названием."""
         level_data = dict()
@@ -32,7 +31,7 @@ class LevelLoader:
         except Exception as e:
             raise Exception(f"Не удалось загрузить уровень: {e}")
         # Подгрузка тайлсета уровня.
-        tileset = self.il.load_image(
+        tileset = il.load_image(
             Path(self.TILESET_FOLDER, level_data["tileset_name"])
         ).surface
         # Подгрузка карты.

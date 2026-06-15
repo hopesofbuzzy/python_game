@@ -1,35 +1,91 @@
 import logging
+
 from pygame.math import Vector2
 
-from src.core.objects.game_object import View
-from src.scenes.main.objects.enemy import Enemy
-from src.scenes.main.objects.plants import Bullet, BulletModel, BulletView, Plant
+from src.core.objects import (
+    CollisionComponent,
+    MovementComponent,
+    RectShape,
+    PositionComponent,
+    PatrolComponent,
+    RectComponent
+)
 
+from src.scenes.main.objects import (
+    AttackComponent,
+    HealthComponent,
+    Enemy
+)
+
+# Enemy
+ENEMY_SPEED = 35
+ENEMY_HEALTH = 50
+ENEMY_SIZE = Vector2(40, 40)
+ENEMY_COLOR = (255, 25, 25)
+
+# Общие
+ENEMY_ATTACK_COOLDOWN = 0.5
+ENEMY_ATTACK = 5
+
+# FastEnemy
+FAST_ENEMY_SPEED = 50
+FAST_ENEMY_HEALTH = 25
+FAST_ENEMY_SIZE = Vector2(30, 30)
+FAST_ENEMY_COLOR = (80, 80, 255)
 
 class EnemyFactory:
-    """
-        Фабрика сборки объектов сцены
+    """Фабрика сборки врагов."""
 
-        Инъекции:
-            add_object(...),
-            image_loader: load_image(...),
-            cursor: ...
-    """
-
-    def __init__(self, add_object, image_loader):
-        # View инъекция (ImageLoader).
-        self.il = image_loader
+    def __init__(self, add_object):
         self.add_object = add_object
+        self.ENEMIES = {
+            "Enemy": self.create_normal_enemy,
+            "FastEnemy": self.create_fast_enemy
+        }
 
-    def create_enemy(self, cls_model, cls_view, position, path):
-        enemy_model = cls_model(local_position=position, path=path)
-        enemy = Enemy(model=enemy_model, view=cls_view(self.il))
-        self.add_object(enemy)
+    def create_enemy(self, name: str, *args) -> Enemy:
+        logging.debug(f"{name} {args}")
+        if name in self.ENEMIES:
+            enemy = self.ENEMIES[name](*args)
+            enemy.tags.add("enemy")
+            self.add_object(enemy)
+            enemy.get(HealthComponent).on_death.subscribe(enemy.free)
+            return enemy
+        else:
+            raise ValueError("Неизвестный враг!")
+
+
+    def create_normal_enemy(self, position, path):
+        position_comp = PositionComponent(position, None)
+        movement_comp = MovementComponent(Vector2(0, 0), FAST_ENEMY_SPEED)
+        enemy = (
+            Enemy()
+            .add(position_comp)
+            .add(CollisionComponent(RectShape(Vector2(0, 0), ENEMY_SIZE, True), False))
+            .add(movement_comp)
+            .add(PatrolComponent(position_comp, movement_comp, path))
+            .add(RectComponent(ENEMY_COLOR, ENEMY_SIZE, True))
+            .add(AttackComponent("plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(HealthComponent(ENEMY_HEALTH))
+        )
         return enemy
 
-    def create_bullet(self, direction, position, attack):
-        bullet_model = BulletModel(local_position=position, attack=attack)
-        bullet_model.set_velocity(direction.x, direction.y)
-        bullet = Bullet(model=bullet_model, view=BulletView(self.il))
-        self.add_object(bullet)
-        return bullet
+    def create_fast_enemy(self, position, path):
+        position_comp = PositionComponent(position, None)
+        movement_comp = MovementComponent(Vector2(0, 0), FAST_ENEMY_SPEED)
+        enemy = (
+            Enemy()
+            .add(position_comp)
+            .add(CollisionComponent(RectShape(
+                    Vector2(0, 0), FAST_ENEMY_SIZE, True
+                    ),
+                    False
+                )
+            )
+            .add(movement_comp)
+            .add(PatrolComponent(position_comp, movement_comp, path))
+            .add(RectComponent(FAST_ENEMY_COLOR, FAST_ENEMY_SIZE, True))
+            .add(AttackComponent("plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(HealthComponent(FAST_ENEMY_HEALTH))
+        )
+        return enemy

@@ -1,21 +1,29 @@
-from src.scenes.main.objects import EnemyModel, ShooterModel
+import logging
+
+from src.core.objects import (
+    PositionComponent,
+    TargetingComponent
+)
+from src.core.systems.uniform_grid import UniformGrid
 
 
 class TargetingSystem:
     """Система обнаружения целей для стрельбы."""
 
-    def __init__(self, uniform_grod):
+    def __init__(self, uniform_grod: UniformGrid):
         self.uniform_grid = uniform_grod
 
     def update(self, scene, delta_time: float):
         """Проверка соседей башни для стрельбы."""
         for object in scene.object_registry.values():
-            if isinstance(object.model, ShooterModel):
-                others = self.uniform_grid.query_circle(object, object.model.range)
+            if object.has(PositionComponent, TargetingComponent):
+                others = self.uniform_grid.query_circle(
+                    object,
+                    object.get(TargetingComponent).range
+                )
                 enemies = [
-                    other.model
+                    other
                     for other in others
-                    if isinstance(other.model, EnemyModel)
+                    if other.has(PositionComponent) and "enemy" in other.tags
                 ]
-                if enemies:
-                    object.model.handle_targets(enemies, delta_time)
+                object.get(TargetingComponent).choose_target(enemies)

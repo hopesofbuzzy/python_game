@@ -2,29 +2,21 @@ import logging
 from dataclasses import dataclass, field
 
 from src.core.objects.game_object import GameObject
-from src.core.objects.tile_map import (
-    TileMap,
-    TileMapController,
-    TileMapModel,
-    TileMapView,
+from src.core.objects.components.map import (
+    Map,
+    MapControllerComponent,
+    MapModelComponent,
+    MapViewComponent,
 )
 
 
-@dataclass
-class GameMapModel(TileMapModel):
-    """
-        Карта с игровой логикой и метаданными (SRP).
-
-        Args:
-            plants: список координат, занятых растениями.
-            poses_to_place: позиции для посадки.
-            path_poses: позиции дорог.
-    """
-    plants: set[tuple] = field(default_factory=set)
-    poses_to_place: set[tuple] = field(default_factory=set)
-    path_poses: set[tuple] = field(default_factory=set)
-    start_pos: tuple = field(default_factory=tuple)
-    end_pos: tuple = field(default_factory=tuple)
+class MapLevelDataComponent:
+    def __init__(self):
+        self.plants: set[tuple] = set()
+        self.poses_to_place = set()
+        self.path_poses = set()
+        self.start_pos = tuple()
+        self.end_pos = tuple()
 
     def is_position_to_place_plant(self, position: tuple) -> bool:
         return tuple(position) in self.poses_to_place
@@ -43,10 +35,10 @@ class GameMapModel(TileMapModel):
             self.plants.remove(tile_pos)
 
     def parse_map(
-        self, start_tile, end_tile, path_tiles, tiles_to_place
+        self, tiles, start_tile, end_tile, path_tiles, tiles_to_place
     ):
         """Парсит карту, извлекая сущности по idx тайлов из тайлсета."""
-        for ridx, row in enumerate(self.tiles):
+        for ridx, row in enumerate(tiles):
             for cidx, tile_idx in enumerate(row):
                 x = cidx  # * tile_size
                 y = ridx  # * tile_size
@@ -66,13 +58,3 @@ class GameMapModel(TileMapModel):
         ):
             logging.debug(f"GameMap (Parsed): {self}")
             raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
-
-@dataclass
-class GameMapController(TileMapController):
-
-    def add_plant(self, plant, tile_pos):
-        self.model.add_plant(plant, tile_pos)
-
-@dataclass
-class GameMap(GameObject[GameMapModel, TileMapView, GameMapController]):
-    ...

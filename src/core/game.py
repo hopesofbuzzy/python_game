@@ -1,13 +1,14 @@
 import pygame
 from pygame.math import Vector2
 
-from src.core.systems.camera import Camera
+from src.core.objects.camera import Camera
+from src.core.objects.scene import Scene
+
 from src.core.systems.collision import CollisionSystem
+from src.core.systems.debug_renderer import DebugRenderer
 from src.core.systems.input import InputManager
 from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
-from src.core.systems.debug_renderer import DebugRenderer
-from src.core.systems.scene import Scene
 from src.core.systems.targeting import TargetingSystem
 from src.core.systems.uniform_grid import UniformGrid
 
@@ -23,7 +24,6 @@ class Game:
         self.movement = MovementSystem()
         self.camera: Camera = Camera(
             size=Vector2(self.WINDOW_SIZE),
-            cursor=self.input.cursor
         )
         self.uniform_grid = UniformGrid()
         self.collision = CollisionSystem(self.uniform_grid)
@@ -37,7 +37,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(self.input.cursor, self.exit)
+        self.scene: Scene = scene_class(self.exit)
 
     def update(self, delta_time: float):
         # Input

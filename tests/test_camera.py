@@ -1,7 +1,7 @@
 import pytest
 from pygame.math import Vector2
 
-from src.core.systems.camera import Camera
+from src.core.objects.camera import Camera
 from src.core.systems.input import Cursor
 
 

@@ -6,7 +6,7 @@
             "enemy_amount": [5]
         },
         {
-            "timestamp": 50.0,
+            "timestamp": 10.0,
             "enemy_type": ["Enemy", "FastEnemy"],
             "enemy_amount": [2, 3]
         }

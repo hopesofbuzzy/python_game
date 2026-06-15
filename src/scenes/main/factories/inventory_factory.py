@@ -1,27 +1,28 @@
 import logging
+
 from pygame.math import Vector2
 
-from src.scenes.main.objects.inventory import (
+from src.scenes.main.objects import (
+    KeyControllerComponent,
     Inventory,
-    InventoryController,
-    InventoryModel,
+    InventoryModelComponent,
 )
 
 
 class InventoryFactory:
     """Фабрика сборки инвентаря."""
 
-    def __init__(self, add_object, image_loader, cursor):
-        # # View инъекция (ImageLoader).
-        # self.il = image_loader
-        # Controller инъекция.
-        self.cursor = cursor
+    def __init__(self, add_object):
         self.add_object = add_object
 
     def create_inventory(self):
-        model = InventoryModel(local_position=Vector2(0, 0))
-        inventory = Inventory(
-            model=model, controller=InventoryController(model, self.cursor)
+        key_controller = KeyControllerComponent()
+        inventory_model = InventoryModelComponent()
+        inventory = (
+            Inventory()
+            .add(inventory_model)
+            .add(key_controller)
         )
+        key_controller.on_key_pressed.subscribe(inventory_model.set_active_slot)
         self.add_object(inventory)
         return inventory

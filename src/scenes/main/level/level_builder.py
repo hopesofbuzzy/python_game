@@ -3,15 +3,16 @@ from dataclasses import dataclass, field
 
 import pygame
 
-from src.scenes.main.game_map import GameMap
-from src.scenes.main.level_factory import LevelFactory
-from src.scenes.main.level_loader import LevelLoader
+from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+from src.scenes.main.factories.map_factory import LevelFactory
+from src.core.objects.components.map import Map, MapModelComponent
+from src.scenes.main.level.level_loader import LevelLoader
 from src.scenes.main.wave_manager import ParsedWaves, Wave, WaveObject
 
 
 @dataclass
 class Level:
-    gamemap: GameMap
+    map: Map
     path: list
     parsed_waves: ParsedWaves
 
@@ -22,29 +23,28 @@ class LevelBuilder:
 
         Инъекции:
             add_object(...),
-            image_loader: load_image(...),
-            cursor: ...
     """
 
-    def __init__(self, add_object, image_loader, cursor):
+    def __init__(self, add_object):
         # Загрузчик уровней.
-        self.lm = LevelLoader(image_loader)
+        self.lm = LevelLoader()
         # Фабрика уровней.
-        self.lf = LevelFactory(add_object, image_loader, cursor)
+        self.lf = LevelFactory(add_object)
 
     def load_and_create_level(self, position, level_name) -> Level:
         raw_level = self.lm.load_level(level_name)
         tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
-        gamemap = self.lf.create_gamemap(position, raw_level.tiles, tileset)
-        gamemap.model.parse_map(
+        map = self.lf.create_map(position, raw_level.tiles, tileset)
+        map.get(MapLevelDataComponent).parse_map(
+            map.get(MapModelComponent).tiles,
             raw_level.metadata["start_tile"],
             raw_level.metadata["end_tile"],
             raw_level.metadata["path_tiles"],
             raw_level.metadata["tiles_to_place"]
         )
         parsed_waves = self.parse_waves(raw_level.metadata)
-        path = self.build_pathes(gamemap)
-        return Level(gamemap, path, parsed_waves)
+        path = self.build_pathes(map)
+        return Level(map, path, parsed_waves)
 
     def parse_waves(self, metadata: dict):
         waves: list[dict] = metadata["waves"]
@@ -59,14 +59,15 @@ class LevelBuilder:
             parsed_waves.append(wave)
         return ParsedWaves(parsed_waves)
 
-    def build_pathes(self, gamemap) -> list:
+    def build_pathes(self, gamemap: Map) -> list:
         """
         Строит путь для врагов по тайлам карты.
         Путь может разветвляться для более интересного тавер дефенса,
         поэтому мы будем хранить карту возможных направлений движения для врага.
         """
+        map_level_data = gamemap.get(MapLevelDataComponent)
         queue = [
-            gamemap.model.start_pos,
+            map_level_data.start_pos,
         ]
         visited = set()
         
@@ -74,8 +75,8 @@ class LevelBuilder:
             for direction in ((0, 1), (0, -1), (1, 0), (-1, 0)):
                 new_tile_pos = (tile_pos[0] + direction[0], tile_pos[1] + direction[1])
                 if (
-                    new_tile_pos in gamemap.model.path_poses
-                    or new_tile_pos == gamemap.model.end_pos
+                    new_tile_pos in map_level_data.path_poses
+                    or new_tile_pos == map_level_data.end_pos
                 ) and new_tile_pos not in visited:
                     queue.append(new_tile_pos)
                     visited.add(new_tile_pos)

@@ -5,18 +5,9 @@ from typing import Callable
 
 from pygame.math import Vector2
 
-from src.core.systems.event import Event
-from src.scenes.main.objects.enemy import (
-    EnemyModel,
-    EnemyView,
-    FastEnemyModel,
-    FastEnemyView,
-)
+from src.core.objects.components.path import PatrolComponent
+from src.core.objects.event import Event
 
-ENEMIES = {
-    "Enemy": (EnemyModel, EnemyView),
-    "FastEnemy": (FastEnemyModel, FastEnemyView)
-}
 SPAWN_COOLDOWN = 1.0
 
 @dataclass
@@ -42,8 +33,8 @@ class WaveManager:
 
         Инъекции:
             parsed_waves
-            create_enemy(cls_model, cls_view, position, path),
-            path: PathModel
+            create_enemy,
+            path: PathComponent
     """
     def __init__(self, parsed_waves: ParsedWaves, create_enemy: Callable, path):
         self._time: float = 0.0
@@ -51,7 +42,7 @@ class WaveManager:
         self.waves: list[Wave] = parsed_waves.waves
         self.create_enemy: Callable = create_enemy
         self._spawn_timer: float = SPAWN_COOLDOWN
-        self.on_enemy_reach_end: Event = Event()
+        self.on_enemy_reached_end: Event = Event()
         self.path = path
         # Статистика
         self.current_wave_number = 0
@@ -78,15 +69,14 @@ class WaveManager:
                 rand_wave_obj_idx = randrange(0, len(wave_objects))
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
-                enemy_cls_model, enemy_cls_view = ENEMIES[wave_object.enemy]
+                logging.debug(wave_object)
                 enemy = self.create_enemy(
-                    enemy_cls_model,
-                    enemy_cls_view,
+                    wave_object.enemy,
                     Vector2(200, 200),
                     self.path
                 )
-                enemy.model.on_reach_end.subscribe(
-                    lambda: self.on_enemy_reach_end.emit()
+                enemy.get(PatrolComponent).on_reached_end.subscribe(
+                    lambda: self.on_enemy_reached_end.emit()
                 )
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)

@@ -12,17 +12,13 @@ class Scene:
     Класс для контейнеризации игрового мира в виде сцены.
     """
 
-    def __init__(self, cursor, exit):
+    def __init__(self, exit):
         self.object_registry: dict[str, GameObject] = {}
         # Пул объектов для отложенного добавления.
         self._objects_to_add: dict[str, GameObject] = {}
         self._objects_to_delete: dict[str, GameObject] = {}
         # Счётчик реестра объектов.
         self.lastuid = 0
-        # Реестр изображений для текущей сцены.
-        self.il = ImageLoader()
-        # Курсор (инъекция)
-        self.cursor = cursor
         # Выход (Инъекция)
         self.exit = exit
         # Все системы включены, запускаем сцену.
@@ -36,7 +32,7 @@ class Scene:
         if obj_id is None:
             obj_id = f"{obj.uid}"
         self._objects_to_add[obj_id] = obj
-        obj.model.free = lambda o=obj: self.remove_object(str(o.uid), 0)
+        obj.on_destroy.subscribe(lambda o=obj: self.remove_object(str(o.uid), o))
         return obj
 
     def add_objects(self):
@@ -70,7 +66,7 @@ class Scene:
         Регулярно обновляет сцену.
         """
         for key, object in self.object_registry.items():
-            object.model.update(delta_time)
+            object.update(delta_time)
 
     @abstractmethod
     def handle_input(self, event: PygameEvent):

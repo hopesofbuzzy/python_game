@@ -1,15 +1,14 @@
 import logging
+
 from pygame.math import Vector2
 
-from src.core.objects.path import (
-    PathModel,
-)
+from src.core.objects import PathComponent
+
 
 class PathFactory:
     """Фабрика сборки выровненного пути для врагов."""
-    def create_path(self, path, align_method):
-        return PathModel(
-            local_position=Vector2(0, 0),
+    def create_path_component(self, path, align_method):
+        return PathComponent(
             points=list(
                 map(
                     align_method,
