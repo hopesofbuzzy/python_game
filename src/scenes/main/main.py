@@ -49,6 +49,8 @@ UPGRADE_DIALOG_SIZE = Vector2(300, 150)
 UPGRADE_BUTTON_TEXT = "Улучшить"
 UPGRADE_BUTTON_FONT_SIZE = 18
 
+LEVEL_NAME = "2"
+
 
 class MainScene(Scene):
     def ready(self):
@@ -82,7 +84,10 @@ class MainScene(Scene):
         self.level_builder: LevelBuilder = LevelBuilder(
             self.add_object,
         )
-        self.level: Level = self.level_builder.load_and_create_level(Vector2(0, 0), "2")
+        self.level: Level = self.level_builder.load_and_create_level(
+            Vector2(0, 0),
+            LEVEL_NAME
+        )
         self.gamemap: Map = self.level.map
         self.gamemap.get(MapControllerComponent).on_tile_click.subscribe(self.plant)
 
@@ -120,8 +125,8 @@ class MainScene(Scene):
             tile_type: int,
             global_pos: Vector2
         ):
-        self.close_all_upgrade_dialogs()
         """Посадка растения."""
+        self.close_all_upgrade_dialogs()
         plant_name = self.inventory.get(InventoryModelComponent).get_active_slot()
         map_level_data = self.gamemap.get(MapLevelDataComponent)
         # Условия посадки.
@@ -157,7 +162,7 @@ class MainScene(Scene):
 
     def plant_level_up(
             self,
-            event: EventFlow,
+            _event: EventFlow,
             plant: BasePlant,
             target_plant_name
     ):
@@ -168,7 +173,7 @@ class MainScene(Scene):
             .get(MapModelComponent)
             .tile_to_pos_centred(Vector2(plant.tile_pos))
         )
-        logging.debug(f"Начинаем улучшение {target_plant_name}")
+        logging.debug(f"Начинаем улучшение до {target_plant_name}")
         new_plant = (
             PlantBuilder(
                 self.add_object,
@@ -178,11 +183,7 @@ class MainScene(Scene):
                 self.ui_factory
             )
             .with_replace(plant.tile_pos)
-            .with_plant(
-                target_plant_name,
-                global_pos_centred,
-                plant.tile_pos
-            )
+            .with_plant(target_plant_name, global_pos_centred, plant.tile_pos)
             .with_upgrade()
             .with_button()
             .build()
@@ -194,15 +195,17 @@ class MainScene(Scene):
             plant.tile_pos
         )
         plant.free()
+        # Открытие нового окна улучшения.
+        next_request_upgrade_func = new_plant.get(UpgradeComponent).request_upgrade
         self.open_upgrade_dialog(
             EventFlow(),
             new_plant,
-            new_plant.get(UpgradeComponent).request_upgrade
+            next_request_upgrade_func
         )
 
     def open_upgrade_dialog(
             self,
-            event: EventFlow,
+            _event: EventFlow,
             plant: BasePlant,
             request_upgrade_func
     ):
@@ -230,11 +233,11 @@ class MainScene(Scene):
     def close_all_upgrade_dialogs(self):
         for dialog in self.upgrade_dialogs:
             dialog.free()
-        self.upgrade_dialogs = list()
+        self.upgrade_dialogs.clear()
 
     def plant_upgrade(
             self,
-            event: EventFlow,
+            _event: EventFlow,
             plant: BasePlant,
             price: int,
             upgrade_func

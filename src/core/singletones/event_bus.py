@@ -54,6 +54,10 @@ class EventBus:
             if event.is_stopped:
                 break
         # Пересоздаём список для вызова для O(n)
-        self.listeners[event_name] = [l for l in self.listeners[event_name] if l.is_alive]
+        self.listeners[event_name] = [
+            l
+            for l in self.listeners[event_name]
+            if l.is_alive
+        ]
 
 event_bus = EventBus()
