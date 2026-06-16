@@ -7,7 +7,7 @@ from src.core.objects.components.map import Map, MapModelComponent
 from src.scenes.main.factories.map_factory import LevelFactory
 from src.scenes.main.level.level_loader import LevelLoader
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
-from src.scenes.main.wave_manager import ParsedWaves, Wave, WaveObject
+from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
 
 @dataclass

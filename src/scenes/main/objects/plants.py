@@ -59,7 +59,6 @@ class BasePlant(GameObject):
     def __init__(
             self,
             tile_pos: tuple,
-            price: int = 0,
             upgrade_description: str = "Ура!"
     ):
         super().__init__()

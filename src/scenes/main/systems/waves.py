@@ -36,11 +36,11 @@ class WaveManager:
             create_enemy,
             path: PathComponent
     """
-    def __init__(self, parsed_waves: ParsedWaves, create_enemy: Callable, path):
+    def __init__(self, parsed_waves: ParsedWaves, create_enemy_агтс: Callable, path):
         self._time: float = 0.0
         self.current_wave: Wave | None = None
         self.waves: list[Wave] = parsed_waves.waves
-        self.create_enemy: Callable = create_enemy
+        self.create_enemy: Callable = create_enemy_агтс
         self._spawn_timer: float = SPAWN_COOLDOWN
         self.on_enemy_reached_end: Event = Event()
         self.path = path

@@ -12,7 +12,7 @@ class Scene:
     Класс для контейнеризации игрового мира в виде сцены.
     """
 
-    def __init__(self, exit):
+    def __init__(self, event_bus, exit):
         self.object_registry: dict[str, GameObject] = {}
         self.z_index_object_registry = list()
         # Пул объектов для отложенного добавления.
@@ -22,6 +22,8 @@ class Scene:
         self.lastuid = 0
         # Выход (Инъекция)
         self.exit = exit
+        # Шина событий (инъекция)
+        self.event_bus = event_bus
         # Все системы включены, запускаем сцену.
         self.ready()
 

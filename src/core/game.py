@@ -1,6 +1,8 @@
 import pygame
 from pygame.math import Vector2
 
+from src.core.singletones.event_bus import event_bus
+
 from src.core.objects.camera import Camera
 from src.core.objects.scene import Scene
 from src.core.systems.collision import CollisionSystem
@@ -36,7 +38,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(self.exit)
+        self.scene: Scene = scene_class(event_bus, self.exit)
 
     def update(self, delta_time: float):
         # Input
