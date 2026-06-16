@@ -4,8 +4,9 @@ import pygame
 from pygame.event import Event
 from pygame.math import Vector2
 
-from src.core.objects.game_object import GameObject
 from src.core.objects.event import Event
+from src.core.objects.game_object import GameObject
+from src.core.singletones.event_bus import EventFlow, event_bus
 from src.core.systems.input import cursor
 
 
@@ -88,13 +89,14 @@ class MapControllerComponent:
     def __init__(self, map_model: MapModelComponent):
         self.map_model = map_model
         self.on_tile_click: Event = Event()
-        cursor.on_left_click.subscribe(self.on_left_click)
+        event_bus.subscribe("on_mouse_left_click", self.on_mouse_left_click)
 
-    def on_left_click(self):
+    def on_mouse_left_click(self, event: EventFlow):
         tile_pos = self.map_model.pos_to_tile(cursor.global_pos)
         global_pos_centred = self.map_model.tile_to_pos_centred(tile_pos)
         tile_type = self.map_model.get_tile(int(tile_pos.y), int(tile_pos.x))
         self.on_tile_click.emit(
+            event,
             tile_pos,
             global_pos_centred,
             tile_type,

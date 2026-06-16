@@ -6,12 +6,13 @@ from pygame.math import Vector2
 from src.core.objects import (
     CircleShape,
     CollisionComponent,
-    MovementComponent,
-    RectShape,
     GameObject,
+    MovementComponent,
     PositionComponent,
-    Scene
+    RectShape,
+    Scene,
 )
+
 
 @dataclass
 class Overlap:

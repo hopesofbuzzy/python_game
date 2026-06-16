@@ -1,5 +1,7 @@
 import logging
+
 from src.scenes.main.objects.plants import PLANTS
+
 
 class InventoryModelComponent:
     """Инвентарь для выбора растений."""

@@ -1,10 +1,9 @@
 from abc import ABC
-from typing import Self, Type, TypeVar, Optional
+from typing import Optional, Self, Type, TypeVar
 
 from pygame.event import Event as PygameEvent
 
 from src.core.objects.event import Event
-
 
 CT = TypeVar('CT')
 

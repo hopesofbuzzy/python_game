@@ -2,9 +2,9 @@ import logging
 
 from pygame.math import Vector2
 
-from src.core.objects.game_object import GameObject
 from src.core.objects.components.position import PositionComponent
 from src.core.objects.event import Event
+from src.core.objects.game_object import GameObject
 
 DEFAULT_SHOOTER_RANGE = 2
 DEFAULT_SHOOTER_ATTACK = 3

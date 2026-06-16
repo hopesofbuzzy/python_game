@@ -1,32 +1,59 @@
-import weakref
 import logging
+import weakref
+from dataclasses import dataclass
+from typing import Callable
+
+
+@dataclass
+class Listener:
+    listener: Callable
+    priority: int
+    is_alive: bool = True
+
+@dataclass
+class EventFlow:
+    is_stopped: bool = False
+
+    def stop(self):
+        self.is_stopped = True
 
 class EventBus:
     def __init__(self):
-        self.listeners: dict[str, list] = dict()
+        self.listeners: dict[str, list[Listener]] = dict()
 
-    def subscribe(self, event_name, listener):
+    def subscribe(self, event_name, listener, priority=None):
+        if not priority:
+            priority = -1
         self.listeners[event_name] = self.listeners.get(event_name, [])
         # Храним слабую ссылку, чтобы не было УТЕЧЕК ПАМЯТИ!
         if hasattr(listener, "__self__"):
-            self.listeners[event_name].append(weakref.WeakMethod(listener))
+            self.listeners[event_name].append(
+                Listener(weakref.WeakMethod(listener), priority)
+            )
         else:
-            self.listeners[event_name].append(listener)
+            self.listeners[event_name].append(Listener(listener, priority))
+        # Сортировка по приоритету
+        self.listeners[event_name] = sorted(
+            self.listeners[event_name], key=lambda x: x.priority, reverse=True
+        )
 
     def fire(self, event_name, *args):
-        logging.debug(event_name)
-        dead_refs = list()
         self.listeners[event_name] = self.listeners.get(event_name, [])
-        for listener in self.listeners.get(event_name, []):
-            if isinstance(listener, weakref.WeakMethod):
-                alive_func = listener()
+        for listener in self.listeners[event_name]:
+            event = EventFlow()
+            if isinstance(listener.listener, weakref.WeakMethod):
+                alive_func = listener.listener()
                 if not alive_func:
-                    dead_refs.append(listener)
+                    listener.is_alive = False
                     continue
-                alive_func(*args)
+                alive_func(event, *args)
+                if event.is_stopped:
+                    break
             else:
-                listener(*args)
-        for dead_ref in dead_refs:
-            self.listeners[event_name].remove(dead_ref)
+                listener.listener(event, *args)
+            if event.is_stopped:
+                break
+        # Пересоздаём список для вызова для O(n)
+        self.listeners[event_name] = [l for l in self.listeners[event_name] if l.is_alive]
 
 event_bus = EventBus()

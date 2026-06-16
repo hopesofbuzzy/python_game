@@ -1,5 +1,5 @@
-from src.core.objects.game_object import GameObject
 from src.core.objects.event import Event
+from src.core.objects.game_object import GameObject
 
 
 class TagContactComponent:

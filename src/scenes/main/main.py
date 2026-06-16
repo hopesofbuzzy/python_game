@@ -2,35 +2,44 @@ import logging
 
 from pygame.math import Vector2
 
-from src.core.singletones.image_loader import image_loader
-from src.core.systems.input import cursor
-from src.core.singletones.event_bus import event_bus
-
-# Составляющие сцены.
-from src.core.objects.scene import Scene
-from src.scenes.main.level.level_builder import Level, LevelBuilder
-
 from src.core.objects import (
+    Event,
     Map,
     MapControllerComponent,
     MapModelComponent,
-    Event,
     TextRenderComponent,
 )
-from src.scenes.main.objects import UpgradeComponent, BasePlant
+
+# Составляющие сцены.
+from src.core.objects.scene import Scene
+from src.core.singletones.event_bus import EventFlow, event_bus
+from src.core.singletones.image_loader import image_loader
+from src.core.systems.input import cursor
+from src.scenes.main.factories.bullet_factory import BulletFactory
+from src.scenes.main.factories.dialog_builder import DialogBuilder
+
 # Фабрики.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
-from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.factories.dialog_builder import DialogBuilder
-from src.scenes.main.objects import Inventory, InventoryModelComponent
+from src.scenes.main.level.level_builder import Level, LevelBuilder
+from src.scenes.main.objects import (
+    BasePlant,
+    Inventory,
+    InventoryModelComponent,
+    UpgradeComponent,
+)
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 
 # Константы
-from src.scenes.main.objects.plants import PLANTS, PLANTS_PRICES, PLANTS_DESCRIPTIONS, PLANTS_CLASSES
+from src.scenes.main.objects.plants import (
+    PLANTS,
+    PLANTS_CLASSES,
+    PLANTS_DESCRIPTIONS,
+    PLANTS_PRICES,
+)
 from src.scenes.main.wave_manager import WaveManager
 
 START_SUNS = 400
@@ -64,7 +73,10 @@ class MainScene(Scene):
         self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object)
-        self.enemy_factory: EnemyFactory = EnemyFactory(self.add_object, self.ui_factory)
+        self.enemy_factory: EnemyFactory = EnemyFactory(
+            self.add_object,
+            self.ui_factory
+        )
 
     def setup_level(self):
         self.level_builder: LevelBuilder = LevelBuilder(
@@ -102,6 +114,7 @@ class MainScene(Scene):
 
     def plant(
             self,
+            event: EventFlow,
             tile_pos: Vector2,
             global_pos_centred: Vector2,
             tile_type: int,
@@ -140,8 +153,15 @@ class MainScene(Scene):
                 self.gamemap.get(MapLevelDataComponent).add_plant(
                     tuple(tile_pos)
                 )
+                event.stop()
 
-    def plant_level_up(self, plant: BasePlant, target_plant_name):
+    def plant_level_up(
+            self,
+            event: EventFlow,
+            plant: BasePlant,
+            target_plant_name,
+            request_upgrade_func
+    ):
         """Трансформация растения после уровня улучшения."""
         self.close_all_upgrade_dialogs()
         global_pos_centred = (
@@ -175,9 +195,14 @@ class MainScene(Scene):
             plant.tile_pos
         )
         plant.free()
-        logging.debug(event_bus.listeners)
+        self.open_upgrade_dialog(EventFlow(), new_plant, request_upgrade_func)
 
-    def open_upgrade_dialog(self, plant: BasePlant, request_upgrade_func):
+    def open_upgrade_dialog(
+            self,
+            event: EventFlow,
+            plant: BasePlant,
+            request_upgrade_func
+    ):
         self.close_all_upgrade_dialogs()
         dialog = (
             DialogBuilder(
@@ -205,7 +230,13 @@ class MainScene(Scene):
             dialog.free()
         self.upgrade_dialogs = list()
 
-    def plant_upgrade(self, plant: BasePlant, price: int, upgrade_func):
+    def plant_upgrade(
+            self,
+            event: EventFlow,
+            plant: BasePlant,
+            price: int,
+            upgrade_func
+    ):
         """Одноразовое улучшение растения."""
         if self.suns >= price:
             logging.debug(f"Растение улучшено: {self.suns}")

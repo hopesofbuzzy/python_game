@@ -1,4 +1,5 @@
 from .attack import AttackComponent
+from .bar import BarComponent
 from .cycle_timer import CycleTimerComponent
 from .health import HealthComponent
 from .inventory import InventoryModelComponent
@@ -7,4 +8,3 @@ from .map_level_data import MapLevelDataComponent
 from .tag import TagContactComponent
 from .timer import TimerComponent
 from .upgrade import UpgradeComponent
-from .bar import BarComponent

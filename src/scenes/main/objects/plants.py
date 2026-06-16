@@ -3,10 +3,7 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import (
-    GameObject,
-    Event
-)
+from src.core.objects import Event, GameObject
 
 PLANTS = {
     0: None,
@@ -46,6 +43,13 @@ PLANTS_DESCRIPTIONS = {
         "Скорость: 1 пуля / 0.25 сек\n"
         "Атака: 1 ед / 1 пуля\n"
         "Следующее улучшение: Большой гриб\n"
+    ),
+    "BigMushroom": str(
+        "Большой гриб\n"
+        "Класс: травяное растение\n"
+        "Скорость: 1 пуля / 1 сек\n"
+        "Атака: 12 ед / 1 пуля\n"
+        "Следующее улучшение: Нет\n"
     ),
 }
 

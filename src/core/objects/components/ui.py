@@ -1,15 +1,15 @@
+import gc
 import logging
 from typing import Optional
-import gc
 
 import pygame
 from pygame.event import Event as PygameEvent
 from pygame.math import Vector2
 
-from src.core.objects.game_object import GameObject
 from src.core.objects.components import PositionComponent
-
 from src.core.objects.event import Event
+from src.core.objects.game_object import GameObject
+from src.core.singletones.event_bus import EventFlow, event_bus
 from src.core.systems.input import cursor
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
@@ -134,20 +134,17 @@ class ClickHandlerComponent:
     def __init__(self, ui_control: UIControl):
         self.ui_transform = ui_control.get(UITransform)
         self.on_button_pressed: Event = Event()
-        cursor.on_left_click.subscribe(self.on_left_click)
+        event_bus.subscribe("on_mouse_left_click", self.on_mouse_left_click, priority=5)
 
-    def on_left_click(self):
+    def on_mouse_left_click(self, event: EventFlow):
         cursor_pos = None
         if self.ui_transform.anchor:
             cursor_pos = cursor.global_pos
         else:
             cursor_pos = cursor.pos
-        logging.debug(self.ui_transform.contains(cursor_pos.x, cursor_pos.y))
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
             self.on_button_pressed.emit()
-
-    def free(self):
-        cursor.on_left_click.unsubscribe(self.on_left_click)
+            event.stop()
 
 class VerticalLayoutComponent:
     """Организатор вертикального списка (сверху-вниз)."""

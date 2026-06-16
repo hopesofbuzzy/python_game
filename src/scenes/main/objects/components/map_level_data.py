@@ -1,13 +1,13 @@
 import logging
 from dataclasses import dataclass, field
 
-from src.core.objects.game_object import GameObject
 from src.core.objects.components.map import (
     Map,
     MapControllerComponent,
     MapModelComponent,
     MapViewComponent,
 )
+from src.core.objects.game_object import GameObject
 
 
 class MapLevelDataComponent:

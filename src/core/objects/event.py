@@ -1,5 +1,6 @@
 import weakref
 
+
 class Event:
     def __init__(self):
         self.listeners: list = []

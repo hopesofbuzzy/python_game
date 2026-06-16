@@ -1,4 +1,5 @@
 import logging
+
 import pygame
 
 from src.core.objects import UITransform

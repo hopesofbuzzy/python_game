@@ -3,28 +3,26 @@ import logging
 from pygame.math import Vector2
 
 from src.core.objects import (
-    CollisionComponent,
-    RectShape,
-    PositionComponent,
-    TargetingComponent,
-    SpriteComponent,
-    TextRenderComponent,
     ClickHandlerComponent,
-    UITransform
+    CollisionComponent,
+    PositionComponent,
+    RectShape,
+    SpriteComponent,
+    TargetingComponent,
+    TextRenderComponent,
+    UITransform,
 )
-
 from src.scenes.main.objects import (
+    PLANTS_LEVEL_UPS,
+    BasePlant,
+    BigMushroom,
     CycleTimerComponent,
     HealthComponent,
-    BasePlant,
+    LongMushroom,
     Mushroom,
     Sunflower,
     UpgradeComponent,
-    LongMushroom,
-    BigMushroom
 )
-
-from src.scenes.main.objects import PLANTS_LEVEL_UPS
 
 # from src.core.objects.ui import Button, ButtonController, ButtonModel, ButtonView
 # from src.core.objects.game_object import View
@@ -183,7 +181,7 @@ class PlantBuilder:
     def create_big_mushroom(self, position, tile_pos):
         position_comp = PositionComponent(position, None)
         mushroom = (
-            LongMushroom(tile_pos, MUSHROOM_PRICE)
+            BigMushroom(tile_pos, MUSHROOM_PRICE)
             .add(position_comp)
             .add(SpriteComponent(BIG_MUSHROOM_IMAGE_PATH, PLANT_SIZE, True))
             .add(TargetingComponent(

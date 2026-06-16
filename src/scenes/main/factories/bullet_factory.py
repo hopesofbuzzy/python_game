@@ -3,18 +3,13 @@ import logging
 from pygame.math import Vector2
 
 from src.core.objects import (
+    CollisionComponent,
+    MovementComponent,
     PositionComponent,
     RectComponent,
-    CollisionComponent,
-    MovementComponent, 
-    RectShape
+    RectShape,
 )
-
-from src.scenes.main.objects import (
-    AttackComponent,
-    TimerComponent,
-    Bullet
-)
+from src.scenes.main.objects import AttackComponent, Bullet, TimerComponent
 
 BULLET_SIZE = Vector2(15, 15)
 BULLET_IMAGE_PATH = "res/mushroom.png"

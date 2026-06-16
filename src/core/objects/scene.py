@@ -14,6 +14,7 @@ class Scene:
 
     def __init__(self, exit):
         self.object_registry: dict[str, GameObject] = {}
+        self.z_index_object_registry = list()
         # Пул объектов для отложенного добавления.
         self._objects_to_add: dict[str, GameObject] = {}
         self._objects_to_delete: dict[str, GameObject] = {}
@@ -39,7 +40,11 @@ class Scene:
         """Добавляет все объекты в конце кадра на сцену."""
         for obj_id, obj in self._objects_to_add.items():
             self.object_registry[obj_id] = obj
+            self.z_index_object_registry.append(obj)
         self._objects_to_add = dict()
+        self.z_index_object_registry = sorted(
+             self.z_index_object_registry, key=lambda x: x.z_index
+        )
 
     def remove_object(self, obj_id, object) -> None:
         if obj_id in self.object_registry:
@@ -48,6 +53,12 @@ class Scene:
     def cleanup(self):
         if len(self._objects_to_delete):
             logging.debug(f"objects_to_delete: len({self._objects_to_delete})")
+        # Лучше перестроить список z_index за O(n)
+        self.z_index_object_registry = [
+            obj
+            for obj in self.z_index_object_registry
+            if obj not in self._objects_to_delete.values()
+        ]
         for obj_id, obj in self._objects_to_delete.items():
             if obj_id in self.object_registry:
                 self.object_registry.pop(obj_id)

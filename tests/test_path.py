@@ -1,9 +1,9 @@
 import pytest
 from pygame.math import Vector2
 
-from src.scenes.main.objects.enemy import EnemyModel, EnemyView
 from src.core.objects import PathModel
 from src.core.objects.scene import Scene
+from src.scenes.main.objects.enemy import EnemyModel, EnemyView
 
 
 class Scene1(Scene):

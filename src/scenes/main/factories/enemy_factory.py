@@ -5,18 +5,17 @@ from pygame.math import Vector2
 from src.core.objects import (
     CollisionComponent,
     MovementComponent,
-    RectShape,
-    PositionComponent,
     PatrolComponent,
+    PositionComponent,
     RectComponent,
-    UITransform
+    RectShape,
+    UITransform,
 )
-
 from src.scenes.main.objects import (
     AttackComponent,
-    HealthComponent,
+    BarComponent,
     Enemy,
-    BarComponent
+    HealthComponent,
 )
 
 # Enemy
@@ -81,7 +80,12 @@ class EnemyFactory:
             .add(movement_comp)
             .add(PatrolComponent(position_comp, movement_comp, path))
             .add(RectComponent(ENEMY_COLOR, ENEMY_SIZE, True))
-            .add(AttackComponent(movement_comp, "plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(AttackComponent(
+                movement_comp,
+                "plant",
+                ENEMY_ATTACK,
+                ENEMY_ATTACK_COOLDOWN
+            ))
             .add(HealthComponent(ENEMY_HEALTH))
         )
         return enemy
@@ -101,7 +105,12 @@ class EnemyFactory:
             .add(movement_comp)
             .add(PatrolComponent(position_comp, movement_comp, path))
             .add(RectComponent(FAST_ENEMY_COLOR, FAST_ENEMY_SIZE, True))
-            .add(AttackComponent(movement_comp, "plant", ENEMY_ATTACK, ENEMY_ATTACK_COOLDOWN))
+            .add(AttackComponent(
+                movement_comp,
+                "plant",
+                ENEMY_ATTACK,
+                ENEMY_ATTACK_COOLDOWN
+            ))
             .add(HealthComponent(FAST_ENEMY_HEALTH))
         )
         return enemy

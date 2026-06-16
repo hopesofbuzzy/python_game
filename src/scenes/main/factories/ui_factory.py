@@ -3,13 +3,12 @@ import logging
 from pygame.math import Vector2
 
 from src.core.objects import (
-    UITransform,
-    UIControl,
-    TextRenderComponent,
     ClickHandlerComponent,
-    PanelRendererComponent
+    PanelRendererComponent,
+    TextRenderComponent,
+    UIControl,
+    UITransform,
 )
-
 from src.scenes.main.objects import BarComponent
 
 DEFAULT_BUTTON_COLOR = (120, 120, 120)

@@ -3,7 +3,6 @@ from pygame.math import Vector2
 
 from src.core.objects.camera import Camera
 from src.core.objects.scene import Scene
-
 from src.core.systems.collision import CollisionSystem
 from src.core.systems.debug_renderer import DebugRenderer
 from src.core.systems.input import InputManager

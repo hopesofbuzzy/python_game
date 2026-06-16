@@ -5,13 +5,13 @@ import pygame
 from pygame.math import Vector2
 
 from src.core.objects import (
+    Camera,
     CircleShape,
     CollisionComponent,
-    RectShape,
     PositionComponent,
-    Camera,
+    RectShape,
     Scene,
-    UITransform
+    UITransform,
 )
 
 COLLISION_COLOR = (255, 127, 80)

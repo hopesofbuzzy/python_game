@@ -3,10 +3,7 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import (
-    GameObject,
-    MovementComponent
-)
+from src.core.objects import GameObject, MovementComponent
 from src.scenes.main.objects.components.attack import AttackComponent
 
 

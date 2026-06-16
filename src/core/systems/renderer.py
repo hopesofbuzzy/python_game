@@ -1,17 +1,12 @@
 import pygame
 
-from src.core.objects import (
-    PositionComponent,
-    UITransform,
-    Camera,
-    Scene
-)
+from src.core.objects import Camera, PositionComponent, Scene, UITransform
 
 
 class Renderer:
     def draw(self, screen: pygame.Surface, scene: Scene, camera: Camera):
         screen.fill((0, 0, 0))
-        for object in sorted(list(scene.object_registry.values()), key=lambda x: x.z_index):
+        for object in scene.z_index_object_registry:
                 # Глоабльная отрисовка.
                 if object.has(PositionComponent):
                     object.draw(

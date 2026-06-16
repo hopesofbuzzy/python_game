@@ -1,21 +1,19 @@
 import logging
-
-from pygame.math import Vector2
 from typing import Callable
 
+from pygame.math import Vector2
+
 from src.core.objects import (
-    UITransform,
-    UIControl,
-    TextRenderComponent,
-    VerticalLayoutComponent,
     ClickHandlerComponent,
+    PanelRendererComponent,
     RectComponent,
-    PanelRendererComponent
+    TextRenderComponent,
+    UIControl,
+    UITransform,
+    VerticalLayoutComponent,
 )
-
-from src.scenes.main.objects import BarComponent
-
 from src.scenes.main.factories.ui_factory import UIFactory
+from src.scenes.main.objects import BarComponent
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DIALOG_OBJECTS_SPACE = 10

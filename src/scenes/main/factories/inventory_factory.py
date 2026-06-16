@@ -3,9 +3,9 @@ import logging
 from pygame.math import Vector2
 
 from src.scenes.main.objects import (
-    KeyControllerComponent,
     Inventory,
     InventoryModelComponent,
+    KeyControllerComponent,
 )
 
 

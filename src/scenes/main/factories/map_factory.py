@@ -1,9 +1,9 @@
 from src.core.objects import (
     Map,
-    MapModelComponent,
     MapControllerComponent,
+    MapModelComponent,
     MapViewComponent,
-    PositionComponent
+    PositionComponent,
 )
 from src.scenes.main.objects import MapLevelDataComponent
 
