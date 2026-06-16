@@ -8,9 +8,6 @@ from src.core.objects import (
     Event
 )
 
-SUNFLOWER_COOLDOWN = 10.0
-SUNFLOWER_GIVEN_SUN = 25
-
 PLANTS = {
     0: None,
     1: "Mushroom",

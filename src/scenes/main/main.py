@@ -93,19 +93,16 @@ class MainScene(Scene):
             global_pos: Vector2
         ):
         """Посадка растения."""
-        slot = self.inventory.get(InventoryModelComponent).get_active_slot()
+        plant_name = self.inventory.get(InventoryModelComponent).get_active_slot()
         map_level_data = self.gamemap.get(MapLevelDataComponent)
         # Условия посадки.
         if (
-            slot
-            and self.check_suns(slot)
+            plant_name
+            and self.check_suns(plant_name)
             and map_level_data.is_position_free(tuple(tile_pos))
         ):
-            if (
-                map_level_data.is_position_to_place_plant(tuple(tile_pos))
-                or map_level_data.is_position_to_place_road_plant(tuple(tile_pos))
-            ):
-                self.decrease_suns(self.get_plant_price(slot))
+            if map_level_data.is_position_to_place_plant(plant_name, tuple(tile_pos)):
+                self.decrease_suns(self.get_plant_price(plant_name))
                 # Создание растения.
                 plant = (
                     PlantBuilder(
@@ -117,7 +114,7 @@ class MainScene(Scene):
                         self.upgrade
                     )
                     .with_plant(
-                        slot,
+                        plant_name,
                         global_pos_centred,
                         tile_pos
                     )

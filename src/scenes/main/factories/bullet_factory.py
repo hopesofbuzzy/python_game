@@ -20,7 +20,7 @@ BULLET_SIZE = Vector2(15, 15)
 BULLET_IMAGE_PATH = "res/mushroom.png"
 BULLET_COLOR = (255, 255, 255)
 BULLET_SPEED = 150
-BULLET_COOLDOWN = 2.0
+BULLET_COOLDOWN = 1.5
 
 class BulletFactory:
     """Фабрика сборки пули растения."""

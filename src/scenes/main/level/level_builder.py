@@ -80,7 +80,7 @@ class LevelBuilder:
                 ) and new_tile_pos not in visited:
                     queue.append(new_tile_pos)
                     visited.add(new_tile_pos)
-        logging.debug(f"{queue}")
+        # logging.debug(f"{queue}")
         return queue
 
     def split_tileset(
