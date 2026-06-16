@@ -38,6 +38,8 @@ class UITransform:
         self.anchor = anchor
         self.size = size
         self.centred = centred
+        # Позволяет контейнеру регулировать отрисовку при anchor.
+        self._position_screen_resize = True
 
     @property
     def position(self):
@@ -63,7 +65,6 @@ class UITransform:
             elif self.anchor.has(UITransform):
                 return self.anchor.get(UITransform).position
         return Vector2(0, 0)
-        
 
     def contains(self, mouse_x, mouse_y) -> bool:
         """Проверка координат на вхождение в зону нажатия."""
@@ -86,17 +87,16 @@ class TextRenderComponent:
         color: tuple = DEFAULT_TEXT_COLOR,
         linespace: int = DEFAULT_TEXT_LINESPACE
     ):
-        self.text = text
         self.size = size
         self.color = color
-        self.parsed_text = self.parse_text()
+        self.parsed_text = self.parse_text(text)
         self.linespace = linespace
 
     def set_text(self, text: str):
-        self.text = str(text)
+         self.parsed_text = self.parse_text(text)
 
-    def parse_text(self):
-        return self.text.split("\n")
+    def parse_text(self, text):
+        return text.split("\n")
 
     def draw(self, screen: pygame.Surface, size, local_position, zoom):
         y_offset = 0
@@ -137,12 +137,12 @@ class ClickHandlerComponent:
         cursor.on_left_click.subscribe(self.on_left_click)
 
     def on_left_click(self):
-        # logging.debug(f"Левый клик {id(self)} {gc.get_referrers(self)}")
         cursor_pos = None
         if self.ui_transform.anchor:
             cursor_pos = cursor.global_pos
         else:
             cursor_pos = cursor.pos
+        logging.debug(self.ui_transform.contains(cursor_pos.x, cursor_pos.y))
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
             self.on_button_pressed.emit()
 
@@ -158,9 +158,9 @@ class VerticalLayoutComponent:
     def update(self, delta_time):
         y_offset = self.space
         for child in self.ui_control.children:
+            child.get(UITransform)._position_screen_resize = False
             if child.has(UITransform):
                 child.get(UITransform).local_position = (
                     child.get(UITransform).original_position + Vector2(0, y_offset)
                 )
                 y_offset += child.get(UITransform).size.y + self.space
-        logging.debug([child.get(UITransform).position for child in self.ui_control.children])

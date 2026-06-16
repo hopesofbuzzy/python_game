@@ -80,16 +80,12 @@ class PlantBuilder:
             bullet_factory,
             give_sun,
             remove_plant,
-            level_up,
-            upgrade,
             ui_factory
         ):
         self.add_object = add_object
         self.give_sun = give_sun
         self.bullet_factory = bullet_factory
         self.remove_plant = remove_plant
-        self.level_up = level_up
-        self.upgrade = upgrade
         self.ui_factory = ui_factory
         self._plant = None
         self.plant_name = ""
@@ -124,7 +120,6 @@ class PlantBuilder:
             PLANTS_LEVEL_UPS[self.plant_name]["cost"]
         )
         self._plant.add(upgrade)
-        upgrade.on_level_up.subscribe(self.level_up)
         return self
 
     def with_button(self):
@@ -136,10 +131,8 @@ class PlantBuilder:
             self._plant
         )
         self._plant.add_child(click_handler)
-        upgrade_func = self.upgrade
-        plant = self._plant
         click_handler.get(ClickHandlerComponent).on_button_pressed.subscribe(
-            lambda: upgrade_func(plant)
+            self._plant.get(UpgradeComponent).request_upgrade_dialog
         )
         return self
 
@@ -162,7 +155,6 @@ class PlantBuilder:
                 )
             )
         )
-        logging.debug("Тут ничего не надо!")
         mushroom.get(TargetingComponent).on_shoot.subscribe(
             self.bullet_factory.create_bullet
         )
@@ -183,7 +175,6 @@ class PlantBuilder:
                 )
             )
         )
-        logging.debug(f"{mushroom.get(TargetingComponent).cooldown}")
         mushroom.get(TargetingComponent).on_shoot.subscribe(
             self.bullet_factory.create_bullet
         )

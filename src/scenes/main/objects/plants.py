@@ -30,9 +30,23 @@ PLANTS_DESCRIPTIONS = {
     "Sunflower": str(
         "Подсолнышко\n"
         "Класс: дорожное растение\n"
-        "Скорость: 5 подсолнышек / 10 секунд\n"
+        "Скорость: 5 подсолнышек / 10 сек\n"
         "Следующее улучшение: нет\n"
-    )
+    ),
+    "Mushroom": str(
+        "Грибочек\n"
+        "Класс: травяное растение\n"
+        "Скорость: 1 пуля / 0.7 сек\n"
+        "Атака: 3 ед / 1 пуля\n"
+        "Следующее улучшение: ВысокоГрибка\n"
+    ),
+    "LongMushroom": str(
+        "ВысокоГрибка\n"
+        "Класс: травяное растение\n"
+        "Скорость: 1 пуля / 0.25 сек\n"
+        "Атака: 1 ед / 1 пуля\n"
+        "Следующее улучшение: Большой гриб\n"
+    ),
 }
 
 # Базовое растение
@@ -68,5 +82,7 @@ class Sunflower(BasePlant):
 
 PLANTS_CLASSES = {
     Mushroom: "Mushroom",
-    Sunflower: "Sunflower"
+    Sunflower: "Sunflower",
+    LongMushroom: "LongMushroom",
+    BigMushroom: "BigMushroom"
 }

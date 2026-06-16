@@ -1,6 +1,7 @@
 import logging
 
 from pygame.math import Vector2
+from typing import Callable
 
 from src.core.objects import (
     UITransform,
@@ -18,6 +19,11 @@ from src.scenes.main.factories.ui_factory import UIFactory
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DIALOG_OBJECTS_SPACE = 10
+DEFAULT_BUTTON_COLOR = (120, 120, 120)
+DEFAULT_DIALOG_SIZE = Vector2(250, 150)
+DEFAULT_BUTTON_POSITION = Vector2(0, 0)
+DEFAULT_BUTTON_SIZE = Vector2(100, 35)
+DEFAULT_DIALOG_TEXT_CONTAINER_SIZE = Vector2(120, 80)
 
 class DialogBuilder:
     def __init__(self, add_object, ui_factory: UIFactory):
@@ -28,7 +34,7 @@ class DialogBuilder:
     def with_dialog(
         self,
         position: Vector2,
-        size: Vector2,
+        size: Vector2 = DEFAULT_DIALOG_SIZE,
         anchor=None,
         color: tuple = DEFAULT_DIALOG_COLOR
     ):
@@ -56,12 +62,36 @@ class DialogBuilder:
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
         text = self.ui_factory.create_text(
-            Vector2(0, 0),
-            self._dialog,
             text,
-            size
+            Vector2(0, 0),
+            size,
+            DEFAULT_DIALOG_TEXT_CONTAINER_SIZE,
+            self._dialog,
         )
         self._dialog.add_child(text)
+        return self
+
+    def with_button(
+        self,
+        text: str,
+        font_size: int,
+        func: Callable,
+        position: Vector2 = DEFAULT_BUTTON_POSITION,
+        size: Vector2 = DEFAULT_BUTTON_SIZE,
+        color: tuple = DEFAULT_BUTTON_COLOR,
+    ):
+        if not self._dialog:
+            raise ValueError("Сперва постройте диалог")
+        button = self.ui_factory.create_button(
+            text,
+            font_size,
+            position,
+            size,
+            self._dialog,
+            color
+        )
+        button.get(ClickHandlerComponent).on_button_pressed.subscribe(func)
+        self._dialog.add_child(button)
         return self
 
     def build(self):

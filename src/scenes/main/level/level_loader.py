@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pygame
 
-from src.core.resources.image_loader import image_loader as il
+from src.core.singletones.image_loader import image_loader as il
 
 
 @dataclass

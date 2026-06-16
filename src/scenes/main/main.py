@@ -2,8 +2,9 @@ import logging
 
 from pygame.math import Vector2
 
-from src.core.resources.image_loader import image_loader
+from src.core.singletones.image_loader import image_loader
 from src.core.systems.input import cursor
+from src.core.singletones.event_bus import event_bus
 
 # Составляющие сцены.
 from src.core.objects.scene import Scene
@@ -36,6 +37,8 @@ START_SUNS = 400
 SUNS_TEXT_POSITION = Vector2(0, 0)
 SUNS_TEXT_SIZE = 20
 UPGRADE_DIALOG_SIZE = Vector2(300, 150)
+UPGRADE_BUTTON_TEXT = "Улучшить"
+UPGRADE_BUTTON_FONT_SIZE = 18
 
 
 class MainScene(Scene):
@@ -43,6 +46,7 @@ class MainScene(Scene):
         # Статистика уровня.
         self.suns: int = START_SUNS
         self.on_suns_update: Event = Event()
+        self.upgrade_dialogs: list = list()
         # Загрузка уровня.
         self.setup_level()
         # Фабрики объектов.
@@ -50,6 +54,9 @@ class MainScene(Scene):
         self.inventory: Inventory = self.inventory_factory.create_inventory()
         # Оркестратор волн и спавна врагов.
         self.setup_waves()
+        event_bus.subscribe("on_requested_upgrade_dialog", self.open_upgrade_dialog)
+        event_bus.subscribe("on_requested_upgrade", self.plant_upgrade)
+        event_bus.subscribe("on_plant_level_uped", self.plant_level_up)
         self.build_interface()
 
     def setup_factories(self):
@@ -81,9 +88,8 @@ class MainScene(Scene):
 
     def build_interface(self):
         self.suns_text = self.ui_factory.create_text(
-            SUNS_TEXT_POSITION,
-            None,
             f"Солнышки: {self.suns}",
+            SUNS_TEXT_POSITION,
             SUNS_TEXT_SIZE
         )
         self.on_suns_update.subscribe(
@@ -101,6 +107,7 @@ class MainScene(Scene):
             tile_type: int,
             global_pos: Vector2
         ):
+        self.close_all_upgrade_dialogs()
         """Посадка растения."""
         plant_name = self.inventory.get(InventoryModelComponent).get_active_slot()
         map_level_data = self.gamemap.get(MapLevelDataComponent)
@@ -119,8 +126,6 @@ class MainScene(Scene):
                         self.bullet_factory,
                         self.give_sun,
                         self.gamemap.get(MapLevelDataComponent).remove_plant,
-                        self.level_up,
-                        self.upgrade,
                         self.ui_factory
                     )
                     .with_plant(
@@ -128,16 +133,17 @@ class MainScene(Scene):
                         global_pos_centred,
                         tile_pos
                     )
-                    .with_button()
                     .with_upgrade()
+                    .with_button()
                     .build()
                 )
                 self.gamemap.get(MapLevelDataComponent).add_plant(
                     tuple(tile_pos)
                 )
 
-    def level_up(self, plant: BasePlant, target_plant_name):
+    def plant_level_up(self, plant: BasePlant, target_plant_name):
         """Трансформация растения после уровня улучшения."""
+        self.close_all_upgrade_dialogs()
         global_pos_centred = (
             self.gamemap
             .get(MapModelComponent)
@@ -150,8 +156,6 @@ class MainScene(Scene):
                 self.bullet_factory,
                 self.give_sun,
                 self.gamemap.get(MapLevelDataComponent).remove_plant,
-                self.level_up,
-                self.upgrade,
                 self.ui_factory
             )
             .with_replace(plant.tile_pos)
@@ -160,8 +164,8 @@ class MainScene(Scene):
                 global_pos_centred,
                 plant.tile_pos
             )
-            .with_button()
             .with_upgrade()
+            .with_button()
             .build()
         )
         self.gamemap.get(MapLevelDataComponent).add_plant(
@@ -171,9 +175,10 @@ class MainScene(Scene):
             plant.tile_pos
         )
         plant.free()
+        logging.debug(event_bus.listeners)
 
-    def upgrade(self, plant: BasePlant):
-        """Одноразовое улучшение растения."""
+    def open_upgrade_dialog(self, plant: BasePlant, request_upgrade_func):
+        self.close_all_upgrade_dialogs()
         dialog = (
             DialogBuilder(
                 self.add_object,
@@ -185,13 +190,27 @@ class MainScene(Scene):
                 plant
             )
             .with_text(PLANTS_DESCRIPTIONS[PLANTS_CLASSES[type(plant)]], 18)
+            .with_button(
+                UPGRADE_BUTTON_TEXT,
+                UPGRADE_BUTTON_FONT_SIZE,
+                request_upgrade_func
+            )
             .build()
         )
-        upgrade_cost = plant.get(UpgradeComponent).get_upgrade_cost()
-        if self.suns >= upgrade_cost:
+        logging.debug(f"{request_upgrade_func}")
+        self.upgrade_dialogs.append(dialog)
+
+    def close_all_upgrade_dialogs(self):
+        for dialog in self.upgrade_dialogs:
+            dialog.free()
+        self.upgrade_dialogs = list()
+
+    def plant_upgrade(self, plant: BasePlant, price: int, upgrade_func):
+        """Одноразовое улучшение растения."""
+        if self.suns >= price:
             logging.debug(f"Растение улучшено: {self.suns}")
-            self.decrease_suns(upgrade_cost)
-            plant.get(UpgradeComponent).upgrade()
+            self.decrease_suns(price)
+            upgrade_func()
 
     def check_suns(self, plant: str) -> bool:
         return self.suns >= PLANTS_PRICES[plant]
@@ -206,6 +225,7 @@ class MainScene(Scene):
 
     def decrease_suns(self, suns: int):
         self.suns -= suns
+        logging.debug(f"Минус солнышки: {self.suns}")
         self.on_suns_update.emit(self.suns)
 
     def create_dialog(self, plant_model):

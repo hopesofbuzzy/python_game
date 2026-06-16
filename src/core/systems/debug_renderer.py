@@ -1,4 +1,5 @@
 import logging
+from random import randrange
 
 import pygame
 from pygame.math import Vector2

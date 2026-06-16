@@ -3,7 +3,7 @@ from abc import abstractmethod
 from pygame.event import Event as PygameEvent
 
 from src.core.objects import *
-from src.core.systems.images import ImageLoader
+from src.core.singletones.image_loader import ImageLoader
 
 
 # FSM для сцен.

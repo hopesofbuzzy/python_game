@@ -1,8 +1,6 @@
 import logging
-from dataclasses import dataclass
-
 import pygame
-
+from dataclasses import dataclass
 
 @dataclass
 class Image:
@@ -27,3 +25,7 @@ class ImageLoader:
 
     def cleanup(self):
         self.image_registry = {}
+
+
+# Инициализируем ОДИН раз при импорте этого модуля
+image_loader = ImageLoader()

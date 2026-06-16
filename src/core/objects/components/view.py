@@ -5,8 +5,8 @@ import pygame
 from pygame.math import Vector2
 
 from src.core.objects.game_object import GameObject
-from src.core.resources.image_loader import image_loader as il
-from src.core.systems.images import Image
+from src.core.singletones.image_loader import image_loader as il
+from src.core.singletones.image_loader import Image
 
 
 class RectComponent:
