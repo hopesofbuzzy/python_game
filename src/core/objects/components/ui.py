@@ -143,6 +143,7 @@ class ClickHandlerComponent:
         else:
             cursor_pos = cursor.pos
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
+            logging.debug("EMITTIIIIING")
             self.on_button_pressed.emit()
             event.stop()
 

@@ -159,8 +159,7 @@ class MainScene(Scene):
             self,
             event: EventFlow,
             plant: BasePlant,
-            target_plant_name,
-            request_upgrade_func
+            target_plant_name
     ):
         """Трансформация растения после уровня улучшения."""
         self.close_all_upgrade_dialogs()
@@ -195,7 +194,11 @@ class MainScene(Scene):
             plant.tile_pos
         )
         plant.free()
-        self.open_upgrade_dialog(EventFlow(), new_plant, request_upgrade_func)
+        self.open_upgrade_dialog(
+            EventFlow(),
+            new_plant,
+            new_plant.get(UpgradeComponent).request_upgrade
+        )
 
     def open_upgrade_dialog(
             self,
@@ -222,7 +225,6 @@ class MainScene(Scene):
             )
             .build()
         )
-        logging.debug(f"{request_upgrade_func}")
         self.upgrade_dialogs.append(dialog)
 
     def close_all_upgrade_dialogs(self):
@@ -258,9 +260,6 @@ class MainScene(Scene):
         self.suns -= suns
         logging.debug(f"Минус солнышки: {self.suns}")
         self.on_suns_update.emit(self.suns)
-
-    def create_dialog(self, plant_model):
-        logging.debug("Появляется диалог")
 
     def game_over(self):
         """Проигрыш."""

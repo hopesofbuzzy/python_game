@@ -18,6 +18,7 @@ class UpgradeComponent:
         event_bus.fire("on_requested_upgrade_dialog", self.plant, self.request_upgrade)
 
     def request_upgrade(self):
+        logging.debug("Запрос на улучшение")
         event_bus.fire(
             "on_requested_upgrade",
             self.plant,
@@ -34,7 +35,6 @@ class UpgradeComponent:
                 "on_plant_level_uped",
                 self.plant,
                 self.target_name,
-                self.request_upgrade
             )
             self.suns -= 10000
 

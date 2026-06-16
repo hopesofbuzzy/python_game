@@ -10,10 +10,11 @@ logging.basicConfig(
     format='%(filename)s - %(levelname)s - %(message)s'
 )
 
+DEBUG = False
 
 def main():
     pygame.init()
-    game = Game(MainScene, debug=False)
+    game = Game(MainScene, debug=DEBUG)
     screen = pygame.display.set_mode(game.WINDOW_SIZE)
     clock = pygame.time.Clock()
     delta_time = 0.0

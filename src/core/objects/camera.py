@@ -27,7 +27,7 @@ class Camera:
         if zoom_idx >= 0 and zoom_idx < len(self.ZOOMES):
             self.zoom_idx = zoom_idx
             self.zoom = self.ZOOMES[self.zoom_idx]
-            logging.debug(f"Zoom+ {self.zoom}")
+            # logging.debug(f"Zoom+ {self.zoom}")
 
     def handle_drag(self):
         if cursor:

@@ -88,6 +88,7 @@ class DialogBuilder:
             self._dialog,
             color
         )
+        logging.debug("Функция соединена")
         button.get(ClickHandlerComponent).on_button_pressed.subscribe(func)
         self._dialog.add_child(button)
         return self
