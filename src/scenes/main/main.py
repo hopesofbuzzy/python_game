@@ -2,26 +2,17 @@ import logging
 
 from pygame.math import Vector2
 
-from src.core.singletones.event_bus import EventFlow
-
 from src.core.objects import (
     Map,
     MapControllerComponent,
     MapModelComponent,
 )
-
 from src.core.objects.scene import Scene
-
-# Системы текущей сцены.
-from src.scenes.main.systems.currency import CurrencyManager
-from src.scenes.main.systems.plant import PlantController
-from src.scenes.main.systems.ui import UIManager
-from src.scenes.main.systems.upgrade import UpgradeManager
-from src.scenes.main.systems.waves import WaveManager
+from src.core.singletones.event_bus import EventFlow
+from src.scenes.main.factories.bullet_factory import BulletFactory
 
 # Фабрики и строители.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
-from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
@@ -32,6 +23,13 @@ from src.scenes.main.objects import (
     InventoryModelComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+
+# Системы текущей сцены.
+from src.scenes.main.systems.currency import CurrencyManager
+from src.scenes.main.systems.plant import PlantController
+from src.scenes.main.systems.ui import UIManager
+from src.scenes.main.systems.upgrade import UpgradeManager
+from src.scenes.main.systems.waves import WaveManager
 
 LEVEL_NAME = "2"
 

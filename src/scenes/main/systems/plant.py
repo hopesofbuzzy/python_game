@@ -1,17 +1,14 @@
-from pygame.math import Vector2
 from typing import Callable, Optional
 
-from src.core.singletones.event_bus import EventFlow
+from pygame.math import Vector2
 
-from src.scenes.main.systems.currency import CurrencyManager
-from src.scenes.main.objects import (
-    InventoryModelComponent,
-    MapLevelDataComponent
-)
 from src.core.objects import Map
-from src.scenes.main.factories.plant_builder import PlantBuilder
+from src.core.singletones.event_bus import EventFlow
 from src.scenes.main.factories.bullet_factory import BulletFactory
+from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
+from src.scenes.main.objects import InventoryModelComponent, MapLevelDataComponent
+from src.scenes.main.systems.currency import CurrencyManager
 
 
 class PlantController:

@@ -18,9 +18,9 @@ from src.scenes.main.objects import (
     HealthComponent,
     LongMushroom,
     Mushroom,
+    PlantDataComponent,
     Sunflower,
     UpgradeComponent,
-    PlantDataComponent
 )
 
 # Растения

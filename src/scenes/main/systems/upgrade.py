@@ -1,31 +1,28 @@
 import logging
-from pygame.math import Vector2
 from typing import Callable
 
-from src.core.singletones.event_bus import EventFlow, EventBus
+from pygame.math import Vector2
 
-from src.scenes.main.factories.dialog_builder import DialogBuilder
-from src.scenes.main.factories.plant_builder import PlantBuilder
-from src.scenes.main.factories.plant_builder import PlantBuilder
-from src.scenes.main.factories.bullet_factory import BulletFactory
-from src.scenes.main.factories.ui_factory import UIFactory
-
-from src.scenes.main.objects import (
-    BasePlant,
-    UpgradeComponent,
-    MapLevelDataComponent,
-    PlantDataComponent
-)
 from src.core.objects import (
     Map,
     MapModelComponent,
 )
+from src.core.singletones.event_bus import EventBus, EventFlow
+from src.scenes.main.factories.bullet_factory import BulletFactory
+from src.scenes.main.factories.dialog_builder import DialogBuilder
+from src.scenes.main.factories.plant_builder import PlantBuilder
+from src.scenes.main.factories.ui_factory import UIFactory
+from src.scenes.main.objects import (
+    BasePlant,
+    MapLevelDataComponent,
+    PlantDataComponent,
+    UpgradeComponent,
+)
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
-
-from src.scenes.main.systems.currency import CurrencyManager
 
 # Константы
 from src.scenes.main.objects.plants import PLANTS_DESCRIPTIONS
+from src.scenes.main.systems.currency import CurrencyManager
 
 UPGRADE_DIALOG_SIZE = Vector2(300, 150)
 UPGRADE_BUTTON_TEXT = "Улучшить"
