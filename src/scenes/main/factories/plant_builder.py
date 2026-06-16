@@ -82,6 +82,7 @@ class PlantBuilder:
             remove_plant,
             level_up,
             upgrade,
+            ui_factory
         ):
         self.add_object = add_object
         self.give_sun = give_sun
@@ -89,6 +90,7 @@ class PlantBuilder:
         self.remove_plant = remove_plant
         self.level_up = level_up
         self.upgrade = upgrade
+        self.ui_factory = ui_factory
         self._plant = None
         self.plant_name = ""
         self.PLANTS = {
@@ -128,19 +130,17 @@ class PlantBuilder:
     def with_button(self):
         if not self._plant:
             raise ValueError("Строителю нужно растение!")
-        click_handler = ClickHandlerComponent(
-            UITransform(
-                Vector2(0, 0),
-                PLANT_SIZE,
-                False,
-                anchor=self._plant,
-                centred=True
-            )
+        click_handler = self.ui_factory.create_click_handler(
+            Vector2(0, 0),
+            PLANT_SIZE,
+            self._plant
         )
-        self._plant.add(click_handler)
+        self._plant.add_child(click_handler)
         upgrade_func = self.upgrade
         plant = self._plant
-        click_handler.on_button_pressed.subscribe(lambda: upgrade_func(plant))
+        click_handler.get(ClickHandlerComponent).on_button_pressed.subscribe(
+            lambda: upgrade_func(plant)
+        )
         return self
 
     def build(self) -> BasePlant:

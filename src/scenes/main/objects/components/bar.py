@@ -4,6 +4,7 @@ import pygame
 from src.core.objects import UITransform
 
 DEFAULT_BAR_COLOR = (255, 70, 70)
+DEFAULT_EMPTY_BAR_COLOR = (127, 35, 35)
 
 class BarComponent:
     """Отрисовщик шкалы отображения значения."""
@@ -24,10 +25,18 @@ class BarComponent:
         logging.debug(f"Установленое значение шкалы: {self.value} / {self.max}")
 
     def draw(self, screen: pygame.Surface, size, local_position, zoom):
-        rect = pygame.Rect(
+        border = size.x * zoom * (self.value / self.max)
+        full_rect = pygame.Rect(
             local_position.x,
             local_position.y,
-            size.x * zoom * (self.value / self.max),
+            border,
             size.y * zoom
         )
-        pygame.draw.rect(screen, self.color, rect)
+        empty_rect = pygame.Rect(
+            local_position.x + border,
+            local_position.y,
+            size.x * zoom * (1 - self.value / self.max),
+            size.y * zoom
+        )
+        pygame.draw.rect(screen, self.color, full_rect)
+        pygame.draw.rect(screen, DEFAULT_EMPTY_BAR_COLOR, empty_rect)

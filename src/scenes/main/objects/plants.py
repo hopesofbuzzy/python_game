@@ -26,6 +26,15 @@ PLANTS_LEVEL_UPS = {
     "BigMushroom": {"plant_name": "", "cost": 50000}
 }
 
+PLANTS_DESCRIPTIONS = {
+    "Sunflower": str(
+        "Подсолнышко\n"
+        "Класс: дорожное растение\n"
+        "Скорость: 5 подсолнышек / 10 секунд\n"
+        "Следующее улучшение: нет\n"
+    )
+}
+
 # Базовое растение
 class BasePlant(GameObject):
     """Универсальное растение."""
@@ -55,3 +64,9 @@ class BigMushroom(BasePlant):
 class Sunflower(BasePlant):
     """Подсолнышко, дающее солнышки."""
     ...
+
+
+PLANTS_CLASSES = {
+    Mushroom: "Mushroom",
+    Sunflower: "Sunflower"
+}

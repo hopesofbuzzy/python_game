@@ -24,14 +24,18 @@ from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.ui_factory import UIFactory
+from src.scenes.main.factories.dialog_builder import DialogBuilder
 from src.scenes.main.objects import Inventory, InventoryModelComponent
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 
 # Константы
-from src.scenes.main.objects.plants import PLANTS, PLANTS_PRICES
+from src.scenes.main.objects.plants import PLANTS, PLANTS_PRICES, PLANTS_DESCRIPTIONS, PLANTS_CLASSES
 from src.scenes.main.wave_manager import WaveManager
 
 START_SUNS = 400
+SUNS_TEXT_POSITION = Vector2(0, 0)
+SUNS_TEXT_SIZE = 20
+UPGRADE_DIALOG_SIZE = Vector2(300, 150)
 
 
 class MainScene(Scene):
@@ -76,7 +80,12 @@ class MainScene(Scene):
         self.wave_manager.on_enemy_reached_end.subscribe(self.game_over)
 
     def build_interface(self):
-        self.suns_text = self.ui_factory.create_text(f"Солнышки: {self.suns}", 20)
+        self.suns_text = self.ui_factory.create_text(
+            SUNS_TEXT_POSITION,
+            None,
+            f"Солнышки: {self.suns}",
+            SUNS_TEXT_SIZE
+        )
         self.on_suns_update.subscribe(
             lambda s: self.suns_text.get(TextRenderComponent).set_text(f"Солнышки: {s}")
         )
@@ -111,7 +120,8 @@ class MainScene(Scene):
                         self.give_sun,
                         self.gamemap.get(MapLevelDataComponent).remove_plant,
                         self.level_up,
-                        self.upgrade
+                        self.upgrade,
+                        self.ui_factory
                     )
                     .with_plant(
                         plant_name,
@@ -141,7 +151,8 @@ class MainScene(Scene):
                 self.give_sun,
                 self.gamemap.get(MapLevelDataComponent).remove_plant,
                 self.level_up,
-                self.upgrade
+                self.upgrade,
+                self.ui_factory
             )
             .with_replace(plant.tile_pos)
             .with_plant(
@@ -163,6 +174,19 @@ class MainScene(Scene):
 
     def upgrade(self, plant: BasePlant):
         """Одноразовое улучшение растения."""
+        dialog = (
+            DialogBuilder(
+                self.add_object,
+                self.ui_factory
+            )
+            .with_dialog(
+                Vector2(0, 0),
+                UPGRADE_DIALOG_SIZE,
+                plant
+            )
+            .with_text(PLANTS_DESCRIPTIONS[PLANTS_CLASSES[type(plant)]], 18)
+            .build()
+        )
         upgrade_cost = plant.get(UpgradeComponent).get_upgrade_cost()
         if self.suns >= upgrade_cost:
             logging.debug(f"Растение улучшено: {self.suns}")

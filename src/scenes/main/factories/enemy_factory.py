@@ -21,7 +21,7 @@ from src.scenes.main.objects import (
 
 # Enemy
 ENEMY_SPEED = 35
-ENEMY_HEALTH = 50
+ENEMY_HEALTH = 80
 ENEMY_SIZE = Vector2(40, 40)
 ENEMY_COLOR = (255, 25, 25)
 
@@ -70,7 +70,6 @@ class EnemyFactory:
             return enemy
         else:
             raise ValueError("Неизвестный враг!")
-
 
     def create_normal_enemy(self, position, path):
         position_comp = PositionComponent(position, None)

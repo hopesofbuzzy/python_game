@@ -51,7 +51,6 @@ class MapLevelDataComponent:
                 elif tile_idx in path_tiles:
                     self.path_poses.add((x, y))
                 for plant_name, plant_tiles_to_place in tiles_to_place.items():
-                    logging.debug(f"{tile_idx}, {plant_tiles_to_place}")
                     if tile_idx in plant_tiles_to_place:
                         self.poses_to_place[plant_name] = (
                             self.poses_to_place.setdefault(plant_name, set())
