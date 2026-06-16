@@ -30,7 +30,7 @@ class MapViewComponent:
                 self._scaled_tilesets[size][tile_idx] = tile
         return self._scaled_tilesets[size]
 
-    def draw(self, screen: pygame.Surface, model, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, zoom):
         pos = local_position
         scaled_tileset = self.get_scaled_tileset(zoom)
         for ridx, row in enumerate(self.map_model.tiles):

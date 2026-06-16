@@ -61,7 +61,7 @@ LONG_MUSHROOM_ATTACK = 1
 LONG_MUSHROOM_COOLDOWN = 0.25
 LONG_MUSHROOM_IMAGE_PATH = "res/sunflower.png"
 LONG_MUSHROOM_RANGE = 4
-LONG_MUSHROOM_BULLET_SPEED = 250
+LONG_MUSHROOM_BULLET_SPEED = 300
 
 BIG_MUSHROOM_ATTACK = 12
 BIG_MUSHROOM_COOLDOWN = 1
@@ -74,7 +74,15 @@ BIG_MUSHROOM_BULLET_SPEED = 200
 class PlantBuilder:
     """Строитель растений."""
 
-    def __init__(self, add_object, bullet_factory, give_sun, remove_plant, level_up, upgrade):
+    def __init__(
+            self,
+            add_object,
+            bullet_factory,
+            give_sun,
+            remove_plant,
+            level_up,
+            upgrade,
+        ):
         self.add_object = add_object
         self.give_sun = give_sun
         self.bullet_factory = bullet_factory

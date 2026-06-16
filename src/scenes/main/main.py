@@ -31,7 +31,7 @@ from src.scenes.main.objects.components.map_level_data import MapLevelDataCompon
 from src.scenes.main.objects.plants import PLANTS, PLANTS_PRICES
 from src.scenes.main.wave_manager import WaveManager
 
-START_SUNS = 300
+START_SUNS = 400
 
 
 class MainScene(Scene):
@@ -49,11 +49,11 @@ class MainScene(Scene):
         self.build_interface()
 
     def setup_factories(self):
-        self.enemy_factory: EnemyFactory = EnemyFactory(self.add_object )
         self.bullet_factory: BulletFactory = BulletFactory(self.add_object,)
         self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object)
+        self.enemy_factory: EnemyFactory = EnemyFactory(self.add_object, self.ui_factory)
 
     def setup_level(self):
         self.level_builder: LevelBuilder = LevelBuilder(

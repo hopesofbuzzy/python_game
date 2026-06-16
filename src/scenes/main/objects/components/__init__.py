@@ -7,3 +7,4 @@ from .map_level_data import MapLevelDataComponent
 from .tag import TagContactComponent
 from .timer import TimerComponent
 from .upgrade import UpgradeComponent
+from .bar import BarComponent

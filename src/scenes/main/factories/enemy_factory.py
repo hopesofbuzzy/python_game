@@ -8,13 +8,15 @@ from src.core.objects import (
     RectShape,
     PositionComponent,
     PatrolComponent,
-    RectComponent
+    RectComponent,
+    UITransform
 )
 
 from src.scenes.main.objects import (
     AttackComponent,
     HealthComponent,
-    Enemy
+    Enemy,
+    BarComponent
 )
 
 # Enemy
@@ -36,8 +38,9 @@ FAST_ENEMY_COLOR = (80, 80, 255)
 class EnemyFactory:
     """Фабрика сборки врагов."""
 
-    def __init__(self, add_object):
+    def __init__(self, add_object, ui_factory):
         self.add_object = add_object
+        self.ui_factory = ui_factory
         self.ENEMIES = {
             "Enemy": self.create_normal_enemy,
             "FastEnemy": self.create_fast_enemy
@@ -48,9 +51,21 @@ class EnemyFactory:
             enemy = self.ENEMIES[name](*args)
             enemy.tags.add("enemy")
             self.add_object(enemy)
+            # Wiring
             enemy.get(HealthComponent).on_death.subscribe(enemy.free)
             enemy.get(CollisionComponent).on_collision.subscribe(
                 enemy.get(AttackComponent).handle_collision
+            )
+            health_bar = self.ui_factory.create_bar(
+                Vector2(0, -30),
+                Vector2(50, 10),
+                enemy.get(HealthComponent).hp,
+                enemy.get(HealthComponent).hp,
+                enemy
+            )
+            enemy.add_child(health_bar)
+            enemy.get(HealthComponent).on_damage.subscribe(
+                health_bar.get(BarComponent).set_value
             )
             return enemy
         else:

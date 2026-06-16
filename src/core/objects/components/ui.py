@@ -15,7 +15,13 @@ from src.core.systems.input import cursor
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 
 class UITransform:
-    """Область интерфейса."""
+    """
+        Область интерфейса.
+
+        UITransform может использоваться как компонент UIControl
+        или как внутренний элемент объекта интерфейса,
+        связанного с 2D объектом GameObject.
+    """
     def __init__(
             self,
             position: Vector2,
@@ -27,12 +33,13 @@ class UITransform:
             children: set['UITransform'] = set()
     ):
         self._position = position
-        if not screen_anchor and anchor:
-            self._position += anchor.get(PositionComponent).position
+        self._original_position = position.copy()
         self.screen_anchor: bool = screen_anchor
+        self.anchor = anchor
         self.size = size
         self.centred = centred
         self.parent = parent
+        self.fit_anchor()
         self.children: set['UITransform'] = children
 
     @property
@@ -56,6 +63,18 @@ class UITransform:
     def remove_child(self, child: 'UITransform'):
         self.children.remove(child)
         child.parent = None
+
+    def update(self, delta_time):
+        self.fit_anchor()
+
+    def fit_anchor(self):
+        if self.anchor and not self.screen_anchor:
+            self._position = self._original_position.copy()
+            if self.anchor.has(PositionComponent):
+                self._position += self.anchor.get(PositionComponent).position
+            elif self.anchor.has(UITransform):
+                self._position += self.anchor.get(UITransform).position
+        
 
     def contains(self, mouse_x, mouse_y) -> bool:
         """Проверка координат на вхождение в зону нажатия."""
@@ -98,7 +117,7 @@ class TextRenderComponent:
     def set_text(self, text: str):
         self.text = str(text)
 
-    def draw(self, screen: pygame.Surface, model, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, zoom):
         font = (
             pygame.font
             .SysFont("Arial", self.size)
@@ -120,4 +139,6 @@ class VerticalLayoutComponent:
 
 class UIControl(GameObject):
     """Универсальный элемент интерфейса."""
-    ...
+    def __init__(self):
+        super().__init__()
+        self.z_index = 1000

@@ -12,7 +12,9 @@ class GameObject(ABC):
     def __init__(self):
         self.components = dict()
         self.uid = -1
+        self.children: list[GameObject] = list()
         self.on_destroy: Event = Event()
+        self.z_index: int = 1
         self.tags: set[str] = set()
 
     def add(self, component) -> Self:
@@ -30,18 +32,23 @@ class GameObject(ABC):
             if hasattr(c, "update"):
                 c.update(delta_time)
 
-    def draw(self, screen, local_position, zoom):
+    def draw(self, screen, size, local_position, zoom):
         for c_type, c in self.components.items():
             if hasattr(c, "draw"):
-                c.draw(screen, None, local_position, zoom)
+                c.draw(screen, size, local_position, zoom)
 
     def handle_input(self, event: PygameEvent):
         for c_type, c in self.components.items():
             if hasattr(c, "handle_input"):
                 c.handle_input(event)
 
+    def add_child(self, child):
+        self.children.append(child)
+
     def free(self):
         for c_type, c in self.components.items():
             if hasattr(c, "free"):
                 c.free()
+        for child in self.children:
+            child.free()
         self.on_destroy.emit(self)

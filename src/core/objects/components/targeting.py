@@ -26,23 +26,23 @@ class TargetingComponent:
         self.cooldown = cooldown
         self.speed = speed
         self._timer: float = 0.0
-        self.current_target = None
+        self.queue = list()
         self.on_shoot: Event = Event()
 
     def choose_target(self, targets: list[GameObject]):
         if targets:
-            if self.current_target:
-                if self.current_target in targets:
-                    return
-            logging.debug("Новая цель")
-            self.current_target = targets[0]
+            for target in targets:
+                if target not in self.queue:
+                    self.queue.append(target)
+            if self.queue[0] not in targets:
+                self.queue.pop(0)
         else:
-            self.current_target = None
+            self.queue = list()
 
     def update(self, delta_time):
         if self._timer < 0.0:
-            if self.current_target:
-                target_pos = self.current_target.get(PositionComponent).position
+            if self.queue:
+                target_pos = self.queue[0].get(PositionComponent).position
                 direction = (target_pos - self.position.position).normalize()
                 self.on_shoot.emit(
                     direction, self.position.position, self.damage, self.speed

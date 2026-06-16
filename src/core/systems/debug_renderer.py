@@ -50,6 +50,18 @@ class DebugRenderer:
                     camera.to_local(position),
                     camera.zoom
                 )
+            if object.has(UITransform):
+                position = None
+                if object.get(UITransform).screen_anchor:
+                    position = object.get(UITransform).position
+                else:
+                    position = camera.to_local(object.get(UITransform).position)
+                self.draw_ui_transform(
+                    screen,
+                    object.get(UITransform).size,
+                    position,
+                    camera.zoom
+                )
         for object in scene.object_registry.values():
             for c in object.components.values():
                 if hasattr(c, "ui_transform"):
