@@ -41,4 +41,7 @@ class GameObject(ABC):
                 c.handle_input(event)
 
     def free(self):
+        for c_type, c in self.components.items():
+            if hasattr(c, "free"):
+                c.free()
         self.on_destroy.emit(self)

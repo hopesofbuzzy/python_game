@@ -51,16 +51,24 @@ SUNFLOWER_HEALTH = 15
 # Гриб
 MUSHROOM_RANGE = 2
 MUSHROOM_ATTACK = 3
-MUSHROOM_COOLDOWN = 0.5
+MUSHROOM_COOLDOWN = 0.7
 MUSHROOM_PRICE = 50
 MUSHROOM_IMAGE_PATH = "res/mushroom.png"
 MUSHROOM_RANGE = 2
 
+# Гриб-снайпер
 LONG_MUSHROOM_ATTACK = 1
 LONG_MUSHROOM_COOLDOWN = 0.25
-LONG_MUSHROOM_IMAGE_PATH = "res/mushroom.png"
+LONG_MUSHROOM_IMAGE_PATH = "res/sunflower.png"
 LONG_MUSHROOM_RANGE = 4
 LONG_MUSHROOM_BULLET_SPEED = 250
+
+BIG_MUSHROOM_ATTACK = 12
+BIG_MUSHROOM_COOLDOWN = 1
+BIG_MUSHROOM_IMAGE_PATH = "res/mushroom.png"
+BIG_MUSHROOM_RANGE = 3
+BIG_MUSHROOM_BULLET_SPEED = 200
+
 
 
 class PlantBuilder:
@@ -79,7 +87,7 @@ class PlantBuilder:
             "Mushroom": self.create_mushroom,
             "Sunflower": self.create_sunflower,
             "LongMushroom": self.create_long_mushroom,
-            # "BigMushroom": self.create_big_mushroom
+            "BigMushroom": self.create_big_mushroom
         }
 
     def with_replace(self, tile_pos: tuple):
@@ -122,7 +130,9 @@ class PlantBuilder:
             )
         )
         self._plant.add(click_handler)
-        click_handler.on_button_pressed.subscribe(lambda: self.upgrade(self._plant))
+        upgrade_func = self.upgrade
+        plant = self._plant
+        click_handler.on_button_pressed.subscribe(lambda: upgrade_func(plant))
         return self
 
     def build(self) -> BasePlant:
@@ -171,6 +181,27 @@ class PlantBuilder:
         )
         return mushroom
 
+    def create_big_mushroom(self, position, tile_pos):
+        position_comp = PositionComponent(position, None)
+        mushroom = (
+            LongMushroom(tile_pos, MUSHROOM_PRICE)
+            .add(position_comp)
+            .add(SpriteComponent(BIG_MUSHROOM_IMAGE_PATH, PLANT_SIZE, True))
+            .add(TargetingComponent(
+                    position_comp,
+                    BIG_MUSHROOM_RANGE,
+                    BIG_MUSHROOM_ATTACK,
+                    cooldown=BIG_MUSHROOM_COOLDOWN,
+                    speed=BIG_MUSHROOM_BULLET_SPEED
+                )
+            )
+        )
+        logging.debug(f"{mushroom.get(TargetingComponent).cooldown}")
+        mushroom.get(TargetingComponent).on_shoot.subscribe(
+            self.bullet_factory.create_bullet
+        )
+        return mushroom
+
     def create_sunflower(self, position, tile_pos):
         sunflower = (
             Sunflower(tile_pos, SUNFLOWER_PRICE)
@@ -186,8 +217,9 @@ class PlantBuilder:
             .add(CycleTimerComponent(SUNFLOWER_COOLDOWN, SUNFLOWER_GIVEN_SUN))
             .add(HealthComponent(SUNFLOWER_HEALTH))
         )
+        remove_plant_func = self.remove_plant
         sunflower.get(HealthComponent).on_death.subscribe(
-            lambda: self.remove_plant(sunflower.tile_pos)
+            lambda: remove_plant_func(sunflower.tile_pos)
         )
         sunflower.get(HealthComponent).on_death.subscribe(lambda: sunflower.free())
         sunflower.get(CycleTimerComponent).on_timeout.subscribe(self.give_sun)

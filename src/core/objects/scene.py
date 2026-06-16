@@ -46,6 +46,8 @@ class Scene:
             self._objects_to_delete[obj_id] = object
 
     def cleanup(self):
+        if len(self._objects_to_delete):
+            logging.debug(f"objects_to_delete: len({self._objects_to_delete})")
         for obj_id, obj in self._objects_to_delete.items():
             if obj_id in self.object_registry:
                 self.object_registry.pop(obj_id)

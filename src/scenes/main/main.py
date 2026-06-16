@@ -31,7 +31,7 @@ from src.scenes.main.objects.components.map_level_data import MapLevelDataCompon
 from src.scenes.main.objects.plants import PLANTS, PLANTS_PRICES
 from src.scenes.main.wave_manager import WaveManager
 
-START_SUNS = 150
+START_SUNS = 300
 
 
 class MainScene(Scene):
@@ -136,6 +136,7 @@ class MainScene(Scene):
             .get(MapModelComponent)
             .tile_to_pos_centred(Vector2(plant.tile_pos))
         )
+        logging.debug(f"Начинаем улучшение {target_plant_name}")
         new_plant = (
             PlantBuilder(
                 self.add_object,
@@ -152,6 +153,7 @@ class MainScene(Scene):
                 plant.tile_pos
             )
             .with_button()
+            .with_upgrade()
             .build()
         )
         self.gamemap.get(MapLevelDataComponent).add_plant(
@@ -166,7 +168,7 @@ class MainScene(Scene):
         """Одноразовое улучшение растения."""
         upgrade_cost = plant.get(UpgradeComponent).get_upgrade_cost()
         if self.suns >= upgrade_cost:
-            logging.debug("Растение улучшено!")
+            logging.debug(f"Растение улучшено: {self.suns}")
             self.decrease_suns(upgrade_cost)
             plant.get(UpgradeComponent).upgrade()
 

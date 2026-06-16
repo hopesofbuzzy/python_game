@@ -1,5 +1,6 @@
 import logging
 from typing import Optional
+import gc
 
 import pygame
 from pygame.event import Event as PygameEvent
@@ -73,6 +74,7 @@ class ClickHandlerComponent:
         cursor.on_left_click.subscribe(self.on_left_click)
 
     def on_left_click(self):
+        # logging.debug(f"Левый клик {id(self)} {gc.get_referrers(self)}")
         cursor_pos = None
         if self.ui_transform.screen_anchor:
             cursor_pos = cursor.pos
@@ -80,6 +82,9 @@ class ClickHandlerComponent:
             cursor_pos = cursor.global_pos
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
             self.on_button_pressed.emit()
+
+    def free(self):
+        cursor.on_left_click.unsubscribe(self.on_left_click)
 
 DEFAULT_TEXT_COLOR = (255, 255, 255)
 

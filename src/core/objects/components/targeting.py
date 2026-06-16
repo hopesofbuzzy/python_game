@@ -24,7 +24,6 @@ class TargetingComponent:
         self.range = range
         self.damage = damage
         self.cooldown = cooldown
-        logging.debug(self.cooldown)
         self.speed = speed
         self._timer: float = 0.0
         self.current_target = None
@@ -32,6 +31,10 @@ class TargetingComponent:
 
     def choose_target(self, targets: list[GameObject]):
         if targets:
+            if self.current_target:
+                if self.current_target in targets:
+                    return
+            logging.debug("Новая цель")
             self.current_target = targets[0]
         else:
             self.current_target = None
@@ -44,7 +47,6 @@ class TargetingComponent:
                 self.on_shoot.emit(
                     direction, self.position.position, self.damage, self.speed
                 )
-                self.current_target = None
                 
                 self._timer = self.cooldown
         else:
