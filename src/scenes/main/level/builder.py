@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import pygame
 
 from src.core.objects.components.map import Map, MapModelComponent
-from src.scenes.main.factories.map_factory import LevelFactory
+from src.scenes.main.factories.map_factory import MapFactory
 from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
@@ -22,9 +22,8 @@ class LevelBuilder:
 
     def __init__(
         self,
-        add_object,
         level_loader: LevelLoader,
-        level_factory: LevelFactory
+        level_factory: MapFactory
     ):
         # Загрузчик уровней.
         self.lm = level_loader

@@ -14,10 +14,11 @@ from src.scenes.main.factories.bullet_factory import BulletFactory
 # Фабрики и строители.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
+from src.scenes.main.factories.map_factory import MapFactory
 from src.scenes.main.factories.path_factory import PathFactory
-from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.level.builder import Level, LevelBuilder
+from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
@@ -64,7 +65,8 @@ class MainScene(Scene):
 
     def setup_level(self):
         self.level_builder: LevelBuilder = LevelBuilder(
-            self.add_object
+            LevelLoader(),
+            MapFactory(self.add_object)
         )
         self.level: Level = self.level_builder.load_and_create_level(
             Vector2(0, 0),

@@ -8,7 +8,7 @@ from src.core.objects import (
 from src.scenes.main.objects import MapLevelDataComponent
 
 
-class LevelFactory:
+class MapFactory:
     """Фабрика сборки объектов уровня (карта)."""
 
     def __init__(self, add_object):
