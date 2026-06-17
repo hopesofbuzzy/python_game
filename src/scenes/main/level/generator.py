@@ -1,17 +1,20 @@
 from pygame.math import Vector2
+from typing import Optional
 
-from src.scenes.main.level.loader import LevelLoader, RawLevel
-from random import choice
+import random
 
+GENERATOR_TEMPLATE_LEVEL = "generator_template"
+RANDOM_WALK_CHANGE_PROBAB = 0.9
+DIRECTIONS = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
 class LevelGenerator:
     """Генератор уровня."""
-    def __init__(self, level_loader: LevelLoader, debug=False):
+    def __init__(self, level_loader, debug=False):
         self.level_loader = level_loader
         
 
     def get_template_and_rules(self):
-        template = self.level_loader.load_template_level()
+        template = self.level_loader.load_generator_template_level()
         rules = template.metadata["rules"]
         rules = {
             int(key): value
@@ -26,7 +29,25 @@ class LevelGenerator:
         template.tiles = tiles
         return template
 
+class RandomWalk:
+    """Реализация алгоритма Random Walk для генерации пути."""
+    def __init__(
+        self,
+        tiles: list[list]
+    ):
+        self.tiles = tiles
+        self.builder_pos = (
+            random.randrange(0, len(tiles)),
+            random.randrange(0, len(tiles))
+        )
+
+    def generate(self, steps: int):
+        direction = random.choice(DIRECTIONS)
+        for _ in range(steps):
+            ...
 class WFC:
+    """Реализация алгоритма Wave Function Collapse для генерации окружения."""
+
     def __init__(self, rules: dict[int, list[int]], size: tuple):
         self.tiles: list[list] = [
             [
@@ -40,7 +61,6 @@ class WFC:
         self.collapsed = set()
 
     def generate(self):
-        """Реализация алгоритма wfc."""
         while len(self.collapsed) != self.size[0] * self.size[1]:
             self.observe()
         return self.tiles
@@ -62,7 +82,7 @@ class WFC:
     def collapse(self, pos):
         """Схлопывание ячейки."""
         tile = self.get_tile(pos)
-        self.set_tile(pos, choice(list(tile)) if type(tile) is set else tile)
+        self.set_tile(pos, random.choice(list(tile)) if type(tile) is set else tile)
         self.collapsed.add(pos)
         self.propogate(pos)
 
@@ -73,7 +93,7 @@ class WFC:
             current = bfs.pop()
             allowed = self.get_allowed_tiles(current)
             print(f"Allowed tiles for {current}: {allowed}")
-            for pos in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            for pos in DIRECTIONS:
                 # Сосед текущей ячейки.
                 adj = (current[0] + pos[0], current[1] + pos[1])
                 if self.is_tile_valid(adj):
