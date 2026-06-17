@@ -5,8 +5,8 @@ from pygame.math import Vector2
 
 from src.scenes.main.level.generator import (
     GENERATOR_TEMPLATE_LEVEL,
-    WFC,
     LevelGenerator,
+    PerlinNoise,
 )
 from src.scenes.main.level.loader import LevelLoader, RawLevel
 from src.scenes.main.level.saver import LevelSaver
@@ -47,3 +47,7 @@ def test_generator_init(path_length, size, seed1):
 #     wfc = WFC(rules, size)
 #     assert type(wfc.rules) is dict
 #     assert type(wfc.size) is tuple
+
+def test_perlin_noise():
+    PerlinNoise().noise2d(1.5, 1.2)
+    assert PerlinNoise().noise2d(2, 2) == 0

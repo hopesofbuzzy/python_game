@@ -1,15 +1,28 @@
+import math
 import random
 from typing import Optional
 
 from pygame.math import Vector2
 
-GENERATOR_TEMPLATE_LEVEL = "generator_template"
+GENERATOR_TEMPLATE_LEVEL = "generator_template"\
+# RandomWalk
 RANDOM_WALK_CHANGE_PROBAB = 0.5
-DIRECTIONS = ((0, 1), (0, -1), (1, 0), (-1, 0))
+DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
+# PerlinNoise
+GRAD = ((1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1))
+CORNERS = ((0, 0), (0, 1), (1, 0), (1, 1))
+
+def perm(seed=0):
+    """PerlinNoise: Таблица перетсановок для получения градиента в (x, y)."""
+    rng = random.Random(seed)
+    p = list(range(256))
+    rng.shuffle(p)
+    return p + p
+
 
 class LevelGenerator:
     """Генератор уровня."""
-    def __init__(self, level_loader, debug=False):
+    def __init__(self, level_loader, debug=False, seed=0):
         self.level_loader = level_loader
 
     def get_template_and_rules(self):
@@ -24,7 +37,7 @@ class LevelGenerator:
     def build_tiles(self, size: tuple):
         return [
             [
-                set()
+                26
                 for _ in range(size[0])
             ]
             for _ in range(size[1])
@@ -46,7 +59,7 @@ class LevelGenerator:
             except Exception as e:
                 print(f"Путь блокирован!")
         print(f"Tiles after RandomWalk: {tiles}")
-        tiles = WFC(rules, tiles, template.metadata["unallowed_to_wfc"]).generate()
+        # tiles = WFC(rules, tiles, template.metadata["unallowed_to_wfc"]).generate()
         template.tiles = tiles
         return template
 
@@ -57,7 +70,8 @@ class RandomWalk:
         tiles: list[list],
         draw_tile: int,
         start_tile: int,
-        end_tile: int
+        end_tile: int,
+        seed=0
     ):
         """
         Args:
@@ -70,6 +84,7 @@ class RandomWalk:
         self.start_tile = start_tile
         self.end_tile = end_tile
         self.visited = set()
+        self.rng = random.Random(seed)
 
     def generate(self, steps: int):
         """
@@ -77,15 +92,19 @@ class RandomWalk:
 
             Args:
                 steps: длина пути.
+
+            Returns:
+                tiles: карта тайлов с дорогой
+                visited: координаты всех тайлов дороги
         """
         # Коориднаты строителя.
-        bx = random.randrange(0, len(self.tiles[0]))
-        by = random.randrange(0, len(self.tiles))
+        bx = self.rng.randrange(0, len(self.tiles[0]))
+        by = self.rng.randrange(0, len(self.tiles))
         start_position = (bx, by)
         self.tiles[by][bx] = self.start_tile
         self.visited.add((bx, by))
         # Направление движения.
-        dx, dy = tuple(random.choice(DIRECTIONS))
+        dx, dy = tuple(self.rng.choice(DIRECTIONS))
         for _ in range(steps):
             # Назад нельзя
             posisble_directions = [d for d in DIRECTIONS if d != (-dx, -dy)]
@@ -110,7 +129,7 @@ class RandomWalk:
                 else:
                     posisble_directions.remove(new_direction)
         self.tiles[by][bx] = self.end_tile
-        return self.tiles
+        return self.tiles, self.visited
 
     def is_valid_path(self, pos, old_pos):
         """Проверка на тупик."""
@@ -127,115 +146,61 @@ class RandomWalk:
     def is_tile_valid(self, pos):
         return pos[0] in range(0, self.size[0]) and pos[1] in range(0, self.size[1])
 
-class WFC:
-    """Реализация алгоритма Wave Function Collapse для генерации окружения."""
+class PerlinNoise:
+    """Шум Перлина для плавности поля дистанций от пути."""
+    def __init__(self, seed=0):
+        self.seed = seed
+        self.perm = perm(self.seed)
 
-    def __init__(
-        self,
-        rules: dict[int, list[int]],
-        tiles: list[list],
-        unallowed_to_use: list
-    ):
+    def lerp(self, a, b, t):
+        """Линейная интерполяция между a и b."""
+        return a + t * (b - a)
+
+    def grad(self, hash_val, x, y):
         """
-        Args:
-            rules: правила для всех типов тайлов.
-            tiles: карта тайлов.
-        """
-        self.tiles = tiles
-        self.size = (len(self.tiles[0]), len(self.tiles))
-        self.collapsed = set()
-        self.rules = rules
-        self.unallowed_to_use = unallowed_to_use
-        # Подготавливаем карту для генерации (учитываем уже схлопнутые тайлы).
-        for y in range(self.size[1]):
-            for x in range(self.size[0]):
-                if type(self.tiles[y][x]) is not set:
-                    self.collapsed.add((x, y))
-                else:
-                    self.tiles[y][x] = set(rules.keys())
-        self.propogate(list(self.collapsed))
+        Получение скалярного произведения градиента
+        и вектора от узла до точки.
 
-    def generate(self):
-        while len(self.collapsed) != self.size[0] * self.size[1]:
-            self.observe()
-        return self.tiles
+        Градиент в точке считается по хэшированным координатам
+        точки (perm - функция хэширования вида perm[perm[x] + y]).
+    """
+        grad = GRAD[hash_val % 8]
+        return grad[0] * x + grad[1] * y
 
-    def observe(self):
-        """Поиск несхлопнутой ячейки с наименьшей энтропией."""
-        lowest_entropy = 100
-        pos = tuple()
-        for y in range(self.size[1]):
-            for x in range(self.size[0]):
-                if (
-                    self.get_entropy((x, y)) < lowest_entropy
-                    and (x, y) not in self.collapsed
-                ):
-                    pos = (x, y)
-                    lowest_entropy = self.get_entropy((x, y))
-        self.collapse(pos)
+    def fade(self, t):
+        """Функция сглаживания (нуль на 0 и 1)"""
+        # 6t^5 - 15t^4 + 10t^3
+        return t * t * t * (t * (t * 6 - 15) + 10)
 
-    def collapse(self, pos):
-        """Схлопывание ячейки."""
-        tile = self.get_tile(pos)
+    def noise2d(self, x, y):
+        xi = math.floor(x) % 256
+        yi = math.floor(y) % 256
+        xf = x - math.floor(x)
+        yf = y - math.floor(y)
+
+        # Хеширование 4 углов
+        p = self.perm
+        aa = p[p[xi] + yi]
+        ab = p[p[xi] + yi + 1]
+        ba = p[p[xi + 1] + yi]
+        bb = p[p[xi + 1] + yi + 1]
+
+        # Скалярные произведения для каждого угла
+        val_bl = self.grad(aa, xf, yf)
+        val_br = self.grad(ba, xf - 1, yf)
+        val_tl = self.grad(ab, xf, yf - 1)
+        val_tr = self.grad(bb, xf - 1, yf - 1)
+
+        # Сглаженные веса
+        u, v = self.fade(xf), self.fade(yf)
+
+        bottom = self.lerp(val_bl, val_br, u)
+        top = self.lerp(val_tl, val_tr, u)
         
-        self.set_tile(
-            pos,
-            random.choice([variant for variant in tile if variant not in self.unallowed_to_use])
-            if type(tile) is set
-            else tile
-        )
-        self.collapsed.add(pos)
-        self.propogate([pos,])
+        # Финальная интерполяция по Y
+        return self.lerp(bottom, top, v)
 
-    def propogate(self, bfs):
-        """Распространение схлопывания."""
-        while bfs:
-            current = bfs.pop()
-            allowed = self.get_allowed_tiles(current)
-            # print(f"Allowed tiles for {current}: {allowed}")
-            for pos in DIRECTIONS:
-                # Сосед текущей ячейки.
-                adj = (current[0] + pos[0], current[1] + pos[1])
-                if self.is_tile_valid(adj):
-                    if not adj in self.collapsed:
-                        if self.update_allowed_tiles(adj, allowed):
-                            # Если схлопывание повлияло - добавляем в очередь.
-                            bfs.append(adj)
-
-    def is_tile_valid(self, pos):
-        return pos[0] in range(0, self.size[0]) and pos[1] in range(0, self.size[1])
-
-    def get_tile(self, pos):
-        if not self.is_tile_valid(pos):
-            raise ValueError(f"Тайл не существует: {pos}")
-        return self.tiles[pos[1]][pos[0]]
-
-    def get_entropy(self, pos):
-        tile = self.get_tile(pos)
-        return len(tile) if type(tile) is set else 1
-
-    def set_tile(self, pos, value):
-        self.tiles[pos[1]][pos[0]] = value
-
-    def get_allowed_tiles(self, pos) -> set:
-        tile = self.get_tile(pos)
-        allowed: set[int] = set()
-        if type(tile) is set:
-            for variant in tile:
-                allowed = allowed.union(set(self.rules[variant]))
-            return allowed
-        else:
-            return set(self.rules[tile])
-
-    def update_allowed_tiles(self, target_pos, allowed: set):
-        target_variants = self.get_tile(target_pos)
-        if target_variants:
-            target_variants = set(target_variants)
-            intersec = allowed.intersection(target_variants)
-            if len(intersec) == 0:
-                print(self.tiles)
-                raise ValueError(
-                    f"Противоречие: {target_pos}: {target_variants}, {allowed}"
-                )
-            self.set_tile(target_pos, intersec)
-            return len(intersec) != len(target_variants)
+class DistanceField:
+    """Алгоритм вычисления поля дистанций для всех тайло до пути (BFS)."""
+    def __init__(self):
+        ...
