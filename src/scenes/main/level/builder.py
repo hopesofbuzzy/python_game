@@ -5,7 +5,7 @@ import pygame
 
 from src.core.objects.components.map import Map, MapModelComponent
 from src.scenes.main.factories.map_factory import LevelFactory
-from src.scenes.main.level.level_loader import LevelLoader
+from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
@@ -18,18 +18,18 @@ class Level:
 
 
 class LevelBuilder:
-    """
-        Центр строительства уровня.
+    """Центр загрузки и строительства уровня."""
 
-        Инъекции:
-            add_object(...),
-    """
-
-    def __init__(self, add_object):
+    def __init__(
+        self,
+        add_object,
+        level_loader: LevelLoader,
+        level_factory: LevelFactory
+    ):
         # Загрузчик уровней.
-        self.lm = LevelLoader()
+        self.lm = level_loader
         # Фабрика уровней.
-        self.lf = LevelFactory(add_object)
+        self.lf = level_factory
 
     def load_and_create_level(self, position, level_name) -> Level:
         raw_level = self.lm.load_level(level_name)

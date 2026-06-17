@@ -17,7 +17,7 @@ from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.level.level_builder import Level, LevelBuilder
+from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
