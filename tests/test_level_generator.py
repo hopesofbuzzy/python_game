@@ -1,17 +1,36 @@
 import pytest
 from pygame.math import Vector2
 
-from src.scenes.main.level.generator import LevelGenerator
-from src.scenes.main.level.loader import LevelLoader
+from src.scenes.main.level.generator import LevelGenerator, WFC
+from src.scenes.main.level.loader import LevelLoader, RawLevel
+from src.scenes.main.level.saver import LevelSaver
 
 
 @pytest.fixture
-def raw_level():
-    LevelLoader().load_template_level
+def size():
+    return (10, 10)
+
+@pytest.fixture
+def rules():
+    ll = LevelGenerator(LevelLoader(), True)
+    template, rules = ll.get_template_and_rules()
+    return rules
+
+TEST_MAP_SAVE_NAME = "test_generated"
 
 
-def test_generator1(raw_level):
-    """Проверка первичной генерации."""
+def test_generator_init(size):
     level_loader = LevelLoader()
-    LevelGenerator(level_loader, True).generate()
-    return True
+    ll = LevelGenerator(level_loader, True)
+    template, rules = ll.get_template_and_rules()
+    assert type(rules) is dict
+    assert type(template) is RawLevel
+    print(f"Loaded rules: {rules}")
+    tiles = ll.generate(size).tiles
+    print(f"Generated Tiles: {tiles}")
+    LevelSaver().save_map(tiles, TEST_MAP_SAVE_NAME)
+
+def test_wfc_inti(rules, size):
+    wfc = WFC(rules, size)
+    assert type(wfc.rules) is dict
+    assert type(wfc.size) is tuple

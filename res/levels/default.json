@@ -1,6 +1,12 @@
 {
     "waves": [],
-    "tileset_name": "default.png",
+    "rules": {
+        "26": [12, 13],
+        "12": [26, 13],
+        "13": [12, 26]
+    },
+    "tileset_name": "2.png",
+    "map_name": "default.csv",
     "tile_size": 200,
     "tiles_to_place": {
         "Sunflower": [28],

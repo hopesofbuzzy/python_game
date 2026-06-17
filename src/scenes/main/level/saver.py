@@ -31,9 +31,9 @@ class LevelSaver:
         #     raise Exception(f"Не удалось загрузить уровень: {e}")
 
     def save_map(self, tiles: list, map_name: str = "generated"):
-        ...
-        # tiles = list()
-        # with open(Path(self.MAPS_FOLDER, map_name), "r") as f:
-        #     for line in f.readlines():
-        #         tiles.append(list(map(int, line.split(","))))
-        # return tiles
+        lines = list()
+        for tile_line in tiles:
+            lines.append(",".join(map(str, tile_line)))
+        with open(Path(self.MAPS_FOLDER, f"{map_name}.csv"), "w") as f:
+            for line in lines:
+                f.write(line + "\n")

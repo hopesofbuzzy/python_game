@@ -12,9 +12,9 @@ logging.basicConfig(
 
 DEBUG = False
 
-def main():
+def main(scene_class):
     pygame.init()
-    game = Game(MainScene, debug=DEBUG)
+    game = Game(scene_class, debug=DEBUG)
     screen = pygame.display.set_mode(game.WINDOW_SIZE)
     clock = pygame.time.Clock()
     delta_time = 0.0
@@ -29,4 +29,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(MainScene)

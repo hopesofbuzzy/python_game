@@ -81,11 +81,3 @@ class BigMushroom(BasePlant):
 class Sunflower(BasePlant):
     """Подсолнышко, дающее солнышки."""
     ...
-
-
-PLANTS_CLASSES = {
-    Mushroom: "Mushroom",
-    Sunflower: "Sunflower",
-    LongMushroom: "LongMushroom",
-    BigMushroom: "BigMushroom"
-}

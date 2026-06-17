@@ -16,6 +16,7 @@ class Level:
     path: list
     parsed_waves: ParsedWaves
 
+DEFAULT_LEVEL_NAME = "default"
 
 class LevelBuilder:
     """Центр загрузки и строительства уровня."""
@@ -30,19 +31,30 @@ class LevelBuilder:
         # Фабрика уровней.
         self.lf = level_factory
 
-    def load_and_create_level(self, position, level_name) -> Level:
+    def load_and_create_level(
+            self,
+            position,
+            level_name: str = DEFAULT_LEVEL_NAME,
+            parse_map: bool = True,
+            parse_waves: bool = True
+    ) -> Level:
+        """Загружает и строит уровень: карта, пути, волны."""
         raw_level = self.lm.load_level(level_name)
         tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
         map = self.lf.create_map(position, raw_level.tiles, tileset)
-        map.get(MapLevelDataComponent).parse_map(
-            map.get(MapModelComponent).tiles,
-            raw_level.metadata["start_tile"],
-            raw_level.metadata["end_tile"],
-            raw_level.metadata["path_tiles"],
-            raw_level.metadata["tiles_to_place"]
-        )
-        parsed_waves = self.parse_waves(raw_level.metadata)
-        path = self.build_pathes(map)
+        path = list()
+        if parse_map:
+            map.get(MapLevelDataComponent).parse_map(
+                map.get(MapModelComponent).tiles,
+                raw_level.metadata["start_tile"],
+                raw_level.metadata["end_tile"],
+                raw_level.metadata["path_tiles"],
+                raw_level.metadata["tiles_to_place"]
+            )
+            path = self.build_pathes(map)
+        parsed_waves = ParsedWaves(list())
+        if parse_waves:
+            parsed_waves = self.parse_waves(raw_level.metadata)
         return Level(map, path, parsed_waves)
 
     def parse_waves(self, metadata: dict):
