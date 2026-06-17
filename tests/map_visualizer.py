@@ -15,9 +15,9 @@ from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.level.saver import LevelSaver
 
 LEVEL_NAME = "generator_template"
-SEED = 67
+SEED = 57
 PATH_LENGTH = 30
-SIZE = (20, 20)
+SIZE = (15, 15)
 
 class MapScene(Scene):
     """Небольшая сцена для визуализации карты."""

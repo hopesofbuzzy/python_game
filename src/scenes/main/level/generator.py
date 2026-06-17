@@ -44,7 +44,7 @@ class LevelGenerator:
                 ).generate(path_length)
                 break
             except Exception as e:
-                print(f"Путь блоикрован!")
+                print(f"Путь блокирован!")
         print(f"Tiles after RandomWalk: {tiles}")
         tiles = WFC(rules, tiles, template.metadata["unallowed_to_wfc"]).generate()
         template.tiles = tiles
@@ -81,48 +81,48 @@ class RandomWalk:
         # Коориднаты строителя.
         bx = random.randrange(0, len(self.tiles[0]))
         by = random.randrange(0, len(self.tiles))
+        start_position = (bx, by)
         self.tiles[by][bx] = self.start_tile
+        self.visited.add((bx, by))
         # Направление движения.
         dx, dy = tuple(random.choice(DIRECTIONS))
-        for step in range(steps):
-            # print(f"Current builder step: {step} {bx}, {by}")
-            old_direction: tuple[int, int] = (dx, dy)
-            posisble_directions = [d for d in DIRECTIONS if d != (dx, dy)]
+        for _ in range(steps):
+            # Назад нельзя
+            posisble_directions = [d for d in DIRECTIONS if d != (-dx, -dy)]
             while True:
                 if len(posisble_directions) == 0:
                     raise Exception("Путь блокирован!")
-                new_direction: tuple[int, int] = random.choice(
-                    posisble_directions
-                )
+                new_direction = random.choice(posisble_directions)
                 direction = random.choices(
-                    [old_direction, new_direction],
+                    [(dx, dy), new_direction],
                     [1 - RANDOM_WALK_CHANGE_PROBAB, RANDOM_WALK_CHANGE_PROBAB],
                     k=1
                 )[0]
                 dx, dy = direction
-                new_b_pos = (bx + dx, by + dy)
                 if (
-                    self.is_tile_valid(new_b_pos)
-                    and self.draw_tile not in self.get_adj_tiles(new_b_pos, (bx, by))
+                    self.is_tile_valid((bx + dx, by + dy))
+                    and self.is_valid_path((bx + dx, by + dy), (bx, by))
                 ):
-                    bx, by = new_b_pos
+                    bx, by = (bx + dx, by + dy)
                     self.tiles[by][bx] = self.draw_tile
+                    self.visited.add((bx, by))
                     break
                 else:
                     posisble_directions.remove(new_direction)
         self.tiles[by][bx] = self.end_tile
         return self.tiles
 
-    def get_adj_tiles(self, pos, old_pos):
-        print(pos, old_pos)
-        adj_tiles = set()
+    def is_valid_path(self, pos, old_pos):
+        """Проверка на тупик."""
         for direciton in DIRECTIONS:
             adj_x, adj_y = (direciton[0] + pos[0], direciton[1] + pos[1])
-            if (adj_x, adj_y) == old_pos:
-                continue
-            if type(self.tiles[adj_y][adj_x]) is not set:
-                adj_tiles.add(self.tiles[adj_y][adj_x])
-        return adj_tiles
+            if (
+                (adj_x, adj_y) != old_pos
+                and type(self.tiles[adj_y][adj_x]) is int
+            ):
+                if (adj_x, adj_y) in self.visited:
+                    return False
+        return True
 
     def is_tile_valid(self, pos):
         return pos[0] in range(0, self.size[0]) and pos[1] in range(0, self.size[1])
@@ -192,7 +192,7 @@ class WFC:
         while bfs:
             current = bfs.pop()
             allowed = self.get_allowed_tiles(current)
-            print(f"Allowed tiles for {current}: {allowed}")
+            # print(f"Allowed tiles for {current}: {allowed}")
             for pos in DIRECTIONS:
                 # Сосед текущей ячейки.
                 adj = (current[0] + pos[0], current[1] + pos[1])
