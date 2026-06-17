@@ -1,7 +1,7 @@
-from pygame.math import Vector2
+import random
 from typing import Optional
 
-import random
+from pygame.math import Vector2
 
 GENERATOR_TEMPLATE_LEVEL = "generator_template"
 RANDOM_WALK_CHANGE_PROBAB = 0.9
@@ -12,7 +12,6 @@ class LevelGenerator:
     def __init__(self, level_loader, debug=False):
         self.level_loader = level_loader
         
-
     def get_template_and_rules(self):
         template = self.level_loader.load_generator_template_level()
         rules = template.metadata["rules"]
@@ -33,16 +32,18 @@ class RandomWalk:
     """Реализация алгоритма Random Walk для генерации пути."""
     def __init__(
         self,
-        tiles: list[list]
+        tiles: list[list],
+        draw_tile: int
     ):
         self.tiles = tiles
-        self.builder_pos = (
-            random.randrange(0, len(tiles)),
-            random.randrange(0, len(tiles))
-        )
+        self.draw_tile = draw_tile  # Тайл "следа" строителя.
 
     def generate(self, steps: int):
-        direction = random.choice(DIRECTIONS)
+        # Коориднаты строителя.
+        bx = random.randrange(0, len(self.tiles[0]))
+        by = random.randrange(0, len(self.tiles))
+        # Направление движения.
+        dx, dy = random.choice(DIRECTIONS)
         for _ in range(steps):
             ...
 class WFC:
@@ -134,6 +135,8 @@ class WFC:
             intersec = allowed.intersection(target_variants)
             if len(intersec) == 0:
                 print(self.tiles)
-                raise ValueError(f"Противоречие: {target_pos}: {target_variants}, {allowed}")
+                raise ValueError(
+                    f"Противоречие: {target_pos}: {target_variants}, {allowed}"
+                )
             self.set_tile(target_pos, intersec)
             return len(intersec) != len(target_variants)

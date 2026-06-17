@@ -1,8 +1,13 @@
-import pytest
 import random
+
+import pytest
 from pygame.math import Vector2
 
-from src.scenes.main.level.generator import LevelGenerator, WFC, GENERATOR_TEMPLATE_LEVEL
+from src.scenes.main.level.generator import (
+    GENERATOR_TEMPLATE_LEVEL,
+    WFC,
+    LevelGenerator,
+)
 from src.scenes.main.level.loader import LevelLoader, RawLevel
 from src.scenes.main.level.saver import LevelSaver
 
