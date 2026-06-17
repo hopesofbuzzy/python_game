@@ -15,7 +15,8 @@ from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.level.saver import LevelSaver
 
 LEVEL_NAME = "generator_template"
-SEED = 66
+SEED = 67
+PATH_LENGTH = 30
 SIZE = (20, 20)
 
 class MapScene(Scene):
@@ -28,7 +29,7 @@ class MapScene(Scene):
         level_loader = LevelLoader()
         ll = LevelGenerator(level_loader, True)
         template, rules = ll.get_template_and_rules()
-        tiles = ll.generate(SIZE).tiles
+        tiles = ll.generate(PATH_LENGTH, SIZE).tiles
         LevelSaver().save_map(tiles, LEVEL_NAME)
         LevelBuilder(
             LevelLoader(),

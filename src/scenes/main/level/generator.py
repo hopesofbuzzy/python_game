@@ -4,14 +4,14 @@ from typing import Optional
 from pygame.math import Vector2
 
 GENERATOR_TEMPLATE_LEVEL = "generator_template"
-RANDOM_WALK_CHANGE_PROBAB = 0.9
+RANDOM_WALK_CHANGE_PROBAB = 0.5
 DIRECTIONS = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
 class LevelGenerator:
     """Генератор уровня."""
     def __init__(self, level_loader, debug=False):
         self.level_loader = level_loader
-        
+
     def get_template_and_rules(self):
         template = self.level_loader.load_generator_template_level()
         rules = template.metadata["rules"]
@@ -21,10 +21,32 @@ class LevelGenerator:
         }
         return template, rules
 
-    def generate(self, size: tuple):
+    def build_tiles(self, size: tuple):
+        return [
+            [
+                set()
+                for _ in range(size[0])
+            ]
+            for _ in range(size[1])
+        ]
+
+    def generate(self, path_length: int, size: tuple):
         """Процесс генерации уровня."""
         template, rules = self.get_template_and_rules()
-        tiles = WFC(rules, size).generate()
+        while True:
+            try:
+                tiles = self.build_tiles(size)
+                tiles = RandomWalk(
+                    tiles,
+                    template.metadata["path_tiles"][0],
+                    template.metadata["start_tile"],
+                    template.metadata["end_tile"]
+                ).generate(path_length)
+                break
+            except Exception as e:
+                print(f"Путь блоикрован!")
+        print(f"Tiles after RandomWalk: {tiles}")
+        tiles = WFC(rules, tiles, template.metadata["unallowed_to_wfc"]).generate()
         template.tiles = tiles
         return template
 
@@ -33,33 +55,105 @@ class RandomWalk:
     def __init__(
         self,
         tiles: list[list],
-        draw_tile: int
+        draw_tile: int,
+        start_tile: int,
+        end_tile: int
     ):
+        """
+        Args:
+            tiles: карта тайлов.
+            draw_tile: тайл, которым строитель будет рисовать.
+        """
         self.tiles = tiles
+        self.size = (len(self.tiles[0]), len(self.tiles))
         self.draw_tile = draw_tile  # Тайл "следа" строителя.
+        self.start_tile = start_tile
+        self.end_tile = end_tile
+        self.visited = set()
 
     def generate(self, steps: int):
+        """
+            Процесс генерации пути.
+
+            Args:
+                steps: длина пути.
+        """
         # Коориднаты строителя.
         bx = random.randrange(0, len(self.tiles[0]))
         by = random.randrange(0, len(self.tiles))
+        self.tiles[by][bx] = self.start_tile
         # Направление движения.
-        dx, dy = random.choice(DIRECTIONS)
-        for _ in range(steps):
-            ...
+        dx, dy = tuple(random.choice(DIRECTIONS))
+        for step in range(steps):
+            # print(f"Current builder step: {step} {bx}, {by}")
+            old_direction: tuple[int, int] = (dx, dy)
+            posisble_directions = [d for d in DIRECTIONS if d != (dx, dy)]
+            while True:
+                if len(posisble_directions) == 0:
+                    raise Exception("Путь блокирован!")
+                new_direction: tuple[int, int] = random.choice(
+                    posisble_directions
+                )
+                direction = random.choices(
+                    [old_direction, new_direction],
+                    [1 - RANDOM_WALK_CHANGE_PROBAB, RANDOM_WALK_CHANGE_PROBAB],
+                    k=1
+                )[0]
+                dx, dy = direction
+                new_b_pos = (bx + dx, by + dy)
+                if (
+                    self.is_tile_valid(new_b_pos)
+                    and self.draw_tile not in self.get_adj_tiles(new_b_pos, (bx, by))
+                ):
+                    bx, by = new_b_pos
+                    self.tiles[by][bx] = self.draw_tile
+                    break
+                else:
+                    posisble_directions.remove(new_direction)
+        self.tiles[by][bx] = self.end_tile
+        return self.tiles
+
+    def get_adj_tiles(self, pos, old_pos):
+        print(pos, old_pos)
+        adj_tiles = set()
+        for direciton in DIRECTIONS:
+            adj_x, adj_y = (direciton[0] + pos[0], direciton[1] + pos[1])
+            if (adj_x, adj_y) == old_pos:
+                continue
+            if type(self.tiles[adj_y][adj_x]) is not set:
+                adj_tiles.add(self.tiles[adj_y][adj_x])
+        return adj_tiles
+
+    def is_tile_valid(self, pos):
+        return pos[0] in range(0, self.size[0]) and pos[1] in range(0, self.size[1])
+
 class WFC:
     """Реализация алгоритма Wave Function Collapse для генерации окружения."""
 
-    def __init__(self, rules: dict[int, list[int]], size: tuple):
-        self.tiles: list[list] = [
-            [
-                set(rules.keys()).copy()
-                for _ in range(size[0])
-            ]
-            for _ in range(size[1])
-        ]
-        self.rules = rules
-        self.size = size
+    def __init__(
+        self,
+        rules: dict[int, list[int]],
+        tiles: list[list],
+        unallowed_to_use: list
+    ):
+        """
+        Args:
+            rules: правила для всех типов тайлов.
+            tiles: карта тайлов.
+        """
+        self.tiles = tiles
+        self.size = (len(self.tiles[0]), len(self.tiles))
         self.collapsed = set()
+        self.rules = rules
+        self.unallowed_to_use = unallowed_to_use
+        # Подготавливаем карту для генерации (учитываем уже схлопнутые тайлы).
+        for y in range(self.size[1]):
+            for x in range(self.size[0]):
+                if type(self.tiles[y][x]) is not set:
+                    self.collapsed.add((x, y))
+                else:
+                    self.tiles[y][x] = set(rules.keys())
+        self.propogate(list(self.collapsed))
 
     def generate(self):
         while len(self.collapsed) != self.size[0] * self.size[1]:
@@ -83,13 +177,18 @@ class WFC:
     def collapse(self, pos):
         """Схлопывание ячейки."""
         tile = self.get_tile(pos)
-        self.set_tile(pos, random.choice(list(tile)) if type(tile) is set else tile)
+        
+        self.set_tile(
+            pos,
+            random.choice([variant for variant in tile if variant not in self.unallowed_to_use])
+            if type(tile) is set
+            else tile
+        )
         self.collapsed.add(pos)
-        self.propogate(pos)
+        self.propogate([pos,])
 
-    def propogate(self, pos):
+    def propogate(self, bfs):
         """Распространение схлопывания."""
-        bfs = [pos,]
         while bfs:
             current = bfs.pop()
             allowed = self.get_allowed_tiles(current)

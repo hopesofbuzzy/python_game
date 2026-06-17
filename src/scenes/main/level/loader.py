@@ -39,18 +39,19 @@ class LevelLoader:
         tiles = list()
         with open(Path(MAPS_FOLDER, map_name), "r") as f:
             for line in f.readlines():
+                print(f"Readed map line: {line}")
                 tiles.append(list(map(int, line.split(","))))
         return tiles
 
-    def load_level(self, level_name):
+    def load_level(self, level_name, load_map: bool = True):
         """Загружает уровень из папки уровней с соответствующим названием."""
         level_data = self.load_data(level_name)
         tileset = self.load_tileset(level_data["tileset_name"])
         tiles = list()
-        if "map_name" in level_data:
+        if load_map and "map_name" in level_data:
             tiles = self.load_map(level_data["map_name"])
         return RawLevel(tiles=tiles, tileset=tileset, metadata=level_data)
 
     def load_generator_template_level(self):
         """Подгрузка шаблона для генерации уровня."""
-        return self.load_level(GENERATOR_TEMPLATE_LEVEL)
+        return self.load_level(GENERATOR_TEMPLATE_LEVEL, False)
