@@ -1,6 +1,6 @@
 import logging
 
-from src.scenes.main.objects.plants import PLANTS
+from src.config.plants import PLANTS
 
 
 class InventoryModelComponent:

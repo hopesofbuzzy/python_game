@@ -11,7 +11,6 @@ from src.core.objects import (
     TargetingComponent,
 )
 from src.scenes.main.objects import (
-    PLANTS_LEVEL_UPS,
     BasePlant,
     BigMushroom,
     CycleTimerComponent,
@@ -23,44 +22,7 @@ from src.scenes.main.objects import (
     UpgradeComponent,
 )
 
-# Растения
-PLANT_SIZE = Vector2(50, 50)
-PLANT_HITBOX_SIZE = Vector2(25, 25)
-PLANT_HITBOX_POSITION = PLANT_SIZE // 2
-
-PLANT_DATA = {
-    "Sunflower": {
-        "targeting": False,
-        "cooldown": 10,
-        "image_path": "res/sunflower.png",
-        "health": 15,
-        "given_sun": 25
-    },
-    "Mushroom": {
-        "targeting": True,
-        "attack": 2,
-        "cooldown": 0.7,
-        "image_path": "res/mushroom.png",
-        "range": 2,
-        "bullet_speed": 150
-    },
-    "LongMushroom": {
-        "targeting": True,
-        "attack": 1,
-        "cooldown": 0.25,
-        "image_path": "res/sunflower.png",
-        "range": 4,
-        "bullet_speed": 250
-    },
-    "BigMushroom": {
-        "targeting": True,
-        "attack": 12,
-        "cooldown": 1,
-        "image_path": "res/mushroom.png",
-        "range": 3,
-        "bullet_speed": 200
-    }
-}
+from src.config.plants import PLANT_SIZE, PLANT_HITBOX_SIZE, PLANTS_LEVEL_UPS, PLANT_DATA
 
 
 
@@ -148,7 +110,8 @@ class PlantBuilder:
                 position_comp,
                 range,
                 attack,
-                cooldown
+                cooldown,
+                PLANT_DATA[plant_name]["bullet_speed"]
             )
             plant.add(targeting_comp)
             targeting_comp.on_shoot.subscribe(self.bullet_factory.create_bullet)

@@ -5,6 +5,8 @@ from typing import Optional
 
 from pygame.math import Vector2
 
+from src.scenes.main.level.wave_generator import WaveGenerator
+
 GENERATOR_TEMPLATE_LEVEL = "generator_template"\
 # RandomWalk
 RANDOM_WALK_CHANGE_PROBAB = 0.5
@@ -13,6 +15,8 @@ DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
 GRAD = ((1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1))
 CORNERS = ((0, 0), (0, 1), (1, 0), (1, 1))
 NOISE_AMPLITUDE = 2.5
+
+DEFAULT_WAVE_COUNT = 5
 
 def perm(seed=0):
     """PerlinNoise: Таблица перетсановок для получения градиента в (x, y)."""
@@ -57,19 +61,15 @@ class LevelGenerator:
         end_tile,
         seed=0
     ):
-        while True:
-            try:
-                tiles = self.build_tiles(map_size)
-                tiles = RandomWalk(
-                    tiles,
-                    path_tile,
-                    start_tile,
-                    end_tile,
-                    seed
-                ).generate(path_length)
-                return tiles
-            except Exception as e:
-                print(f"Путь блокирован!")
+        tiles = self.build_tiles(map_size)
+        tiles = RandomWalk(
+            tiles,
+            path_tile,
+            start_tile,
+            end_tile,
+            seed
+        ).generate(path_length)
+        return tiles
 
     def generate_enviroment(
         self,
@@ -103,9 +103,16 @@ class LevelGenerator:
         path_length: int,
         size: tuple,
         seed=0,
-        noise_amplitude=NOISE_AMPLITUDE
+        noise_amplitude=NOISE_AMPLITUDE,
+        wave_count: int = DEFAULT_WAVE_COUNT
     ):
-        """Процесс генерации уровня."""
+        """
+            Процесс генерации уровня.
+
+            Returns:
+                raw_level: сырой уровень с картой (tiles) и данными (metadata).
+                parsed_waves: сгенерированный объект волн.
+        """
         template, heights = self.get_template_and_heights()
         tiles, visited = self.generate_map_with_path(
             size,
@@ -125,7 +132,8 @@ class LevelGenerator:
             noise_amplitude
         )
         template.tiles = tiles
-        return template
+        parsed_waves = WaveGenerator().generate_waves(wave_count, seed)
+        return template, parsed_waves
 
 
 class RandomWalk:
@@ -148,7 +156,6 @@ class RandomWalk:
         self.draw_tile = draw_tile  # Тайл "следа" строителя.
         self.start_tile = start_tile
         self.end_tile = end_tile
-        self.visited = set()
         self.seed = seed
 
     def generate(self, steps: int):
@@ -164,40 +171,51 @@ class RandomWalk:
         """
         print(f"SEED: {self.seed}")
         rng = random.Random(self.seed)
-        # Коориднаты строителя.
-        bx = rng.randrange(0, len(self.tiles[0]))
-        by = rng.randrange(0, len(self.tiles))
-        self.tiles[by][bx] = self.start_tile
-        self.visited.add((bx, by))
-        # Направление движения.
-        dx, dy = tuple(rng.choice(DIRECTIONS))
-        for _ in range(steps):
-            # Назад нельзя
-            posisble_directions = [d for d in DIRECTIONS if d != (-dx, -dy)]
-            while True:
-                if len(posisble_directions) == 0:
-                    raise Exception("Путь блокирован!")
-                new_direction = random.choice(posisble_directions)
-                direction = random.choices(
-                    [(dx, dy), new_direction],
-                    [1 - RANDOM_WALK_CHANGE_PROBAB, RANDOM_WALK_CHANGE_PROBAB],
-                    k=1
-                )[0]
-                dx, dy = direction
-                if (
-                    is_tile_valid((bx + dx, by + dy), self.size)
-                    and self.is_valid_path((bx + dx, by + dy), (bx, by))
-                ):
-                    bx, by = (bx + dx, by + dy)
-                    self.tiles[by][bx] = self.draw_tile
-                    self.visited.add((bx, by))
-                    break
-                else:
-                    posisble_directions.remove(new_direction)
-        self.tiles[by][bx] = self.end_tile
-        return self.tiles, self.visited
+        self.original_tiles = self.tiles
+        while True:
+            try:
+                visited = set()
+                self.tiles = [[num for num in row] for row in self.original_tiles]
+                # Коориднаты строителя.
+                bx = rng.randrange(0, len(self.tiles[0]))
+                by = rng.randrange(0, len(self.tiles))
+                self.tiles[by][bx] = self.start_tile
+                visited.add((bx, by))
+                # Направление движения.
+                dx, dy = (0, 0)
+                for _ in range(steps):
+                    # Назад нельзя
+                    posisble_directions = [d for d in DIRECTIONS if d != (-dx, -dy)]
+                    while True:
+                        if len(posisble_directions) == 0:
+                            raise Exception("Путь блокирован!")
+                        new_direction = rng.choice(posisble_directions)
+                        if dx == dy == 0:
+                            direction = new_direction
+                        else:
+                            direction = rng.choices(
+                                [(dx, dy), new_direction],
+                                [1 - RANDOM_WALK_CHANGE_PROBAB, RANDOM_WALK_CHANGE_PROBAB],
+                                k=1
+                            )[0]
+                        dx, dy = direction
+                        print(f"Trying move {(bx, by)} -> {(bx + dx, by + dy)}")
+                        if (
+                            is_tile_valid((bx + dx, by + dy), self.size)
+                            and self.is_valid_path((bx + dx, by + dy), (bx, by), visited)
+                        ):
+                            bx, by = (bx + dx, by + dy)
+                            self.tiles[by][bx] = self.draw_tile
+                            visited.add((bx, by))
+                            break
+                        else:
+                            posisble_directions.remove(new_direction)
+                self.tiles[by][bx] = self.end_tile
+                return self.tiles, visited
+            except Exception as e:
+                    print(f"Ошибка генерации пути: {e}")
 
-    def is_valid_path(self, pos, old_pos):
+    def is_valid_path(self, pos, old_pos, visited):
         """Проверка на тупик."""
         for direciton in DIRECTIONS:
             adj_x, adj_y = (direciton[0] + pos[0], direciton[1] + pos[1])
@@ -205,7 +223,7 @@ class RandomWalk:
                 (adj_x, adj_y) != old_pos
                 and type(self.tiles[adj_y][adj_x]) is int
             ):
-                if (adj_x, adj_y) in self.visited:
+                if (adj_x, adj_y) in visited:
                     return False
         return True
 

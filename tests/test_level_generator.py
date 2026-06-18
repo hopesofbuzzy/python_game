@@ -25,12 +25,6 @@ def seed1():
     return 55
 
 
-@pytest.fixture
-def rules():
-    ll = LevelGenerator(LevelLoader(), True)
-    template, rules = ll.get_template_and_rules()
-    return rules
-
 def test_generator_init(path_length, size, seed1):
     random.seed(seed1)
     level_loader = LevelLoader()
@@ -38,7 +32,6 @@ def test_generator_init(path_length, size, seed1):
     template, heights = ll.get_template_and_heights()
     assert type(heights) is list
     assert type(template) is RawLevel
-    print(f"Loaded rules: {rules}")
     tiles = ll.generate(path_length, size).tiles
     print(f"Generated Tiles: {tiles}")
     LevelSaver().save_map(tiles, GENERATOR_TEMPLATE_LEVEL)

@@ -1,9 +1,9 @@
 import logging
 
 from src.core.objects.event import Event
-from src.scenes.main.objects.plants import PLANTS_PRICES
+from src.config.plants import PLANTS_PRICES
 
-DEFAULT_SUNS = 400
+DEFAULT_SUNS = 100
 
 class CurrencyManager:
     def __init__(self, suns: int = DEFAULT_SUNS):

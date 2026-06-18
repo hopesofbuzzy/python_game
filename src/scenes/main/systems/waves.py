@@ -8,7 +8,7 @@ from pygame.math import Vector2
 from src.core.objects.components.path import PatrolComponent
 from src.core.objects.event import Event
 
-SPAWN_COOLDOWN = 1.0
+SPAWN_COOLDOWN = 0.5
 
 @dataclass
 class WaveObject:
@@ -57,6 +57,7 @@ class WaveManager:
                     logging.info(f"Волна монстров!")
 
     def start_wave(self, wave):
+        """Старт волны."""
         self.current_wave = wave
         self.current_wave_number += 1
 

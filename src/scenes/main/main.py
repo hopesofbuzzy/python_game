@@ -32,7 +32,7 @@ from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
 
-LEVEL_NAME = "2"
+LEVEL_NAME = "generator_template"
 
 class MainScene(Scene):
     def ready(self):

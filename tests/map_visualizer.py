@@ -13,12 +13,9 @@ from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.level.saver import LevelSaver
+from src.config.generator_config import *
 
 LEVEL_NAME = "generator_template"
-SEED = 57
-PATH_LENGTH = 20
-SIZE = (15, 15)
-NOISE_AMPLITUDE = 10
 
 class MapScene(Scene):
     """Небольшая сцена для визуализации карты."""
@@ -27,8 +24,8 @@ class MapScene(Scene):
 
     def setup_level(self):
         ll = LevelGenerator(LevelLoader(), True)
-        tiles = ll.generate(PATH_LENGTH, SIZE, SEED, NOISE_AMPLITUDE).tiles
-        LevelSaver().save_map(tiles, LEVEL_NAME)
+        raw_level, parsed_waves = ll.generate(PATH_LENGTH, SIZE, SEED, NOISE_AMPLITUDE, WAVE_AMOUNT)
+        LevelSaver().save_level(raw_level, parsed_waves, LEVEL_NAME)
         LevelBuilder(
             LevelLoader(),
             MapFactory(self.add_object)

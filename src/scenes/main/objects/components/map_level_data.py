@@ -8,23 +8,27 @@ from src.core.objects.components.map import (
     MapViewComponent,
 )
 from src.core.objects.game_object import GameObject
+from src.config.plants import PLANT_DATA
 
 
 class MapLevelDataComponent:
     def __init__(self):
         self.plants: set[tuple] = set()
-        self.poses_to_place: dict[str, set] = dict()
+        self.poses_to_place: set = set()
         self.path_poses = set()
         self.start_pos = tuple()
         self.end_pos = tuple()
 
     def is_position_to_place_plant(self, plant_name: str, position: tuple) -> bool:
         logging.debug(f"Проверка посадки: {plant_name}")
-        logging.debug(f"{self.poses_to_place.keys()}")
-        if plant_name in self.poses_to_place.keys():
-            return tuple(position) in self.poses_to_place[plant_name]
+        if PLANT_DATA[plant_name]["road_spawn"]:
+            return tuple(position) in self.path_poses
         else:
-            return tuple(position) in self.poses_to_place["_"]
+            return tuple(position) in self.poses_to_place
+        # if plant_name in self.poses_to_place.keys():
+        #     return tuple(position) in self.poses_to_place[plant_name]
+        # else:
+        #     return tuple(position) in self.poses_to_place["_"]
 
     def is_position_free(self, position: tuple) -> bool:
         return tuple(position) not in self.plants
@@ -50,12 +54,8 @@ class MapLevelDataComponent:
                     self.end_pos = (x, y)
                 elif tile_idx in path_tiles:
                     self.path_poses.add((x, y))
-                for plant_name, plant_tiles_to_place in tiles_to_place.items():
-                    if tile_idx in plant_tiles_to_place:
-                        self.poses_to_place[plant_name] = (
-                            self.poses_to_place.setdefault(plant_name, set())
-                        )
-                        self.poses_to_place[plant_name].add((x, y))
+                if tile_idx in tiles_to_place:
+                    self.poses_to_place.add((x, y))
         if (
             self.start_pos == tuple()
             or self.end_pos == tuple()

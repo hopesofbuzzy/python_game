@@ -17,25 +17,7 @@ from src.scenes.main.objects import (
     Enemy,
     HealthComponent,
 )
-
-ENEMY_DATA = {
-    "Enemy": {
-        "speed": 35,
-        "health": 80,
-        "size": Vector2(40, 40),
-        "color": (255, 25, 25),
-        "attack": 5,
-        "attack_cooldown": 0.5
-    },
-    "FastEnemy": {
-        "speed": 50,
-        "health": 25,
-        "size": Vector2(30, 30),
-        "color": (80, 80, 255),
-        "attack": 5,
-        "attack_cooldown": 0.5
-    }
-}
+from src.config.enemies import ENEMY_DATA
 
 class EnemyFactory:
     """Фабрика сборки врагов."""

@@ -21,7 +21,7 @@ from src.scenes.main.objects import (
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 
 # Константы
-from src.scenes.main.objects.plants import PLANTS_DESCRIPTIONS
+from src.config.plants import PLANTS_DESCRIPTIONS
 from src.scenes.main.systems.currency import CurrencyManager
 
 UPGRADE_DIALOG_SIZE = Vector2(300, 150)

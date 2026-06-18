@@ -4,6 +4,9 @@ from pathlib import Path
 
 from src.core.singletones.image_loader import image_loader as il
 
+from src.scenes.main.level.loader import RawLevel
+from src.scenes.main.level.builder import ParsedWaves
+
 
 class LevelSaver:
     """Сохранение (сгенерированного) уровня."""
@@ -13,7 +16,8 @@ class LevelSaver:
     MAPS_FOLDER = LEVELS_FOLDER + "maps/"
 
     def save_data(self, metadata: dict, level_name):
-        ...
+        with open(Path(self.LEVELS_FOLDER, f"{level_name}.json"), "w") as f:
+            json.dump(metadata, f)
 
     def save_map(self, tiles: list, map_name):
         lines = list()
@@ -22,3 +26,24 @@ class LevelSaver:
         with open(Path(self.MAPS_FOLDER, f"{map_name}.csv"), "w") as f:
             for line in lines:
                 f.write(line + "\n")
+
+    def serialize_waves(self, parsed_waves: ParsedWaves):
+        waves_list: list[dict] = list()
+        for wave in parsed_waves.waves:
+            wave_dict = {
+                "timestamp": wave.timestamp,
+                "enemy_type": [],
+                "enemy_amount": []
+            }
+            for wave_object in wave.wave_objects:
+                wave_dict["enemy_type"].append(wave_object.enemy)
+                wave_dict["enemy_amount"].append(wave_object.amount)
+            waves_list.append(wave_dict)
+        return waves_list
+
+
+    def save_level(self, raw_level: RawLevel, parsed_waves: ParsedWaves, level_name: str):
+        raw_level.metadata["map_name"] = level_name + ".csv"
+        raw_level.metadata["waves"] = self.serialize_waves(parsed_waves)
+        self.save_data(raw_level.metadata, level_name)
+        self.save_map(raw_level.tiles, level_name)
