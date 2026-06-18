@@ -1,6 +1,6 @@
-from collections import deque
 import math
 import random
+from collections import deque
 from typing import Optional
 
 from pygame.math import Vector2
@@ -98,7 +98,13 @@ class LevelGenerator:
                     tiles[y][x] = generated_tile
         return tiles
 
-    def generate(self, path_length: int, size: tuple, seed=0, noise_amplitude=NOISE_AMPLITUDE):
+    def generate(
+        self,
+        path_length: int,
+        size: tuple,
+        seed=0,
+        noise_amplitude=NOISE_AMPLITUDE
+    ):
         """Процесс генерации уровня."""
         template, heights = self.get_template_and_heights()
         tiles, visited = self.generate_map_with_path(
