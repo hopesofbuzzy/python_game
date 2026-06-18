@@ -16,8 +16,9 @@ from src.scenes.main.level.saver import LevelSaver
 
 LEVEL_NAME = "generator_template"
 SEED = 57
-PATH_LENGTH = 30
+PATH_LENGTH = 20
 SIZE = (15, 15)
+NOISE_AMPLITUDE = 10
 
 class MapScene(Scene):
     """Небольшая сцена для визуализации карты."""
@@ -25,11 +26,8 @@ class MapScene(Scene):
         self.setup_level()
 
     def setup_level(self):
-        random.seed(SEED)
-        level_loader = LevelLoader()
-        ll = LevelGenerator(level_loader, True)
-        template, rules = ll.get_template_and_rules()
-        tiles = ll.generate(PATH_LENGTH, SIZE).tiles
+        ll = LevelGenerator(LevelLoader(), True)
+        tiles = ll.generate(PATH_LENGTH, SIZE, SEED, NOISE_AMPLITUDE).tiles
         LevelSaver().save_map(tiles, LEVEL_NAME)
         LevelBuilder(
             LevelLoader(),

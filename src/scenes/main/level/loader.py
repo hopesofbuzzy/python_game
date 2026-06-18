@@ -39,7 +39,6 @@ class LevelLoader:
         tiles = list()
         with open(Path(MAPS_FOLDER, map_name), "r") as f:
             for line in f.readlines():
-                print(f"Readed map line: {line}")
                 tiles.append(list(map(int, line.split(","))))
         return tiles
 
