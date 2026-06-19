@@ -1,15 +1,16 @@
 import math
 import random
 
-from src.scenes.main.systems.waves import Wave, WaveObject, ParsedWaves
 from src.config.enemies import (
     BASE_WAVE_BUDGET,
-    MINIMUM_WAVE_PAUSE,
-    FIRST_WAVE_TIMESTAMP,
-    START_WAVE_PAUSE,
+    ENEMY_DATA,
     ENEMY_UNLOCK_WAVE,
-    ENEMY_DATA
+    FIRST_WAVE_TIMESTAMP,
+    MINIMUM_WAVE_PAUSE,
+    START_WAVE_PAUSE,
 )
+from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
+
 
 class WaveGenerator:
     def __init__(self):
@@ -32,12 +33,12 @@ class WaveGenerator:
             while wave_budget >= 100:
                 for enemy in possible_enemies:
                     cost = ENEMY_DATA[enemy]["price"]
-                    print(cost, wave_budget)
+                    # print(cost, wave_budget)
                     if wave_budget >= cost:
                         amount = wave_budget // cost
                         wave_object = WaveObject(enemy, amount)
                         wave_objects.append(wave_object)
-                        print(wave_budget)
+                        # print(wave_budget)
                         wave_budget -= cost * amount
                     pos_enemies_count -= 1
             wave = Wave(timestamp, wave_objects)

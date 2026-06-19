@@ -12,6 +12,7 @@ from src.core.objects import (
 from src.scenes.main.objects import BarComponent
 
 DEFAULT_BUTTON_COLOR = (120, 120, 120)
+DEFAULT_BUTTON_INPUT_PRIORITY = 1000
 DEFAULT_TEXT_CONTAINER_SIZE = Vector2(100, 10)
 DEFAULT_TEXT_SIZE = 18
 
@@ -51,8 +52,13 @@ class UIFactory:
             position: Vector2,
             size: Vector2,
             anchor = None,
-            centred: bool = True
+            centred: bool = True,
+            input_priority: int = 5
     ):
+        """
+            Обработчик кликов. В одиночку обычно используется для кликабельных объектов
+            мира, а не для интерфейса.
+        """
         click_handler = (
             UIControl()
             .add(UITransform(
@@ -62,7 +68,7 @@ class UIFactory:
                     centred=centred
             ))
         )
-        click_handler.add(ClickHandlerComponent(click_handler))
+        click_handler.add(ClickHandlerComponent(click_handler, input_priority))
         self.add_object(click_handler)
         return click_handler
 
@@ -75,7 +81,18 @@ class UIFactory:
             anchor,
             color: tuple = DEFAULT_BUTTON_COLOR
     ):
-        button = self.create_click_handler(position, size, anchor, centred=False)
+        """
+            Кнопка интерфейса.
+
+            input_priority: 1
+        """
+        button = self.create_click_handler(
+            position,
+            size,
+            anchor,
+            centred=False,
+            input_priority=DEFAULT_BUTTON_INPUT_PRIORITY
+        )
         button.add(PanelRendererComponent(color))
         button.add(TextRenderComponent(text, font_size))
         return button

@@ -37,15 +37,19 @@ class WaveManager:
             path: PathComponent
     """
     def __init__(self, parsed_waves: ParsedWaves, create_enemy_агтс: Callable, path):
-        self._time: float = 0.0
-        self.current_wave: Wave | None = None
         self.waves: list[Wave] = parsed_waves.waves
         self.create_enemy: Callable = create_enemy_агтс
         self._spawn_timer: float = SPAWN_COOLDOWN
-        self.on_enemy_reached_end: Event = Event()
         self.path = path
-        # Статистика
+        self._time: float = 0.0
+        # Состояние
+        self.current_wave: Wave | None = None
+        self.next_wave: Wave | None = None
+        # Числовая статистика
         self.current_wave_number = 0
+        # События
+        self.on_enemy_reached_end: Event = Event()
+        self.on_wave_start: Event = Event()
         logging.debug(self.waves)
 
     def update(self, delta_time):

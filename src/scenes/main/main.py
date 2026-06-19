@@ -2,6 +2,7 @@ import logging
 
 from pygame.math import Vector2
 
+from src.config.generator_config import *
 from src.core.objects import (
     Map,
     MapControllerComponent,
@@ -18,7 +19,11 @@ from src.scenes.main.factories.map_factory import MapFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.level.builder import Level, LevelBuilder
+
+# Генерация уровня
+from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
+from src.scenes.main.level.saver import LevelSaver
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
@@ -64,6 +69,15 @@ class MainScene(Scene):
         )
 
     def setup_level(self):
+        generator = LevelGenerator(LevelLoader(), True)
+        raw_level, parsed_waves = generator.generate(
+            PATH_LENGTH,
+            SIZE,
+            SEED,
+            NOISE_AMPLITUDE,
+            WAVE_AMOUNT
+        )
+        LevelSaver().save_level(raw_level, parsed_waves, LEVEL_NAME)
         self.level_builder: LevelBuilder = LevelBuilder(
             LevelLoader(),
             MapFactory(self.add_object)

@@ -4,6 +4,7 @@ import random
 import pygame
 from pygame.math import Vector2
 
+from src.config.generator_config import *
 from src.core.objects.scene import Scene
 from src.main import main
 
@@ -13,7 +14,6 @@ from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.level.saver import LevelSaver
-from src.config.generator_config import *
 
 LEVEL_NAME = "generator_template"
 
@@ -24,7 +24,12 @@ class MapScene(Scene):
 
     def setup_level(self):
         ll = LevelGenerator(LevelLoader(), True)
-        raw_level, parsed_waves = ll.generate(PATH_LENGTH, SIZE, SEED, NOISE_AMPLITUDE, WAVE_AMOUNT)
+        raw_level, parsed_waves = ll.generate(
+            PATH_LENGTH,
+            SIZE, SEED,
+            NOISE_AMPLITUDE,
+            WAVE_AMOUNT
+        )
         LevelSaver().save_level(raw_level, parsed_waves, LEVEL_NAME)
         LevelBuilder(
             LevelLoader(),

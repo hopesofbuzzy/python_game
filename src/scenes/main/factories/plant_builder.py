@@ -2,6 +2,12 @@ import logging
 
 from pygame.math import Vector2
 
+from src.config.plants import (
+    PLANT_DATA,
+    PLANT_HITBOX_SIZE,
+    PLANT_SIZE,
+    PLANTS_LEVEL_UPS,
+)
 from src.core.objects import (
     ClickHandlerComponent,
     CollisionComponent,
@@ -21,9 +27,6 @@ from src.scenes.main.objects import (
     Sunflower,
     UpgradeComponent,
 )
-
-from src.config.plants import PLANT_SIZE, PLANT_HITBOX_SIZE, PLANTS_LEVEL_UPS, PLANT_DATA
-
 
 
 class PlantBuilder:

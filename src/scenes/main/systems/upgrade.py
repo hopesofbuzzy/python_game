@@ -3,6 +3,8 @@ from typing import Callable
 
 from pygame.math import Vector2
 
+# Константы
+from src.config.plants import PLANTS_DESCRIPTIONS
 from src.core.objects import (
     Map,
     MapModelComponent,
@@ -19,9 +21,6 @@ from src.scenes.main.objects import (
     UpgradeComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
-
-# Константы
-from src.config.plants import PLANTS_DESCRIPTIONS
 from src.scenes.main.systems.currency import CurrencyManager
 
 UPGRADE_DIALOG_SIZE = Vector2(300, 150)

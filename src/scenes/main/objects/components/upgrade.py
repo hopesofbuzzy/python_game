@@ -1,9 +1,9 @@
 import logging
 import sys
 
+from src.config.plants import PLANTS_LEVEL_UPS
 from src.core.objects import Event
 from src.core.singletones.event_bus import event_bus
-from src.config.plants import PLANTS_LEVEL_UPS
 
 DEFAULT_UPGRADE_SPEED = 25
 

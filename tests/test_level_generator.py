@@ -32,7 +32,8 @@ def test_generator_init(path_length, size, seed1):
     template, heights = ll.get_template_and_heights()
     assert type(heights) is list
     assert type(template) is RawLevel
-    tiles = ll.generate(path_length, size).tiles
+    raw_level, parsed_waves = ll.generate(path_length, size)
+    tiles = raw_level.tiles
     print(f"Generated Tiles: {tiles}")
     LevelSaver().save_map(tiles, GENERATOR_TEMPLATE_LEVEL)
 

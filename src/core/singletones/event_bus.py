@@ -18,6 +18,14 @@ class EventFlow:
         self.is_stopped = True
 
 class EventBus:
+    """
+        Глобальная шина событий с системой приоритетов.
+        Используется для приоритезации ввода и
+        для глобальных событий, интересных основной сцене или многим
+        объектам.
+
+        Больше приоритет -> первее получает событие.
+    """
     def __init__(self):
         self.listeners: dict[str, list[Listener]] = dict()
 
@@ -53,7 +61,7 @@ class EventBus:
                 listener.listener(event, *args)
             if event.is_stopped:
                 break
-        # Пересоздаём список для вызова для O(n)
+        # Пересоздаём список вызова для O(n)
         self.listeners[event_name] = [
             l
             for l in self.listeners[event_name]

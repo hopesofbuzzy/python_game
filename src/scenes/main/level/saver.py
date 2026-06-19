@@ -3,9 +3,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.core.singletones.image_loader import image_loader as il
-
-from src.scenes.main.level.loader import RawLevel
 from src.scenes.main.level.builder import ParsedWaves
+from src.scenes.main.level.loader import RawLevel
 
 
 class LevelSaver:
@@ -42,7 +41,12 @@ class LevelSaver:
         return waves_list
 
 
-    def save_level(self, raw_level: RawLevel, parsed_waves: ParsedWaves, level_name: str):
+    def save_level(
+            self,
+            raw_level: RawLevel,
+            parsed_waves: ParsedWaves,
+            level_name: str
+    ):
         raw_level.metadata["map_name"] = level_name + ".csv"
         raw_level.metadata["waves"] = self.serialize_waves(parsed_waves)
         self.save_data(raw_level.metadata, level_name)

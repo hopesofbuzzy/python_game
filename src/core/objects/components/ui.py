@@ -13,6 +13,7 @@ from src.core.singletones.event_bus import EventFlow, event_bus
 from src.core.systems.input import cursor
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
+DEFAULT_UI_Z_INDEX = 1000
 
 class UITransform:
     """
@@ -127,14 +128,18 @@ class UIControl(GameObject):
     """Универсальный элемент интерфейса."""
     def __init__(self):
         super().__init__()
-        self.z_index = 1000
+        self.z_index = DEFAULT_UI_Z_INDEX
 
 class ClickHandlerComponent:
     """Контроллер кликов."""
-    def __init__(self, ui_control: UIControl):
+    def __init__(self, ui_control: UIControl, input_priority=5):
         self.ui_transform = ui_control.get(UITransform)
         self.on_button_pressed: Event = Event()
-        event_bus.subscribe("on_mouse_left_click", self.on_mouse_left_click, priority=5)
+        event_bus.subscribe(
+            "on_mouse_left_click",
+            self.on_mouse_left_click,
+            priority=input_priority
+        )
 
     def on_mouse_left_click(self, event: EventFlow):
         cursor_pos = None

@@ -1,7 +1,7 @@
 import logging
 
-from src.core.objects.event import Event
 from src.config.plants import PLANTS_PRICES
+from src.core.objects.event import Event
 
 DEFAULT_SUNS = 100
 

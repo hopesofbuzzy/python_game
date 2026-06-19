@@ -88,8 +88,6 @@ class LevelGenerator:
                 if (x, y) not in visited_tiles:
                     noise_val = noise.noise2d(x / size[0], y / size[1])
                     dist_val = distance_field[y][x]
-                    print(noise_val * noise_amplitude)
-                    print(x / size[0], y / size[1])
                     generated_height = dist_val + noise_val * noise_amplitude
                     generated_tile = -1
                     for tile, height in heights:
@@ -169,7 +167,6 @@ class RandomWalk:
                 tiles: карта тайлов с дорогой
                 visited: координаты всех тайлов дороги
         """
-        print(f"SEED: {self.seed}")
         rng = random.Random(self.seed)
         self.original_tiles = self.tiles
         while True:
@@ -195,14 +192,20 @@ class RandomWalk:
                         else:
                             direction = rng.choices(
                                 [(dx, dy), new_direction],
-                                [1 - RANDOM_WALK_CHANGE_PROBAB, RANDOM_WALK_CHANGE_PROBAB],
+                                [
+                                    1 - RANDOM_WALK_CHANGE_PROBAB,
+                                    RANDOM_WALK_CHANGE_PROBAB
+                                ],
                                 k=1
                             )[0]
                         dx, dy = direction
-                        print(f"Trying move {(bx, by)} -> {(bx + dx, by + dy)}")
                         if (
                             is_tile_valid((bx + dx, by + dy), self.size)
-                            and self.is_valid_path((bx + dx, by + dy), (bx, by), visited)
+                            and self.is_valid_path(
+                                (bx + dx, by + dy),
+                                (bx, by),
+                                visited
+                            )
                         ):
                             bx, by = (bx + dx, by + dy)
                             self.tiles[by][bx] = self.draw_tile
@@ -213,7 +216,7 @@ class RandomWalk:
                 self.tiles[by][bx] = self.end_tile
                 return self.tiles, visited
             except Exception as e:
-                    print(f"Ошибка генерации пути: {e}")
+                print(f"Ошибка генерации пути: {e}")
 
     def is_valid_path(self, pos, old_pos, visited):
         """Проверка на тупик."""

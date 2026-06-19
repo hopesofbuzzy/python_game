@@ -5,6 +5,7 @@ from pygame.math import Vector2
 
 from src.core.objects import Event, GameObject
 
+
 # Базовое растение
 class BasePlant(GameObject):
     """Универсальное растение."""

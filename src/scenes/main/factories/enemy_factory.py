@@ -2,6 +2,7 @@ import logging
 
 from pygame.math import Vector2
 
+from src.config.enemies import ENEMY_DATA
 from src.core.objects import (
     CollisionComponent,
     MovementComponent,
@@ -17,7 +18,7 @@ from src.scenes.main.objects import (
     Enemy,
     HealthComponent,
 )
-from src.config.enemies import ENEMY_DATA
+
 
 class EnemyFactory:
     """Фабрика сборки врагов."""

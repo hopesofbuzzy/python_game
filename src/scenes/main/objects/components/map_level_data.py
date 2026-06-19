@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass, field
 
+from src.config.plants import PLANT_DATA
 from src.core.objects.components.map import (
     Map,
     MapControllerComponent,
@@ -8,7 +9,6 @@ from src.core.objects.components.map import (
     MapViewComponent,
 )
 from src.core.objects.game_object import GameObject
-from src.config.plants import PLANT_DATA
 
 
 class MapLevelDataComponent:
