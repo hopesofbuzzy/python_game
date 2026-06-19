@@ -2,7 +2,6 @@ import logging
 
 from pygame.math import Vector2
 
-from src.config.generator_config import *
 from src.core.objects import (
     Map,
     MapControllerComponent,
@@ -15,20 +14,17 @@ from src.scenes.main.factories.bullet_factory import BulletFactory
 # Фабрики и строители.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
-from src.scenes.main.factories.map_factory import MapFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.level.builder import Level, LevelBuilder
 
-# Генерация уровня
-from src.scenes.main.level.generator import LevelGenerator
-from src.scenes.main.level.loader import LevelLoader
-from src.scenes.main.level.saver import LevelSaver
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+
+# Уровень
+from src.scenes.main.systems.level import LevelManager
 
 # Системы текущей сцены.
 from src.scenes.main.systems.currency import CurrencyManager
@@ -37,14 +33,12 @@ from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
 
-LEVEL_NAME = "generator_template"
-
 class MainScene(Scene):
     def ready(self):
         self.setup_factories()
         self.setup_level()
-        self.setup_systems()
         self.setup_waves()
+        self.setup_systems()
         self.event_bus.subscribe(
             "on_requested_upgrade_dialog",
             self.upgrade.open_upgrade_dialog
@@ -69,23 +63,7 @@ class MainScene(Scene):
         )
 
     def setup_level(self):
-        generator = LevelGenerator(LevelLoader(), True)
-        raw_level, parsed_waves = generator.generate(
-            PATH_LENGTH,
-            SIZE,
-            SEED,
-            NOISE_AMPLITUDE,
-            WAVE_AMOUNT
-        )
-        LevelSaver().save_level(raw_level, parsed_waves, LEVEL_NAME)
-        self.level_builder: LevelBuilder = LevelBuilder(
-            LevelLoader(),
-            MapFactory(self.add_object)
-        )
-        self.level: Level = self.level_builder.load_and_create_level(
-            Vector2(0, 0),
-            LEVEL_NAME
-        )
+        self.level = LevelManager(self.add_object).generate_level()
         self.gamemap: Map = self.level.map
         self.gamemap.get(MapControllerComponent).on_tile_click.subscribe(
             self.handle_map_click
@@ -104,7 +82,9 @@ class MainScene(Scene):
         )
         self.ui_manager: UIManager = UIManager(
             self.ui_factory,
-            self.currency
+            self.currency,
+            self.wave_manager.on_wave_started,
+            self.wave_manager.get_time_before_wave
         )
         self.upgrade: UpgradeManager = UpgradeManager(
             self.gamemap,
@@ -128,6 +108,7 @@ class MainScene(Scene):
 
     def update(self, delta_time: float):
         self.wave_manager.update(delta_time)
+        self.ui_manager.update(delta_time)
         return super().update(delta_time)
 
     def handle_map_click(

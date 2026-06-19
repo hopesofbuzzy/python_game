@@ -36,9 +36,9 @@ class WaveManager:
             create_enemy,
             path: PathComponent
     """
-    def __init__(self, parsed_waves: ParsedWaves, create_enemy_агтс: Callable, path):
+    def __init__(self, parsed_waves: ParsedWaves, create_enemy_func: Callable, path):
         self.waves: list[Wave] = parsed_waves.waves
-        self.create_enemy: Callable = create_enemy_агтс
+        self.create_enemy: Callable = create_enemy_func
         self._spawn_timer: float = SPAWN_COOLDOWN
         self.path = path
         self._time: float = 0.0
@@ -47,23 +47,38 @@ class WaveManager:
         self.next_wave: Wave | None = None
         # Числовая статистика
         self.current_wave_number = 0
+        self.time_before_next_wave = self.waves[0].timestamp
         # События
         self.on_enemy_reached_end: Event = Event()
-        self.on_wave_start: Event = Event()
+        self.on_wave_started: Event = Event()
         logging.debug(self.waves)
 
     def update(self, delta_time):
         self._time += delta_time
+        self.time_before_next_wave -= delta_time
         if not self.process_wave(delta_time):
-            for wave in self.waves:
+            for idx, wave in enumerate(self.waves):
                 if self._time > wave.timestamp:
-                    self.start_wave(wave)
+                    next_wave = None
+                    if idx + 1 < len(self.waves):
+                        next_wave = self.waves[idx+1]
+                    self.start_wave(wave, next_wave)
                     logging.info(f"Волна монстров!")
 
-    def start_wave(self, wave):
+    def start_wave(self, wave, next_wave):
         """Старт волны."""
         self.current_wave = wave
         self.current_wave_number += 1
+        if next_wave:
+            self.time_before_next_wave = next_wave.timestamp - self._time
+        else:
+            self.time_before_next_wave = -1
+        self.on_wave_started.emit(
+            self.current_wave_number,
+        )
+
+    def get_time_before_wave(self):
+        return round(self.time_before_next_wave, 1)
 
     def process_wave(self, delta_time):
         if self.current_wave:

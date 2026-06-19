@@ -6,6 +6,7 @@ from typing import Optional
 from pygame.math import Vector2
 
 from src.scenes.main.level.wave_generator import WaveGenerator
+from src.scenes.main.level.saver import serialize_waves
 
 GENERATOR_TEMPLATE_LEVEL = "generator_template"\
 # RandomWalk
@@ -131,8 +132,8 @@ class LevelGenerator:
         )
         template.tiles = tiles
         parsed_waves = WaveGenerator().generate_waves(wave_count, seed)
-        return template, parsed_waves
-
+        template.metadata["waves"] = serialize_waves(parsed_waves)
+        return template
 
 class RandomWalk:
     """Реализация алгоритма Random Walk для генерации пути."""

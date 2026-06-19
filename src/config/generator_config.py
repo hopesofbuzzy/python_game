@@ -4,7 +4,7 @@ PATH_LENGTH = 30
 SIZE = (30, 30)
 NOISE_AMPLITUDE = 5
 
-WAVE_AMOUNT = 10
+WAVE_AMOUNT = 1
 
 # Интересные сиды:
 # Кольцо: seed=57, path_length=15

@@ -1,21 +1,31 @@
 from pygame.math import Vector2
+from typing import Callable
 
 from src.core.objects import TextRenderComponent
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.systems.currency import CurrencyManager
+from src.core.objects.event import Event
 
 SUNS_TEXT_POSITION = Vector2(0, 0)
-SUNS_TEXT_SIZE = 20
+SUNS_TEXT_SIZE = 25
+WAVE_NUMBER_TEXT_POSITION = SUNS_TEXT_POSITION + Vector2(0, 20)
+WAVE_NUMBER_TEXT_SIZE = 25
+TIME_BEFORE_WAVE_TEXT_POSITION = WAVE_NUMBER_TEXT_POSITION + Vector2(0, 30)
+TIME_BEFORE_WAVE_TEXT_SIZE = 15
 
 class UIManager:
     """Менеджер интерфейса игры (HUD)"""
     def __init__(
         self,
         ui_factory: UIFactory,
-        currency: CurrencyManager
+        currency: CurrencyManager,
+        on_wave_started: Event,
+        get_time_before_wave_func: Callable
     ):
         self.ui_factory = ui_factory
         self.currency = currency
+        on_wave_started.subscribe(self.on_wave_started)
+        self.get_time_before_wave = get_time_before_wave_func
         self.build_interface()
         
     def build_interface(self):
@@ -26,4 +36,27 @@ class UIManager:
         )
         self.currency.on_suns_update.subscribe(
             lambda s: self.suns_text.get(TextRenderComponent).set_text(f"Солнышки: {s}")
+        )
+        self.wave_number = self.ui_factory.create_text(
+            f"Текущая волна: ...",
+            WAVE_NUMBER_TEXT_POSITION,
+            WAVE_NUMBER_TEXT_SIZE
+        )
+        self.time_before_wave = self.ui_factory.create_text(
+            f"Следующая волна через: ...",
+            TIME_BEFORE_WAVE_TEXT_POSITION,
+            TIME_BEFORE_WAVE_TEXT_SIZE
+        )
+
+    def on_wave_started(
+        self,
+        wave_number: int,
+    ):
+        self.wave_number.get(TextRenderComponent).set_text(
+            f"Текущая волна: {wave_number}"
+        )
+
+    def update(self, delta_time):
+        self.time_before_wave.get(TextRenderComponent).set_text(
+            f"Следующая волна через: {self.get_time_before_wave()}"
         )

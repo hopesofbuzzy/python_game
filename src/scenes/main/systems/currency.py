@@ -3,7 +3,7 @@ import logging
 from src.config.plants import PLANTS_PRICES
 from src.core.objects.event import Event
 
-DEFAULT_SUNS = 100
+DEFAULT_SUNS = 135
 
 class CurrencyManager:
     def __init__(self, suns: int = DEFAULT_SUNS):

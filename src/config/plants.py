@@ -55,7 +55,7 @@ PLANT_DATA = {
         "cooldown": 10,
         "image_path": "res/sunflower.png",
         "health": 15,
-        "given_sun": 25
+        "given_sun": 15
     },
     "Mushroom": {
         "road_spawn": False,

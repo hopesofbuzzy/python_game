@@ -5,7 +5,7 @@ import pygame
 
 from src.core.objects.components.map import Map, MapModelComponent
 from src.scenes.main.factories.map_factory import MapFactory
-from src.scenes.main.level.loader import LevelLoader
+from src.scenes.main.level.loader import LevelLoader, RawLevel
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
@@ -31,15 +31,19 @@ class LevelBuilder:
         # Фабрика уровней.
         self.lf = level_factory
 
-    def load_and_create_level(
-            self,
-            position,
-            level_name: str = DEFAULT_LEVEL_NAME,
-            parse_map: bool = True,
-            parse_waves: bool = True
-    ) -> Level:
-        """Загружает и строит уровень: карта, пути, волны."""
+    def load(self, level_name: str):
+        """Загружает сырой уровень из файла."""
         raw_level = self.lm.load_level(level_name)
+        return raw_level
+
+    def build(
+        self,
+        position,
+        raw_level: RawLevel,
+        parse_map: bool = True,
+        parse_waves: bool = True
+    ) -> Level:
+        """Строит уровень: карта, пути, волны."""
         tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
         map = self.lf.create_map(position, raw_level.tiles, tileset)
         path = list()
