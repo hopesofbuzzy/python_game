@@ -14,6 +14,7 @@ from src.core.objects import (
 )
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import BarComponent
+from src.core.singletones.event_bus import EventBus
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DIALOG_OBJECTS_SPACE = 10
@@ -24,9 +25,10 @@ DEFAULT_BUTTON_SIZE = Vector2(100, 35)
 DEFAULT_DIALOG_TEXT_CONTAINER_SIZE = Vector2(120, 80)
 
 class DialogBuilder:
-    def __init__(self, add_object, ui_factory: UIFactory):
+    def __init__(self, add_object, ui_factory: UIFactory, event_bus: EventBus):
         self.add_object = add_object
         self.ui_factory = ui_factory
+        self.event_bus = event_bus
         self._dialog = None
 
     def with_dialog(
@@ -73,7 +75,7 @@ class DialogBuilder:
         self,
         text: str,
         font_size: int,
-        func: Callable,
+        data = None,
         position: Vector2 = DEFAULT_BUTTON_POSITION,
         size: Vector2 = DEFAULT_BUTTON_SIZE,
         color: tuple = DEFAULT_BUTTON_COLOR,
@@ -86,10 +88,13 @@ class DialogBuilder:
             position,
             size,
             self._dialog,
-            color
+            color,
+            data=data
         )
         logging.debug("Функция соединена")
-        button.get(ClickHandlerComponent).on_button_pressed.subscribe(func)
+        button.get(ClickHandlerComponent).on_button_pressed.subscribe(
+            lambda data: self.event_bus.fire("on_requested_upgrade", data)
+        )
         self._dialog.add_child(button)
         return self
 

@@ -7,13 +7,15 @@ from src.scenes.main.objects import (
     InventoryModelComponent,
     KeyControllerComponent,
 )
+from src.core.singletones.event_bus import EventBus
 
 
 class InventoryFactory:
     """Фабрика сборки инвентаря."""
 
-    def __init__(self, add_object):
+    def __init__(self, add_object, event_bus):
         self.add_object = add_object
+        self.event_bus = event_bus
 
     def create_inventory(self):
         key_controller = KeyControllerComponent()

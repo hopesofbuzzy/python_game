@@ -58,6 +58,7 @@ class UpgradeManager:
             "on_plant_level_uped",
             self.plant_level_up
         )
+        self.event_bus = event_bus
 
     def plant_level_up(
             self,
@@ -86,18 +87,23 @@ class UpgradeManager:
         )
         plant.free()
         # Открытие нового окна улучшения.
-        next_request_upgrade_func = new_plant.get(UpgradeComponent).request_upgrade
         self.open_upgrade_dialog(
             EventFlow(),
-            new_plant,
-            next_request_upgrade_func
+            new_plant
         )
 
+    def plant_upgrade(self, _event: EventFlow, plant: BasePlant):
+        """Одноразовое улучшение растения."""
+        price = plant.get(UpgradeComponent).get_upgrade_cost()
+        if self.currency.suns >= price:
+            self.currency.decrease_suns(price)
+            plant.get(UpgradeComponent).upgrade()
+            logging.debug(f"Растение улучшено")
+
     def open_upgrade_dialog(
-            self,
-            _event: EventFlow,
-            plant: BasePlant,
-            request_upgrade_func
+        self,
+        _event: EventFlow,
+        plant: BasePlant
     ):
         """Открытие диалогового окна улучшения растения."""
         self.close_all_upgrade_dialogs()
@@ -105,7 +111,8 @@ class UpgradeManager:
         dialog = (
             DialogBuilder(
                 self.add_object,
-                self.ui_factory
+                self.ui_factory,
+                self.event_bus
             )
             .with_dialog(
                 Vector2(0, 0),
@@ -116,7 +123,7 @@ class UpgradeManager:
             .with_button(
                 UPGRADE_BUTTON_TEXT,
                 UPGRADE_BUTTON_FONT_SIZE,
-                request_upgrade_func
+                plant
             )
             .build()
         )
@@ -127,16 +134,3 @@ class UpgradeManager:
         for dialog in self.upgrade_dialogs:
             dialog.free()
         self.upgrade_dialogs.clear()
-
-    def plant_upgrade(
-            self,
-            _event: EventFlow,
-            plant: BasePlant,
-            price: int,
-            upgrade_func
-    ):
-        """Одноразовое улучшение растения."""
-        if self.currency.suns >= price:
-            self.currency.decrease_suns(price)
-            upgrade_func()
-            logging.debug(f"Растение улучшено")

@@ -1,5 +1,7 @@
 import logging
 from dataclasses import dataclass
+from typing import Optional
+from functools import singledispatchmethod
 
 from src.config.plants import PLANT_DATA, PLANTS
 
@@ -16,26 +18,47 @@ class InventoryModelComponent:
     def __init__(self, raw_slots: dict = PLANTS):
         self.active_slot: int = 1
         self.raw_slots = raw_slots
-        self.slots: list[Slot] = list()
+        self.slots: list[Optional[Slot]] = list()
         self.size: int = 10
         self._set_default_slots()
 
     def _set_default_slots(self):
+        """Слоты по умолчанию (инвентарь - постоянный)."""
         for idx, name in self.raw_slots.items():
             if name:
                 self.slots.append(Slot(name, PLANT_DATA[name]["image_path"]))
             else:
-                self.slots.append(Slot("None", "None"))
+                self.slots.append(None)
 
-    def set_active_slot(self, key: str):
-        if key.isdigit():
-            self.active_slot = int(key)
-            logging.debug(f"Слот инвентаря: {self.active_slot}")
+    @singledispatchmethod
+    def set_active_slot(self, arg):
+        """Функция установки слота инвентаря (перегрузки для Slot, str)"""
+        raise NotImplementedError("Тип слота не поддерживается!")
 
-    def get_active_slot(self) -> Slot:
+    @set_active_slot.register(str)
+    def _(self, arg: str):
+        if arg.isdigit():
+            self.active_slot = int(arg)
+            logging.info(f"Слот инвентаря: {self.active_slot}")
+
+    @set_active_slot.register(Slot)
+    def _(self, arg: Slot):
+        logging.info(f"{arg}")
+        for idx, slot in enumerate(self.slots):
+            if not slot and not arg:
+                self.active_slot = 0
+            elif slot and slot.name == arg.name:
+                self.active_slot = idx
+                logging.info(f"Слот инвентаря: {self.active_slot}")
+                
+
+
+    def get_active_slot(self) -> Optional[Slot]:
+        """Возвращает активный слот."""
         return self.slots[self.active_slot]
 
     def get_slots(self) -> list[Slot]:
-        return self.slots
+        """Возвращает все слоты инвентаря."""
+        return [slot for slot in self.slots if slot]
 
     

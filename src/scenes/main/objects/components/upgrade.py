@@ -13,17 +13,8 @@ class UpgradeComponent:
         self.target_name = target_name
         self.target_suns = target_suns
 
-    def request_upgrade_dialog(self):
-        event_bus.fire("on_requested_upgrade_dialog", self.plant, self.request_upgrade)
-
-    def request_upgrade(self):
-        logging.debug("Запрос на улучшение")
-        event_bus.fire(
-            "on_requested_upgrade",
-            self.plant,
-            DEFAULT_UPGRADE_SPEED,
-            self.upgrade
-        )
+    def request_upgrade_dialog(self, plant):
+        event_bus.fire("on_requested_upgrade_dialog", self.plant)
 
     def upgrade(self):
         self.suns += DEFAULT_UPGRADE_SPEED

@@ -41,15 +41,17 @@ class PlantController:
     ):
         """Посадка растения."""
         tuple_tile_pos = tuple(tile_pos)
-        plant_name = self.inventory.get_active_slot().name
+        active_inventory_slot = self.inventory.get_active_slot()
         # Условия посадки.
+        if not active_inventory_slot:
+            return
+        plant_name = active_inventory_slot.name
+        if not self.map_data.is_position_to_place_plant(plant_name, tuple_tile_pos):
+            return
         if not (
-            plant_name != "None"
-            and self.currency.check_suns(plant_name)
+            self.currency.check_suns(plant_name)
             and self.map_data.is_position_free(tuple_tile_pos)
         ):
-            return
-        if not self.map_data.is_position_to_place_plant(plant_name, tuple_tile_pos):
             return
         # Не забыть про вычитание валюты.
         self.currency.decrease_suns(self.currency.get_plant_price(plant_name))

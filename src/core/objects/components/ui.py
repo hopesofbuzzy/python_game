@@ -11,6 +11,10 @@ from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
 from src.core.systems.input import cursor
+from src.core.singletones.image_loader import (
+    image_loader as il,
+    Image
+)
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DEFAULT_UI_Z_INDEX = 1000
@@ -23,7 +27,7 @@ class UITransform:
         использоваться только как компоненты объекта интерфейса - UIControl.
 
         Для привязки элемента интерфейса к объекту мира
-        нужно использовать object.add_child(ui_control).
+        нужно использовать object.add_child(ui_control) и anchor = object.
 
         Без anchor UITransform всегда работает с координатами экрана.
     """
@@ -124,6 +128,24 @@ class PanelRendererComponent:
         )
         pygame.draw.rect(screen, self.color, rect)
 
+class ImageRendererComponent:
+    """Отрисовщик картинки."""
+    def __init__(self, image_path: str):
+        self._original_image: Image = il.load_image(image_path)
+        self._scaled_image = None
+
+    def get_scaled_image(self, size: tuple):
+        if isinstance(self._original_image, Image):
+            self._scaled_image = pygame.transform.scale(
+                self._original_image.surface, size=size
+            )
+        return self._scaled_image
+
+    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+        image = self.get_scaled_image(tuple(size))
+        if image:
+            screen.blit(image, local_position)
+
 class UIControl(GameObject):
     """Универсальный элемент интерфейса."""
     def __init__(self):
@@ -131,10 +153,11 @@ class UIControl(GameObject):
         self.z_index = DEFAULT_UI_Z_INDEX
 
 class ClickHandlerComponent:
-    """Контроллер кликов."""
-    def __init__(self, ui_control: UIControl, input_priority=5):
+    """Контроллер кликов, выдающий данные по нажатию."""
+    def __init__(self, ui_control: UIControl, input_priority=5, data=None):
         self.ui_transform = ui_control.get(UITransform)
         self.on_button_pressed: Event = Event()
+        self.data = data
         event_bus.subscribe(
             "on_mouse_left_click",
             self.on_mouse_left_click,
@@ -149,7 +172,7 @@ class ClickHandlerComponent:
             cursor_pos = cursor.pos
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
             logging.debug("EMITTIIIIING")
-            self.on_button_pressed.emit()
+            self.on_button_pressed.emit(self.data)
             event.stop()
 
 class VerticalLayoutComponent:
@@ -159,7 +182,10 @@ class VerticalLayoutComponent:
         self.space = space
 
     def update(self, delta_time):
-        y_offset = self.space
+        if not self.ui_control.get(UITransform).anchor:
+            y_offset = self.ui_control.get(UITransform).position.y + self.space
+        else:
+            y_offset = self.space
         for child in self.ui_control.children:
             child.get(UITransform)._position_screen_resize = False
             if child.has(UITransform):

@@ -9,6 +9,7 @@ from src.core.objects import (
     UIControl,
     UITransform,
     VerticalLayoutComponent,
+    ImageRendererComponent
 )
 from src.scenes.main.objects import BarComponent
 
@@ -56,7 +57,8 @@ class UIFactory:
             size: Vector2,
             anchor = None,
             centred: bool = True,
-            input_priority: int = 5
+            input_priority: int = 5,
+            data = None
     ):
         """
             Обработчик кликов. В одиночку обычно используется для кликабельных объектов
@@ -71,7 +73,7 @@ class UIFactory:
                     centred=centred
             ))
         )
-        click_handler.add(ClickHandlerComponent(click_handler, input_priority))
+        click_handler.add(ClickHandlerComponent(click_handler, input_priority, data))
         self.add_object(click_handler)
         return click_handler
 
@@ -82,7 +84,8 @@ class UIFactory:
             position: Vector2,
             size: Vector2,
             anchor,
-            color: tuple = DEFAULT_BUTTON_COLOR
+            color: tuple = DEFAULT_BUTTON_COLOR,
+            data = None
     ):
         """
             Кнопка интерфейса.
@@ -94,31 +97,35 @@ class UIFactory:
             size,
             anchor,
             centred=False,
-            input_priority=DEFAULT_BUTTON_INPUT_PRIORITY
+            input_priority=DEFAULT_BUTTON_INPUT_PRIORITY,
+            data=data
         )
         button.add(PanelRendererComponent(color))
         button.add(TextRenderComponent(text, font_size))
+        self.add_object(button)
         return button
 
-    def create_vertical_container(self, position, size, anchor, color):
+    def create_vertical_container(self, position, size, anchor, color, space):
         """Создаёт вертикальный контейнер (сверху-вниз) для объектов интерфейса."""
-        inventory = (
+        conatiner = (
             UIControl()
-            .add(UITransform(
-                position,
-                size,
-                anchor
-            ))
+            .add(UITransform(position, size, anchor))
             .add(PanelRendererComponent(color))
         )
-        inventory.add(VerticalLayoutComponent(inventory))
+        conatiner.add(VerticalLayoutComponent(conatiner, space))
+        self.add_object(conatiner)
+        return conatiner
 
-    def create_image(self, position, size, image_path):
-        """Создаёт картинку в виде объекта интерфейса."""
-        inventory = (
-            UIControl()
-            .add(UITransform(
-                position,
-                size
-            ))
+    def create_image(self, position, size, image_path, anchor = None, data = None):
+        """Создаёт кликабельную картинку в виде объекта интерфейса."""
+        image = self.create_click_handler(
+            position,
+            size,
+            anchor,
+            centred=False,
+            input_priority=DEFAULT_BUTTON_INPUT_PRIORITY,
+            data=data
         )
+        image.add(ImageRendererComponent(image_path))
+        self.add_object(image)
+        return image

@@ -55,13 +55,15 @@ class DebugRenderer:
                 position = None
                 if object.get(UITransform).anchor:
                     position = camera.to_local(object.get(UITransform).position)
+                    zoom = camera.zoom
                 else:
                     position = object.get(UITransform).position
+                    zoom = 1
                 self.draw_ui_transform(
                     screen,
                     object.get(UITransform).size,
                     position,
-                    camera.zoom
+                    zoom
                 )
 
     def draw_collision_rect(

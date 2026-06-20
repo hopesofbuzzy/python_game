@@ -7,6 +7,7 @@ from pygame.math import Vector2
 
 from src.core.objects.components.path import PatrolComponent
 from src.core.objects.event import Event
+from src.core.singletones.event_bus import EventBus
 
 SPAWN_COOLDOWN = 0.5
 
@@ -36,7 +37,13 @@ class WaveManager:
             create_enemy,
             path: PathComponent
     """
-    def __init__(self, parsed_waves: ParsedWaves, create_enemy_func: Callable, path):
+    def __init__(
+        self,
+        parsed_waves: ParsedWaves,
+        create_enemy_func: Callable,
+        path,
+        event_bus: EventBus
+    ):
         self.waves: list[Wave] = parsed_waves.waves
         self.create_enemy: Callable = create_enemy_func
         self._spawn_timer: float = SPAWN_COOLDOWN
@@ -49,8 +56,7 @@ class WaveManager:
         self.current_wave_number = 0
         self.time_before_next_wave = self.waves[0].timestamp
         # События
-        self.on_enemy_reached_end: Event = Event()
-        self.on_wave_started: Event = Event()
+        self.event_bus = event_bus
         logging.debug(self.waves)
 
     def update(self, delta_time):
@@ -73,9 +79,7 @@ class WaveManager:
         """Старт волны."""
         self.current_wave = wave
         self.current_wave_number += 1
-        self.on_wave_started.emit(
-            self.current_wave_number,
-        )
+        self.event_bus.fire("on_wave_started", self.current_wave_number)
 
     def get_time_before_wave(self):
         """Время перед следующей волной."""

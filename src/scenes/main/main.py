@@ -22,18 +22,20 @@ from src.scenes.main.objects import (
     InventoryModelComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
-from src.scenes.main.systems.bullet import BulletController
 
 # Системы текущей сцены.
 from src.scenes.main.systems.currency import CurrencyManager
 from src.scenes.main.systems.enemy import EnemyController
-
-# Уровень
-from src.scenes.main.systems.level import LevelManager
+from src.scenes.main.systems.inventory import InventoryManager
+from src.scenes.main.systems.bullet import BulletController
 from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
+
+# Уровень
+from src.scenes.main.systems.level import LevelManager
+
 
 
 class MainScene(Scene):
@@ -48,7 +50,10 @@ class MainScene(Scene):
 
     def setup_factories(self):
         """Настраивает мелкие фабрики."""
-        self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
+        self.inventory_factory: InventoryFactory = InventoryFactory(
+            self.add_object,
+            self.event_bus
+        )
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object)
 
@@ -63,6 +68,10 @@ class MainScene(Scene):
     def setup_systems(self):
         """Настраивает системы."""
         self.inventory: Inventory = self.inventory_factory.create_inventory()
+        self.inventory_manager: InventoryManager = InventoryManager(
+            self.inventory,
+            self.event_bus
+        )
         self.currency = CurrencyManager(self.event_bus)
 
     def setup_controllers(self):
@@ -105,7 +114,7 @@ class MainScene(Scene):
         self.ui_manager: UIManager = UIManager(
             self.ui_factory,
             self.currency,
-            self.wave_manager.on_wave_started,
+            self.event_bus,
             self.wave_manager.get_time_before_wave,
             self.inventory.get(InventoryModelComponent).get_slots()
         )
@@ -119,9 +128,9 @@ class MainScene(Scene):
         self.wave_manager: WaveManager = WaveManager(
             self.level.parsed_waves,
             self.enemy_factory.create_enemy,
-            path
+            path,
+            self.event_bus
         )
-        self.wave_manager.on_enemy_reached_end.subscribe(self.game_over)
 
     def update(self, delta_time: float):
         self.wave_manager.update(delta_time)
