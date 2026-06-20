@@ -1,20 +1,21 @@
 import logging
 from typing import Callable
+
 from pygame.math import Vector2
 
 from src.core.objects import (
     ClickHandlerComponent,
+    ContainerComponent,
+    ImageRendererComponent,
+    MouseHoverComponent,
     PanelRendererComponent,
     TextRenderComponent,
     UIControl,
     UITransform,
     VerticalLayoutComponent,
-    ImageRendererComponent,
-    MouseHoverComponent,
-    ContainerComponent
 )
-from src.scenes.main.objects import BarComponent
 from src.core.singletones.event_bus import EventBus
+from src.scenes.main.objects import BarComponent
 
 DEFAULT_BUTTON_COLOR = (120, 120, 120)
 DEFAULT_BUTTON_INPUT_PRIORITY = 1000

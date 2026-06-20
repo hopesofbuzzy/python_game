@@ -1,5 +1,5 @@
-from src.scenes.main.objects import Enemy
 from src.core.singletones.event_bus import EventBus, EventFlow
+from src.scenes.main.objects import Enemy
 
 
 class EnemyController:

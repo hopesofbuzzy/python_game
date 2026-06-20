@@ -1,5 +1,7 @@
-from pygame.math import Vector2
 from typing import Optional
+
+from pygame.math import Vector2
+
 from src.core.objects.components.component_registry import ComponentRegistry
 from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject

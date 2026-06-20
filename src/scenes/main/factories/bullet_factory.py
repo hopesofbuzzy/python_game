@@ -30,7 +30,11 @@ class BulletFactory:
     def __init__(self, add_object, event_bus):
         self.add_object = add_object
         self.build_context = BuildContext(
-            attack_func=lambda bullet, target: event_bus.fire("on_bullet_attacked", bullet, target),
+            attack_func=lambda bullet, target: event_bus.fire(
+                "on_bullet_attacked",
+                bullet,
+                target
+            ),
             timeout_func=lambda bullet: event_bus.fire("on_bullet_timeout", bullet)
         )
 

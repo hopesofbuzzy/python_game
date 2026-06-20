@@ -13,29 +13,28 @@ from src.scenes.main.factories.bullet_factory import BulletFactory
 
 # Фабрики и строители.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
-from src.scenes.main.factories.plant_factory import PlantFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
+from src.scenes.main.factories.plant_factory import PlantFactory
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+from src.scenes.main.systems.bullet import BulletController
 
 # Системы текущей сцены.
 from src.scenes.main.systems.currency import CurrencyManager
 from src.scenes.main.systems.enemy import EnemyController
 from src.scenes.main.systems.inventory import InventoryManager
-from src.scenes.main.systems.bullet import BulletController
+
+# Уровень
+from src.scenes.main.systems.level import LevelManager
 from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
-
-# Уровень
-from src.scenes.main.systems.level import LevelManager
-
 
 
 class MainScene(Scene):
@@ -75,7 +74,10 @@ class MainScene(Scene):
         self.currency = CurrencyManager(self.event_bus)
 
     def setup_controllers(self):
-        """Настраивает системы, связанные с контролем спавна сущностей (EventBus driven)."""
+        """
+            Настраивает системы, связанные с контролем
+            спавна сущностей (EventBus driven).
+        """
         self.bullet_controller = BulletController(self.event_bus)
         self.bullet_factory: BulletFactory = BulletFactory(
             self.add_object,

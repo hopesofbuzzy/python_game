@@ -9,7 +9,6 @@ from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
 
 
-
 class MapViewComponent:
     def __init__(
         self,

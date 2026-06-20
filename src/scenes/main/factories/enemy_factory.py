@@ -34,7 +34,11 @@ class EnemyFactory:
     def __init__(self, add_object, ui_factory, event_bus):
         self.add_object = add_object
         self.build_context = BuildContext(
-            attack_func=lambda enemy, target: event_bus.fire("on_enemy_attacked", enemy, target),
+            attack_func=lambda enemy, target: event_bus.fire(
+                "on_enemy_attacked",
+                enemy,
+                target
+            ),
             damage_func=lambda enemy: event_bus.fire("on_enemy_damaged", enemy),
             death_func=lambda enemy: event_bus.fire("on_enemy_death", enemy),
             end_patrol_func=lambda: event_bus.fire("on_enemy_reached_end")

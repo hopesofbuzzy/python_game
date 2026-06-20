@@ -1,8 +1,9 @@
 import logging
 
 from src.core.singletones.event_bus import EventBus, EventFlow
-from src.scenes.main.objects.components.inventory import Slot, InventoryModelComponent
 from src.scenes.main.objects import Inventory
+from src.scenes.main.objects.components.inventory import InventoryModelComponent, Slot
+
 
 class InventoryManager:
     def __init__(

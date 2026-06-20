@@ -34,8 +34,14 @@ class Camera:
         """Вычисление видимых областей для карт тайлов."""
         start_col = max(0, int(self.position.x // tile_size))
         start_row = max(0, int(self.position.y // tile_size))
-        end_col = min(cols, int((self.position.x + self.size.x * (1/self.zoom)) // tile_size) + 2)
-        end_row = min(rows, int((self.position.y + self.size.y * (1/self.zoom)) // tile_size) + 2)
+        end_col = min(
+            cols,
+            int((self.position.x + self.size.x * (1/self.zoom)) // tile_size) + 2
+        )
+        end_row = min(
+            rows,
+            int((self.position.y + self.size.y * (1/self.zoom)) // tile_size) + 2
+        )
         return start_col, end_col - 1, start_row, end_row - 1
 
     def handle_drag(self):

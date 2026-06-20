@@ -2,12 +2,12 @@ import logging
 
 from pygame.math import Vector2
 
+from src.core.singletones.event_bus import EventBus
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
     KeyControllerComponent,
 )
-from src.core.singletones.event_bus import EventBus
 
 
 class InventoryFactory:

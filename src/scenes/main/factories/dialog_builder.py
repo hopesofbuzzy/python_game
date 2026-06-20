@@ -12,9 +12,9 @@ from src.core.objects import (
     UITransform,
     VerticalLayoutComponent,
 )
+from src.core.singletones.event_bus import EventBus
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import BarComponent
-from src.core.singletones.event_bus import EventBus
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DIALOG_OBJECTS_SPACE = 10

@@ -8,13 +8,11 @@ from pygame.math import Vector2
 
 from src.core.objects.components import PositionComponent
 from src.core.objects.event import Event
-from src.core.systems.input import Cursor
 from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
-from src.core.singletones.image_loader import (
-    image_loader as il,
-    Image
-)
+from src.core.singletones.image_loader import Image
+from src.core.singletones.image_loader import image_loader as il
+from src.core.systems.input import Cursor
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DEFAULT_UI_Z_INDEX = 1000

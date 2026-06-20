@@ -1,5 +1,6 @@
-from src.scenes.main.objects.bullet import Bullet
 from src.core.singletones.event_bus import EventBus, EventFlow
+from src.scenes.main.objects.bullet import Bullet
+
 
 class BulletController:
     def __init__(self, event_bus: EventBus):
