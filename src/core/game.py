@@ -3,6 +3,7 @@ from pygame.math import Vector2
 
 from src.core.objects.camera import Camera
 from src.core.objects.scene import Scene
+from src.core.singletones.audio_loader import AudioLoader, audio_loader
 from src.core.singletones.event_bus import event_bus
 from src.core.systems.collision import CollisionSystem
 from src.core.systems.debug_renderer import DebugRenderer
@@ -11,7 +12,6 @@ from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
 from src.core.systems.targeting import TargetingSystem
 from src.core.systems.uniform_grid import UniformGrid
-from src.core.singletones.audio_loader import audio_loader, AudioLoader
 
 
 class Game:

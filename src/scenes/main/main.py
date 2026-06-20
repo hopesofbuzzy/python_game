@@ -28,8 +28,8 @@ from src.scenes.main.systems.bullet import BulletController
 from src.scenes.main.systems.currency import CurrencyManager
 from src.scenes.main.systems.enemy import EnemyController
 from src.scenes.main.systems.inventory import InventoryManager
-from src.scenes.main.systems.music import MusicManager
 from src.scenes.main.systems.level import LevelManager
+from src.scenes.main.systems.music import MusicManager
 from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
