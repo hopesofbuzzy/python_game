@@ -36,15 +36,13 @@ class LevelGenerator:
         self.level_loader = level_loader
 
     def get_template_and_heights(self):
+        """Получает шаблон для генерации и высоты."""
         template = self.level_loader.load_generator_template_level()
         heights = template.metadata["heights"]
-        rules = {
-            tile: height
-            for tile, height in heights
-        }
         return template, heights
 
     def build_tiles(self, size: tuple):
+        """Строит начальную карту тайлов."""
         return [
             [
                 26
@@ -62,6 +60,7 @@ class LevelGenerator:
         end_tile,
         seed=0
     ):
+        """Строит карту и генерирует путь."""
         tiles = self.build_tiles(map_size)
         tiles = RandomWalk(
             tiles,
@@ -82,6 +81,7 @@ class LevelGenerator:
         seed=0,
         noise_amplitude=NOISE_AMPLITUDE,
     ):
+        """Генерирует окружение карты вокруг пути (RandomWalk+PerlinNoise)."""
         noise = PerlinNoise(seed)
         distance_field = DistanceField(tiles, path_tile).calculate()
         for y in range(size[1]):

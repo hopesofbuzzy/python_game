@@ -24,6 +24,7 @@ class LevelLoader:
     """Загрузчик метаданных уровня, тайлсета и карты тайлов."""
 
     def load_data(self, level_name):
+        """Загрузка данных уровня."""
         try:
             with open(Path(LEVELS_FOLDER, f"{level_name}.json"), "r") as f:
                 return json.load(f)
@@ -31,11 +32,13 @@ class LevelLoader:
             raise Exception(f"Не удалось загрузить уровень: {e}")
 
     def load_tileset(self, tileset_name):
+        """Загрузка тайлсета уровня."""
         return il.load_image(
-            Path(TILESET_FOLDER, tileset_name)
+            str(Path(TILESET_FOLDER, tileset_name))
         ).surface
 
     def load_map(self, map_name):
+        """Загрузка карты уровня."""
         tiles = list()
         with open(Path(MAPS_FOLDER, map_name), "r") as f:
             for line in f.readlines():

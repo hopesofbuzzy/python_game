@@ -34,7 +34,22 @@ class BulletFactory:
             timeout_func=lambda bullet: event_bus.fire("on_bullet_timeout", bullet)
         )
 
-    def create_bullet(self, direction, position, attack, speed):
+    def create_bullet(
+        self,
+        direction: Vector2,
+        position: Vector2,
+        attack: int,
+        speed: int
+    ):
+        """
+            Создаёт пулю.
+
+            Args:
+                direction: направление пули.
+                position: позиция пули.
+                attack: урон.
+                speed: скорость пули.
+        """
         logging.debug("Пуля создана!")
         bullet = Bullet()
         collision = CollisionComponent(

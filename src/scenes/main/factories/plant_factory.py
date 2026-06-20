@@ -63,7 +63,14 @@ class PlantFactory:
         return click_handler
 
     def create_plant(self, plant_name: str, position: Vector2, tile_pos: tuple):
-        """Создаёт растение с выборочными компонентами."""
+        """
+            Создаёт растение с выборочными компонентами.
+
+            Args:
+                plant_name: название растения.
+                position: позиция растения.
+                tile_pos: позиция в тайлах.
+        """
         # Характеристики
         image_path = PLANT_DATA[plant_name]["image_path"]
         # Обязательные компоненты

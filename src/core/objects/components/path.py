@@ -21,21 +21,25 @@ class PatrolComponent:
         self.point_radius = point_radius
         self._target_point_ref = len(self.path.points) - 1
         self.on_start_patrol: Event = Event()
-        self.on_reached_end: Event = Event()
         self.start_patrol()
 
     def start_patrol(self):
+        """Старт патрулирования."""
         self.on_start_patrol.emit(self.path.points[self._target_point_ref])
         self.entity.get(PositionComponent).position = (
             self.path.points[self._target_point_ref]
         )
 
+    def bind(self, build_context):
+        self.end_patrol_func = build_context.end_patrol_func
+
     def update(self, delta_time):
         self.follow_path()
 
     def follow_path(self):
-        """Следует по пути."""
+        """Следование по пути."""
         if self._target_point_ref >= 0:
+            # Выбор целевой позиции.
             target_point = self.path.points[self._target_point_ref]
             dx = target_point.x - self.entity.get(PositionComponent).position.x
             dy = target_point.y - self.entity.get(PositionComponent).position.y
@@ -43,18 +47,16 @@ class PatrolComponent:
             min_dist = (self.point_radius) ** 2
             if dist <= min_dist:
                 self.choose_next_point()
-                # print(self.position, "->", target_point)
             else:
                 d = Vector2(dx, dy).normalize()
                 self.entity.get(MovementComponent).set_velocity(d[0], d[1])
         elif self._target_point_ref == -1:
             self.choose_next_point()
         else:
-            self.on_reached_end.emit()
+            self.end_patrol_func()
             self.entity.get(MovementComponent).set_velocity(0, 0)
 
     def choose_next_point(self) -> int | None:
         """Выбирает следующую целевую точку пути."""
         self._target_point_ref -= 1
-        # logging.debug(f"Target Point: {self.path.points[self._target_point_ref]}")
         return self._target_point_ref

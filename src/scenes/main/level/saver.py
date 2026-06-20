@@ -6,6 +6,7 @@ from src.core.singletones.image_loader import image_loader as il
 
 
 def serialize_waves(parsed_waves):
+    """Сериализация спарсенных волн (при генерции уровня)."""
     waves_list: list[dict] = list()
     for wave in parsed_waves.waves:
         wave_dict = {
@@ -27,10 +28,12 @@ class LevelSaver:
     MAPS_FOLDER = LEVELS_FOLDER + "maps/"
 
     def save_data(self, metadata: dict, level_name):
+        """Сохранение данных."""
         with open(Path(self.LEVELS_FOLDER, f"{level_name}.json"), "w") as f:
             json.dump(metadata, f)
 
     def save_map(self, tiles: list, map_name):
+        """Сохранение карты."""
         lines = list()
         for tile_line in tiles:
             lines.append(",".join(map(str, tile_line)))
@@ -44,6 +47,7 @@ class LevelSaver:
             parsed_waves,
             level_name: str
     ):
+        """Сохранение уровня."""
         raw_level.metadata["map_name"] = level_name + ".csv"
         raw_level.metadata["waves"] = serialize_waves(parsed_waves)
         self.save_data(raw_level.metadata, level_name)

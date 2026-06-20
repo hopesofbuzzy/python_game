@@ -44,6 +44,7 @@ class MainScene(Scene):
         self.setup_controllers()
         self.setup_waves()
         self.setup_ui()
+        self.event_bus.subscribe("on_enemy_reached_end", self.game_over)
 
     def setup_factories(self):
         """Настраивает мелкие фабрики."""
@@ -140,6 +141,6 @@ class MainScene(Scene):
             event, tile_pos, global_pos_centred
         )
 
-    def game_over(self):
+    def game_over(self, _event: EventFlow):
         """Проигрыш."""
         self.exit()

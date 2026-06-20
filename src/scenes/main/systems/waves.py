@@ -62,26 +62,29 @@ class WaveManager:
                     next_wave = None
                     if idx + 1 < len(self.waves):
                         next_wave = self.waves[idx+1]
-                    self.start_wave(wave, next_wave)
+                    self.start_wave(wave)
+                    if next_wave:
+                        self.time_before_next_wave = next_wave.timestamp - self._time
+                    else:
+                        self.time_before_next_wave = -1
                     logging.info(f"Волна монстров!")
 
-    def start_wave(self, wave, next_wave):
+    def start_wave(self, wave):
         """Старт волны."""
         self.current_wave = wave
         self.current_wave_number += 1
-        if next_wave:
-            self.time_before_next_wave = next_wave.timestamp - self._time
-        else:
-            self.time_before_next_wave = -1
         self.on_wave_started.emit(
             self.current_wave_number,
         )
 
     def get_time_before_wave(self):
+        """Время перед следующей волной."""
         return round(self.time_before_next_wave, 1)
 
     def process_wave(self, delta_time):
+        """Обработка текущей волныю"""
         if self.current_wave:
+            # Пауза при спавне врагов.
             self._spawn_timer -= delta_time
             if self._spawn_timer < 0.0:
                 self._spawn_timer = SPAWN_COOLDOWN
@@ -89,13 +92,11 @@ class WaveManager:
                 rand_wave_obj_idx = randrange(0, len(wave_objects))
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
-                enemy = self.create_enemy(
+                # Спавн врага.
+                self.create_enemy(
                     wave_object.enemy,
                     Vector2(200, 200),
                     self.path
-                )
-                enemy.get(PatrolComponent).on_reached_end.subscribe(
-                    lambda: self.on_enemy_reached_end.emit()
                 )
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)

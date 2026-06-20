@@ -13,10 +13,18 @@ from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
 
 class WaveGenerator:
+    """Генератор волн."""
     def __init__(self):
         ...
 
     def generate_waves(self, count: int, seed=0):
+        """
+            Генерирует волны.
+
+            Args:
+                count: количество волн.
+                seed: зерно генерации.
+        """
         rng = random.Random(seed)
         waves = list()
         timestamp = FIRST_WAVE_TIMESTAMP
