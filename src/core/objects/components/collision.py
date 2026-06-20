@@ -1,8 +1,8 @@
 from pygame.math import Vector2
 
+from src.core.objects.components.component_registry import ComponentRegistry
 from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
-from src.core.objects.components.component_registry import ComponentRegistry
 
 
 # Хитбоксы

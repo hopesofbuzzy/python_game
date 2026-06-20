@@ -7,7 +7,12 @@ from src.core.singletones.event_bus import EventFlow
 from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.objects import InventoryModelComponent, MapLevelDataComponent, BasePlant, DataComponent
+from src.scenes.main.objects import (
+    BasePlant,
+    DataComponent,
+    InventoryModelComponent,
+    MapLevelDataComponent,
+)
 from src.scenes.main.systems.currency import CurrencyManager
 
 

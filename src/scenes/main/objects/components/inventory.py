@@ -1,10 +1,8 @@
 import logging
 from dataclasses import dataclass
 
-from src.config.plants import (
-    PLANTS,
-    PLANT_DATA
-)
+from src.config.plants import PLANT_DATA, PLANTS
+
 
 @dataclass
 class Slot:

@@ -2,7 +2,6 @@ import logging
 
 import pygame
 
-
 DEFAULT_BAR_COLOR = (255, 70, 70)
 DEFAULT_EMPTY_BAR_COLOR = (127, 35, 35)
 

@@ -1,13 +1,13 @@
 from pygame.math import Vector2
 
+from src.config.generator_config import *
+from src.scenes.main.factories.map_factory import MapFactory
+
 # Генерация уровня
 from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
 from src.scenes.main.level.saver import LevelSaver
-from src.scenes.main.factories.map_factory import MapFactory
-
-from src.config.generator_config import *
 
 DEFAULT_LEVEL_NAME = "generator_template"
 

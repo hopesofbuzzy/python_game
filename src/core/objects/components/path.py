@@ -3,8 +3,8 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects.components.position import PositionComponent
 from src.core.objects.components.collision import MovementComponent
+from src.core.objects.components.position import PositionComponent
 from src.core.objects.event import Event
 
 
@@ -26,7 +26,9 @@ class PatrolComponent:
 
     def start_patrol(self):
         self.on_start_patrol.emit(self.path.points[self._target_point_ref])
-        self.entity.get(PositionComponent).position = self.path.points[self._target_point_ref]
+        self.entity.get(PositionComponent).position = (
+            self.path.points[self._target_point_ref]
+        )
 
     def update(self, delta_time):
         self.follow_path()

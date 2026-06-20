@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Callable
+
 from pygame.math import Vector2
 
 from src.config.enemies import ENEMY_DATA
@@ -18,6 +19,7 @@ from src.scenes.main.objects import (
     Enemy,
     HealthComponent,
 )
+
 
 @dataclass
 class BuildContext:

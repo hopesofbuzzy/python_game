@@ -1,7 +1,7 @@
 import logging
 
-from src.core.objects.event import Event
 from src.core.objects import GameObject, MovementComponent
+from src.core.objects.event import Event
 from src.scenes.main.objects.components.health import HealthComponent
 
 DEFAULT_ATTACK_COOLDOWN = 0.5

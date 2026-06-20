@@ -16,24 +16,24 @@ from src.scenes.main.factories.enemy_factory import EnemyFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.ui_factory import UIFactory
-
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
-
-# Уровень
-from src.scenes.main.systems.level import LevelManager
+from src.scenes.main.systems.bullet import BulletController
 
 # Системы текущей сцены.
 from src.scenes.main.systems.currency import CurrencyManager
-from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.enemy import EnemyController
-from src.scenes.main.systems.bullet import BulletController
+
+# Уровень
+from src.scenes.main.systems.level import LevelManager
+from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
+
 
 class MainScene(Scene):
     def ready(self):

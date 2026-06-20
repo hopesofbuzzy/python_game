@@ -4,6 +4,7 @@ from pathlib import Path
 
 from src.core.singletones.image_loader import image_loader as il
 
+
 def serialize_waves(parsed_waves):
     waves_list: list[dict] = list()
     for wave in parsed_waves.waves:

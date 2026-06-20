@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Callable
+
 from pygame.math import Vector2
 
 from src.core.objects import (

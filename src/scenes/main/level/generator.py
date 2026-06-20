@@ -5,8 +5,8 @@ from typing import Optional
 
 from pygame.math import Vector2
 
-from src.scenes.main.level.wave_generator import WaveGenerator
 from src.scenes.main.level.saver import serialize_waves
+from src.scenes.main.level.wave_generator import WaveGenerator
 
 GENERATOR_TEMPLATE_LEVEL = "generator_template"\
 # RandomWalk

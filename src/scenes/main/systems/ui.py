@@ -1,12 +1,12 @@
-from pygame.math import Vector2
 from typing import Callable
 
-from src.core.objects import TextRenderComponent
-from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.systems.currency import CurrencyManager
-from src.core.objects.event import Event
+from pygame.math import Vector2
 
+from src.core.objects import TextRenderComponent
+from src.core.objects.event import Event
+from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects.components.inventory import Slot
+from src.scenes.main.systems.currency import CurrencyManager
 
 SUNS_TEXT_POSITION = Vector2(0, 0)
 SUNS_TEXT_SIZE = 25

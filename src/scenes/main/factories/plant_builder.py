@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Callable
+
 from pygame.math import Vector2
 
 from src.config.plants import (
@@ -13,12 +14,12 @@ from src.core.objects import (
     PositionComponent,
     SpriteComponent,
 )
+from src.core.objects.components.component_registry import ComponentRegistry
 from src.scenes.main.objects import (
     BasePlant,
     DataComponent,
     UpgradeComponent,
 )
-from src.core.objects.components.component_registry import ComponentRegistry
 
 
 @dataclass

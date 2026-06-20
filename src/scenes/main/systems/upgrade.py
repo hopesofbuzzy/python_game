@@ -16,8 +16,8 @@ from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     BasePlant,
-    MapLevelDataComponent,
     DataComponent,
+    MapLevelDataComponent,
     UpgradeComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent

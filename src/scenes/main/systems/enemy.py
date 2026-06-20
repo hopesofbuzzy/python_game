@@ -1,5 +1,6 @@
 from src.scenes.main.objects import Enemy
 
+
 class EnemyController:
     def __init__(self):
         ...

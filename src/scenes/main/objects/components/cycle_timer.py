@@ -1,6 +1,6 @@
+from src.core.objects.components.component_registry import ComponentRegistry
 from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
-from src.core.objects.components.component_registry import ComponentRegistry
 
 
 @ComponentRegistry.register("cycle_timer")

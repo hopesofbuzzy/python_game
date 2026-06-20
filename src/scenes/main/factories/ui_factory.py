@@ -8,7 +8,7 @@ from src.core.objects import (
     TextRenderComponent,
     UIControl,
     UITransform,
-    VerticalLayoutComponent
+    VerticalLayoutComponent,
 )
 from src.scenes.main.objects import BarComponent
 
