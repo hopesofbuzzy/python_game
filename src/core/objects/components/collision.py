@@ -1,5 +1,5 @@
 from pygame.math import Vector2
-
+from typing import Optional
 from src.core.objects.components.component_registry import ComponentRegistry
 from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
@@ -48,10 +48,17 @@ class RectShape(CollisionShape):
 # Компоненты.
 @ComponentRegistry.register("collision")
 class CollisionComponent():
-    def __init__(self, _entity, shape: CollisionShape, resolvable: bool = False):
+    def __init__(
+        self,
+        _entity,
+        shape: CollisionShape,
+        resolvable: bool = False,
+        mask_tag: Optional[str] = None
+    ):
         self.entity: GameObject = _entity
         self.shape = shape
         self.resolvable = resolvable
+        self.mask_tag = mask_tag  # Тег целевых объектов коллизий.
 
     def bind(self, build_context):
         ...

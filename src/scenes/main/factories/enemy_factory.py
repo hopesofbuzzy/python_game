@@ -69,7 +69,8 @@ class EnemyFactory:
                     size,
                     True
                 ), 
-                False
+                False,
+                "plant"
             ))
             enemy.add(MovementComponent(Vector2(0, 0), speed))
             enemy.add(PatrolComponent(enemy, path))

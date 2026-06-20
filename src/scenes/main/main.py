@@ -55,7 +55,7 @@ class MainScene(Scene):
             self.event_bus
         )
         self.path_factory: PathFactory = PathFactory()
-        self.ui_factory: UIFactory = UIFactory(self.add_object)
+        self.ui_factory: UIFactory = UIFactory(self.add_object, self.event_bus)
 
     def setup_level(self):
         """Генерирует и собирает уровень."""

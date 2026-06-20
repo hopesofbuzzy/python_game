@@ -37,7 +37,7 @@ class InputManager:
                     if event.dict["button"] - 1 in range(0, 3):
                         cursor.buttons[event.dict["button"] - 1] = 1
                         if event.dict["button"] == 1:
-                            event_bus.fire("on_mouse_left_click")
+                            event_bus.fire("on_mouse_left_click", cursor)
                 case pygame.MOUSEBUTTONUP:
                     if event.dict["button"] - 1 in range(0, 3):
                         cursor.buttons[event.dict["button"] - 1] = 0
@@ -50,4 +50,4 @@ class InputManager:
                 case pygame.QUIT:
                     self.on_exit.emit()
             for object in scene.object_registry.values():
-                object.handle_input(event)
+                object.handle_input(event, cursor)

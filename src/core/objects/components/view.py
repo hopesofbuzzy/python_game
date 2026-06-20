@@ -51,7 +51,7 @@ class SpriteComponent:
             if size not in self._scaled_images:
                 self._scaled_images[size] = pygame.transform.scale(
                     self._original_image.surface, size=self.size*size
-                )
+                ).convert_alpha()
             return self._scaled_images[size]
 
     def get_centred_local_position(self, local_position, zoom):

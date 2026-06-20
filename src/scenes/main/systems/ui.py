@@ -8,7 +8,7 @@ from src.core.singletones.event_bus import EventBus, EventFlow
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects.components.inventory import Slot
 from src.scenes.main.systems.currency import CurrencyManager
-from src.config.plants import PLANTS_PRICES
+from src.config.plants import PLANTS_PRICES, PLANTS_DESCRIPTIONS
 
 SUNS_TEXT_POSITION = Vector2(0, 0)
 SUNS_TEXT_SIZE = 25
@@ -39,6 +39,10 @@ class UIManager:
         self.build_inventory(inventory_slots)
         self.event_bus = event_bus
         self.event_bus.subscribe("on_wave_started", self.on_wave_started)
+        # Tooltip
+        self.event_bus.subscribe("on_tooltip_requested", self.show_tooltip)
+        self.event_bus.subscribe("on_tooltip_hide_requested", self.hide_tooltip)
+        self.tooltips = list()
         
     def build_stats(self):
         self.suns_text = self.ui_factory.create_text(
@@ -68,6 +72,9 @@ class UIManager:
             inner_container = self.ui_factory.create_vertical_container(
                 Vector2(0, 0), SLOT_SIZE, None, SLOT_COLOR, -5
             )
+            image_container = self.ui_factory.create_empty_container(
+                Vector2(0, 0), SLOT_SIZE
+            )
             image = self.ui_factory.create_image(
                 Vector2(0, 0), Vector2(60, 60), slot.image_path, data=slot
             )
@@ -77,7 +84,14 @@ class UIManager:
                     clicked_slot
                 )
             )
-            inner_container.add_child(image)
+            tooltip = self.ui_factory.create_tooltip(
+                Vector2(0, 0,),
+                SLOT_SIZE,
+                PLANTS_DESCRIPTIONS[slot.name]
+            )
+            image_container.add_child(image)
+            image_container.add_child(tooltip)
+            inner_container.add_child(image_container)
             inner_container.add_child(
                 self.ui_factory.create_text(
                     str(PLANTS_PRICES[slot.name]), Vector2(0, 0)
@@ -99,3 +113,17 @@ class UIManager:
         self.time_before_wave.get(TextRenderComponent).set_text(
             f"Следующая волна через: {self.get_time_before_wave()}"
         )
+
+    def show_tooltip(self, _event: EventFlow, text: str, cursor_local_pos):
+        tooltip_message = self.ui_factory.create_tooltip_message(
+            cursor_local_pos,
+            Vector2(100, 100),
+            15,
+            text
+        )
+        self.tooltips.append(tooltip_message)
+
+    def hide_tooltip(self, _event: EventFlow, text: str):
+        for tooltip in self.tooltips:
+            tooltip.free()
+        self.tooltips = list()

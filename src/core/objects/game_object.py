@@ -36,10 +36,10 @@ class GameObject(ABC):
             if hasattr(c, "draw"):
                 c.draw(screen, size, local_position, zoom)
 
-    def handle_input(self, event: PygameEvent):
+    def handle_input(self, event: PygameEvent, cursor):
         for c_type, c in self.components.items():
             if hasattr(c, "handle_input"):
-                c.handle_input(event)
+                c.handle_input(event, cursor)
 
     def add_child(self, child):
         self.children.append(child)

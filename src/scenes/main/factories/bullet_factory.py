@@ -55,7 +55,8 @@ class BulletFactory:
         collision = CollisionComponent(
             bullet,
             RectShape(Vector2(0, 0), BULLET_SIZE, True),
-            False
+            False,
+            "enemy"
         )
         timer_remove = TimerComponent(bullet, BULLET_COOLDOWN, bullet)
         movement = MovementComponent(direction * speed, speed)

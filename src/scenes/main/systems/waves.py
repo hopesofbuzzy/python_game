@@ -83,7 +83,7 @@ class WaveManager:
 
     def get_time_before_wave(self):
         """Время перед следующей волной."""
-        return round(self.time_before_next_wave, 1)
+        return round(self.time_before_next_wave, 0)
 
     def process_wave(self, delta_time):
         """Обработка текущей волныю"""

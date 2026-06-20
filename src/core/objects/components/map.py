@@ -7,7 +7,6 @@ from pygame.math import Vector2
 from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
-from src.core.systems.input import cursor
 
 
 class MapViewComponent:
@@ -27,7 +26,7 @@ class MapViewComponent:
             self._scaled_tilesets[size] = dict()
             for tile_idx, tile in self.tileset.items():
                 overall_size = (self.tile_size * size, self.tile_size * size)
-                tile = pygame.transform.scale(tile, size=overall_size)
+                tile = pygame.transform.scale(tile, size=overall_size).convert()
                 self._scaled_tilesets[size][tile_idx] = tile
         return self._scaled_tilesets[size]
 
@@ -91,7 +90,7 @@ class MapControllerComponent:
         self.on_tile_click: Event = Event()
         event_bus.subscribe("on_mouse_left_click", self.on_mouse_left_click)
 
-    def on_mouse_left_click(self, event: EventFlow):
+    def on_mouse_left_click(self, event: EventFlow, cursor):
         tile_pos = self.map_model.pos_to_tile(cursor.global_pos)
         global_pos_centred = self.map_model.tile_to_pos_centred(tile_pos)
         tile_type = self.map_model.get_tile(int(tile_pos.y), int(tile_pos.x))

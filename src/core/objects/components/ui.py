@@ -8,9 +8,9 @@ from pygame.math import Vector2
 
 from src.core.objects.components import PositionComponent
 from src.core.objects.event import Event
+from src.core.systems.input import Cursor
 from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
-from src.core.systems.input import cursor
 from src.core.singletones.image_loader import (
     image_loader as il,
     Image
@@ -96,22 +96,41 @@ class TextRenderComponent:
         self.color = color
         self.parsed_text = self.parse_text(text)
         self.linespace = linespace
+        self._surfaces: list = list()
+        self._cached_text: str = text
+        self._converted: bool = False
+        self.render_text()
 
     def set_text(self, text: str):
-         self.parsed_text = self.parse_text(text)
+        self.parsed_text = self.parse_text(text)
+        if text != self._cached_text:
+            self.render_text()
+
+    def render_text(self):
+        self._surfaces = list()
+        for text_part in self.parsed_text:
+            self._surfaces.append(
+                pygame.font
+                .SysFont("Arial", self.size)
+                .render(text_part, True, self.color)
+            )
+        self._converted = False
+
+    def convert(self):
+        if not self._converted:
+            for surface in self._surfaces:
+                surface = surface.convert_alpha()
+                self._converted = True
 
     def parse_text(self, text):
         return text.split("\n")
 
     def draw(self, screen: pygame.Surface, size, local_position, zoom):
         y_offset = 0
-        for text_part in self.parsed_text:
-            font = (
-                pygame.font
-                .SysFont("Arial", self.size)
-                .render(text_part, True, self.color)
-            )
-            screen.blit(font, local_position + Vector2(0, y_offset))
+        if not self._converted:
+            self.convert()
+        for surface in self._surfaces:
+            screen.blit(surface, local_position + Vector2(0, y_offset))
             y_offset += self.linespace
 
 class PanelRendererComponent:
@@ -135,10 +154,11 @@ class ImageRendererComponent:
         self._scaled_image = None
 
     def get_scaled_image(self, size: tuple):
-        if isinstance(self._original_image, Image):
-            self._scaled_image = pygame.transform.scale(
-                self._original_image.surface, size=size
-            )
+        if not self._scaled_image:
+            if isinstance(self._original_image, Image):
+                self._scaled_image = pygame.transform.scale(
+                    self._original_image.surface, size=size
+                )
         return self._scaled_image
 
     def draw(self, screen: pygame.Surface, size, local_position, zoom):
@@ -164,16 +184,41 @@ class ClickHandlerComponent:
             priority=input_priority
         )
 
-    def on_mouse_left_click(self, event: EventFlow):
+    def on_mouse_left_click(self, event: EventFlow, cursor):
         cursor_pos = None
         if self.ui_transform.anchor:
             cursor_pos = cursor.global_pos
         else:
             cursor_pos = cursor.pos
         if self.ui_transform.contains(cursor_pos.x, cursor_pos.y):
-            logging.debug("EMITTIIIIING")
+            logging.debug("ClickHandlerComponent was clicked")
             self.on_button_pressed.emit(self.data)
             event.stop()
+
+class MouseHoverComponent:
+    """Контроллер проверки движения мыши по элементу."""
+    def __init__(self, ui_control: UIControl, data=None):
+        self.ui_transform = ui_control.get(UITransform)
+        self.is_mouse_inside: bool = False
+        self.on_mouse_entered: Event = Event()
+        self.on_mouse_exited: Event = Event()
+        self.data = data
+
+    def handle_input(self, event: PygameEvent, cursor: Cursor):
+        cursor_pos = None
+        if self.ui_transform.anchor:
+            cursor_pos = cursor.global_pos
+        else:
+            cursor_pos = cursor.pos
+        is_mouse_inside = self.ui_transform.contains(cursor_pos.x, cursor_pos.y)
+        if self.is_mouse_inside and not is_mouse_inside:
+            
+            self.on_mouse_exited.emit(self.data)
+        elif not self.is_mouse_inside and is_mouse_inside:
+            logging.info("Вход в зону")
+            self.on_mouse_entered.emit(self.data, cursor.pos)
+
+
 
 class VerticalLayoutComponent:
     """Организатор вертикального списка (сверху-вниз)."""
@@ -193,3 +238,20 @@ class VerticalLayoutComponent:
                     child.get(UITransform).original_position + Vector2(0, y_offset)
                 )
                 y_offset += child.get(UITransform).size.y + self.space
+
+class ContainerComponent:
+    """Контейнер, выравнивающий позиции объектов относительно своей."""
+    def __init__(self, ui_control: UIControl):
+        self.ui_control = ui_control
+
+    def update(self, delta_time):
+        if not self.ui_control.get(UITransform).anchor:
+            origin = self.ui_control.get(UITransform).position
+        else:
+            origin = Vector2(0, 0)
+        for child in self.ui_control.children:
+            child.get(UITransform)._position_screen_resize = False
+            if child.has(UITransform):
+                child.get(UITransform).local_position = (
+                    child.get(UITransform).original_position + origin
+                )

@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from math import sqrt
 
@@ -47,7 +48,16 @@ class CollisionSystem:
         for object in scene.object_registry.values():
             if object.has(PositionComponent, CollisionComponent):
                 others = self.uniform_grid.query_rect(object, 1, 1)
+                mask_tag = object.get(CollisionComponent).mask_tag
                 for other in others:
+                    if not (
+                        other.has(MovementComponent) or object.has(MovementComponent)
+                    ):
+                        continue
+                    # Проверка целевых тегов коллизий (простая маска по командам).
+                    if mask_tag:
+                        if mask_tag not in other.tags:
+                            continue
                     if other.has(PositionComponent, CollisionComponent):
                         # Некоторым объектам не нужно вычислять выталкивание.
                         resolve = False
@@ -57,7 +67,7 @@ class CollisionSystem:
                         ):
                             resolve = True
                         # Их мы вычисляем по упрощённой схеме.
-                        if object.uid >= other.uid:
+                        if object.uid <= other.uid:
                             continue
                         checks += 1
                         overlap = self.check_overlap(
@@ -67,6 +77,7 @@ class CollisionSystem:
                             self.collisions.append(
                                 (object, other, overlap, resolve)
                             )
+        logging.debug(checks)
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2, resolve) -> Overlap | None | bool:
