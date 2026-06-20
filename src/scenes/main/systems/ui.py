@@ -43,7 +43,7 @@ class UIManager:
         # Tooltip
         self.event_bus.subscribe("on_tooltip_requested", self.show_tooltip)
         self.event_bus.subscribe("on_tooltip_hide_requested", self.hide_tooltip)
-        self.tooltips = list()
+        self.tooltip = None
         
     def build_stats(self):
         self.suns_text = self.ui_factory.create_text(
@@ -116,15 +116,16 @@ class UIManager:
         )
 
     def show_tooltip(self, _event: EventFlow, text: str, cursor_local_pos):
-        tooltip_message = self.ui_factory.create_tooltip_message(
-            cursor_local_pos,
-            Vector2(100, 100),
-            15,
-            text
-        )
-        self.tooltips.append(tooltip_message)
+        if not self.tooltip:
+            tooltip_message = self.ui_factory.create_tooltip_message(
+                cursor_local_pos,
+                Vector2(250, 120),
+                15,
+                text
+            )
+            self.tooltip = tooltip_message
 
     def hide_tooltip(self, _event: EventFlow, text: str):
-        for tooltip in self.tooltips:
-            tooltip.free()
-        self.tooltips = list()
+        if self.tooltip:
+            self.tooltip.free()
+            self.tooltip = None

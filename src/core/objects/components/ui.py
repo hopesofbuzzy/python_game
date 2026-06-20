@@ -203,9 +203,11 @@ class MouseHoverComponent:
         if self.is_mouse_inside and not is_mouse_inside:
             
             self.on_mouse_exited.emit(self.data)
-        elif not self.is_mouse_inside and is_mouse_inside:
+            self.is_mouse_inside = False
+        if not self.is_mouse_inside and is_mouse_inside:
             logging.info("Вход в зону")
             self.on_mouse_entered.emit(self.data, cursor.pos)
+            self.is_mouse_inside = True
 
 
 

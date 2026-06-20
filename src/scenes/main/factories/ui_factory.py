@@ -177,16 +177,16 @@ class UIFactory:
         )
         mouse_hover_comp = MouseHoverComponent(tooltip, text)
         tooltip.add(mouse_hover_comp)
-        # mouse_hover_comp.on_mouse_entered.subscribe(
-        #     lambda text, cursor_local_pos: self.event_bus.fire(
-        #         "on_tooltip_requested",
-        #         text,
-        #         cursor_local_pos
-        #     )
-        # )
-        # mouse_hover_comp.on_mouse_exited.subscribe(
-        #     lambda text: self.event_bus.fire("on_tooltip_hide_requested", text)
-        # )
+        mouse_hover_comp.on_mouse_entered.subscribe(
+            lambda text, cursor_local_pos: self.event_bus.fire(
+                "on_tooltip_requested",
+                text,
+                cursor_local_pos
+            )
+        )
+        mouse_hover_comp.on_mouse_exited.subscribe(
+            lambda text: self.event_bus.fire("on_tooltip_hide_requested", text)
+        )
         self.add_object(tooltip)
         return tooltip
         
