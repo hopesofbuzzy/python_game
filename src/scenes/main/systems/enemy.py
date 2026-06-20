@@ -8,5 +8,5 @@ class EnemyController:
     def remove_enemy(self, enemy: Enemy):
         enemy.free()
 
-    def damage_enemy(self, enemy: Enemy, hp: int):
+    def attack_enemy(self, enemy: Enemy):
         ...

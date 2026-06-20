@@ -63,7 +63,7 @@ class PlantController:
                 self.add_object,
                 self.bullet_factory.create_bullet,
                 self.currency.give_sun,
-                self.map_data.remove_plant,
+                self.remove_plant,
                 self.ui_factory
             )
             .with_plant(plant_name, global_pos_centred, tuple_tile_pos)

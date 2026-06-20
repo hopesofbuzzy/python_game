@@ -69,7 +69,7 @@ class EnemyFactory:
                 attack_cooldown
             ))
             enemy.add(HealthComponent(enemy, health))
-            
+            enemy.get(AttackComponent).bind(self.build_context)
             enemy.tags.add("enemy")
             self.add_object(enemy)
             # Проводка

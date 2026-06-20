@@ -37,7 +37,8 @@ class UpgradeManager:
         currency: CurrencyManager,
         ui_factory: UIFactory,
         bullet_factory: BulletFactory,
-        add_object_func: Callable
+        add_object_func: Callable,
+        remove_plant_func: Callable
     ):
         self.gamemap = gamemap
         self.currency = currency
@@ -45,6 +46,7 @@ class UpgradeManager:
         self.bullet_factory = bullet_factory
         self.add_object = add_object_func
         self.upgrade_dialogs = list()
+        self.remove_plant_func = remove_plant_func
 
     def plant_level_up(
             self,
@@ -65,7 +67,7 @@ class UpgradeManager:
                 self.add_object,
                 self.bullet_factory.create_bullet,
                 self.currency.give_sun,
-                self.gamemap.get(MapLevelDataComponent).remove_plant,
+                self.remove_plant_func,
                 self.ui_factory
             )
             .with_replace(plant.tile_pos)

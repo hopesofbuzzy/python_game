@@ -68,7 +68,7 @@ class MainScene(Scene):
         self.enemy_controller = EnemyController()
         self.enemy_factory: EnemyFactory = EnemyFactory(
             self.add_object,
-            self.enemy_controller.damage_enemy,
+            self.enemy_controller.attack_enemy,
             self.enemy_controller.remove_enemy,
             self.ui_factory
         )
@@ -97,7 +97,8 @@ class MainScene(Scene):
             self.currency,
             self.ui_factory,
             self.bullet_factory,
-            self.add_object
+            self.add_object,
+            self.plant_controller.remove_plant
         )
 
     def setup_ui(self):

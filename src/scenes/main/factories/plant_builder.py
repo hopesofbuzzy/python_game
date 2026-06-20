@@ -46,7 +46,7 @@ class PlantBuilder:
             create_bullet_func,
             remove_plant_func,
             give_sun_func,
-            damage_func=lambda: 5
+            damage_func=lambda x: 5
         )
         self.ui_factory = ui_factory
         self._plant = None
