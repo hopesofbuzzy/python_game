@@ -13,6 +13,7 @@ from src.scenes.main.factories.bullet_factory import BulletFactory
 
 # Фабрики и строители.
 from src.scenes.main.factories.enemy_factory import EnemyFactory
+from src.scenes.main.factories.plant_factory import PlantFactory
 from src.scenes.main.factories.inventory_factory import InventoryFactory
 from src.scenes.main.factories.path_factory import PathFactory
 from src.scenes.main.factories.ui_factory import UIFactory
@@ -39,41 +40,19 @@ class MainScene(Scene):
     def ready(self):
         self.setup_factories()
         self.setup_level()
-        
         self.setup_systems()
+        self.setup_controllers()
         self.setup_waves()
         self.setup_ui()
-        self.event_bus.subscribe(
-            "on_requested_upgrade_dialog",
-            self.upgrade.open_upgrade_dialog
-        )
-        self.event_bus.subscribe(
-            "on_requested_upgrade",
-            self.upgrade.plant_upgrade
-        )
-        self.event_bus.subscribe(
-            "on_plant_level_uped",
-            self.upgrade.plant_level_up
-        )
 
     def setup_factories(self):
-        self.bullet_controller = BulletController()
-        self.bullet_factory: BulletFactory = BulletFactory(
-            self.add_object,
-            self.bullet_controller.remove_bullet
-        )
+        """Настраивает мелкие фабрики."""
         self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object)
-        self.enemy_controller = EnemyController()
-        self.enemy_factory: EnemyFactory = EnemyFactory(
-            self.add_object,
-            self.enemy_controller.attack_enemy,
-            self.enemy_controller.remove_enemy,
-            self.ui_factory
-        )
 
     def setup_level(self):
+        """Генерирует и собирает уровень."""
         self.level = LevelManager(self.add_object).generate_level()
         self.gamemap: Map = self.level.map
         self.gamemap.get(MapControllerComponent).on_tile_click.subscribe(
@@ -81,27 +60,47 @@ class MainScene(Scene):
         )
 
     def setup_systems(self):
+        """Настраивает системы."""
         self.inventory: Inventory = self.inventory_factory.create_inventory()
-        self.currency = CurrencyManager()
+        self.currency = CurrencyManager(self.event_bus)
+
+    def setup_controllers(self):
+        """Настраивает системы, связанные с контролем спавна сущностей (EventBus driven)."""
+        self.bullet_controller = BulletController(self.event_bus)
+        self.bullet_factory: BulletFactory = BulletFactory(
+            self.add_object,
+            self.event_bus
+        )
+        self.enemy_controller = EnemyController(self.event_bus)
+        self.enemy_factory: EnemyFactory = EnemyFactory(
+            self.add_object,
+            self.ui_factory,
+            self.event_bus
+        )
+        self.plant_factory: PlantFactory = PlantFactory(
+            self.add_object,
+            self.bullet_factory,
+            self.ui_factory,
+            self.event_bus
+        )
         self.plant_controller = PlantController(
             self.currency,
             self.inventory.get(InventoryModelComponent),
             self.gamemap.get(MapLevelDataComponent),
-            self.add_object,
-            self.bullet_factory,
-            self.ui_factory
+            self.event_bus,
+            self.plant_factory
         )
-        
         self.upgrade: UpgradeManager = UpgradeManager(
             self.gamemap,
             self.currency,
             self.ui_factory,
-            self.bullet_factory,
+            self.plant_factory,
             self.add_object,
-            self.plant_controller.remove_plant
+            self.event_bus
         )
 
     def setup_ui(self):
+        """Настраивает интерфейс."""
         self.ui_manager: UIManager = UIManager(
             self.ui_factory,
             self.currency,
@@ -111,6 +110,7 @@ class MainScene(Scene):
         )
 
     def setup_waves(self):
+        """Настраивает волны."""
         path = self.path_factory.create_path_component(
             self.level.path,
             self.gamemap.get(MapModelComponent).tile_to_pos_centred

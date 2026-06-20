@@ -24,16 +24,18 @@ from src.scenes.main.objects import (
 @dataclass
 class BuildContext:
     damage_func: Callable
+    attack_func: Callable
     death_func: Callable
 
 class EnemyFactory:
     """Фабрика сборки врагов."""
 
-    def __init__(self, add_object, damage_func, remove_func, ui_factory):
+    def __init__(self, add_object, ui_factory, event_bus):
         self.add_object = add_object
         self.build_context = BuildContext(
-            damage_func=damage_func,
-            death_func=remove_func
+            attack_func=lambda enemy, target: event_bus.fire("on_enemy_attacked", enemy, target),
+            damage_func=lambda enemy: event_bus.fire("on_enemy_damaged", enemy),
+            death_func=lambda enemy: event_bus.fire("on_enemy_death", enemy)
         )
         self.ui_factory = ui_factory
 
@@ -75,6 +77,7 @@ class EnemyFactory:
             # Проводка
             health_comp = enemy.get(HealthComponent)
             health_comp.bind(self.build_context)
+            # Шкала здоровья.
             health_bar = self.ui_factory.create_bar(
                 Vector2(0, -30),
                 Vector2(50, 10),

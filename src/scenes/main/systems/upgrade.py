@@ -12,7 +12,7 @@ from src.core.objects import (
 from src.core.singletones.event_bus import EventBus, EventFlow
 from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.dialog_builder import DialogBuilder
-from src.scenes.main.factories.plant_builder import PlantBuilder
+from src.scenes.main.factories.plant_factory import PlantFactory
 from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     BasePlant,
@@ -36,17 +36,28 @@ class UpgradeManager:
         gamemap: Map,
         currency: CurrencyManager,
         ui_factory: UIFactory,
-        bullet_factory: BulletFactory,
+        plant_factory: PlantFactory,
         add_object_func: Callable,
-        remove_plant_func: Callable
+        event_bus: EventBus
     ):
         self.gamemap = gamemap
         self.currency = currency
         self.ui_factory = ui_factory
-        self.bullet_factory = bullet_factory
+        self.plant_factory = plant_factory
         self.add_object = add_object_func
         self.upgrade_dialogs = list()
-        self.remove_plant_func = remove_plant_func
+        event_bus.subscribe(
+            "on_requested_upgrade_dialog",
+            self.open_upgrade_dialog
+        )
+        event_bus.subscribe(
+            "on_requested_upgrade",
+            self.plant_upgrade
+        )
+        event_bus.subscribe(
+            "on_plant_level_uped",
+            self.plant_level_up
+        )
 
     def plant_level_up(
             self,
@@ -62,19 +73,10 @@ class UpgradeManager:
             .tile_to_pos_centred(Vector2(plant.tile_pos))
         )
         logging.debug(f"Начинаем улучшение до {target_plant_name}")
-        new_plant = (
-            PlantBuilder(
-                self.add_object,
-                self.bullet_factory.create_bullet,
-                self.currency.give_sun,
-                self.remove_plant_func,
-                self.ui_factory
-            )
-            .with_replace(plant.tile_pos)
-            .with_plant(target_plant_name, global_pos_centred, plant.tile_pos)
-            .with_upgrade()
-            .with_button()
-            .build()
+        new_plant = self.plant_factory.create_plant(
+            target_plant_name,
+            global_pos_centred,
+            plant.tile_pos
         )
         self.gamemap.get(MapLevelDataComponent).add_plant(
             tuple(new_plant.tile_pos)

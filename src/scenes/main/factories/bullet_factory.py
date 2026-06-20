@@ -21,17 +21,17 @@ BULLET_COOLDOWN = 1.5
 
 @dataclass
 class BuildContext:
-    damage_func: Callable
+    attack_func: Callable
     timeout_func: Callable
 
 class BulletFactory:
     """Фабрика сборки пули растения."""
 
-    def __init__(self, add_object, remove_func):
+    def __init__(self, add_object, event_bus):
         self.add_object = add_object
         self.build_context = BuildContext(
-            damage_func=remove_func,
-            timeout_func=remove_func
+            attack_func=lambda bullet, target: event_bus.fire("on_bullet_attacked", bullet, target),
+            timeout_func=lambda bullet: event_bus.fire("on_bullet_timeout", bullet)
         )
 
     def create_bullet(self, direction, position, attack, speed):

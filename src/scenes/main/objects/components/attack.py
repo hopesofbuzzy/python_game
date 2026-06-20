@@ -22,7 +22,7 @@ class AttackComponent:
         self.in_attack: bool = False
 
     def bind(self, build_context):
-        self.damage_func = build_context.damage_func
+        self.attack_func = build_context.attack_func
 
     def handle_collision(self, collision: GameObject):
         if self._attack_timer <= 0.0:
@@ -30,7 +30,7 @@ class AttackComponent:
                 collision.get(HealthComponent).damage(self.attack)
                 self._attack_timer = self.cooldown
                 self.in_attack = True
-                self.damage_func(self.entity)
+                self.attack_func(self.entity, collision)
                 return True
         return False
 
