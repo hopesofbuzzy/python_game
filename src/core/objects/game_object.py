@@ -31,10 +31,10 @@ class GameObject(ABC):
             if hasattr(c, "update"):
                 c.update(delta_time)
 
-    def draw(self, screen, size, local_position, zoom):
+    def draw(self, screen, size, local_position, camera):
         for c_type, c in self.components.items():
             if hasattr(c, "draw"):
-                c.draw(screen, size, local_position, zoom)
+                c.draw(screen, size, local_position, camera)
 
     def handle_input(self, event: PygameEvent, cursor):
         for c_type, c in self.components.items():

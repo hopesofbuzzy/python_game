@@ -18,14 +18,14 @@ class RectComponent:
     def get_centred_local_position(self, local_position, zoom):
         return local_position - (self.size * zoom // 2)
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
         if self.centred:
-            local_position = self.get_centred_local_position(local_position, zoom)
+            local_position = self.get_centred_local_position(local_position, camera.zoom)
         rect = pygame.Rect(
             local_position.x,
             local_position.y,
-            self.size.x * zoom,
-            self.size.y * zoom
+            self.size.x * camera.zoom,
+            self.size.y * camera.zoom
         )
         pygame.draw.rect(screen, self.color, rect)
 
@@ -57,9 +57,9 @@ class SpriteComponent:
     def get_centred_local_position(self, local_position, zoom):
         return local_position - (self.size * zoom // 2)
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
-        scaled_image = self.get_scaled_image(zoom)
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
+        scaled_image = self.get_scaled_image(camera.zoom)
         if self.centred:
-            local_position = self.get_centred_local_position(local_position, zoom)
+            local_position = self.get_centred_local_position(local_position, camera.zoom)
         if scaled_image:
             screen.blit(scaled_image, dest=local_position)

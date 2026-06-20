@@ -13,7 +13,7 @@ class Renderer:
                         screen,
                         None,
                         camera.to_local(object.get(PositionComponent).position),
-                        camera.zoom
+                        camera
                     )
                 # Отрисовка интерфейса (зависит от флага anchor).
                 elif object.has(UITransform):
@@ -26,5 +26,5 @@ class Renderer:
                         screen,
                         object.get(UITransform).size,
                         position,
-                        camera.zoom
+                        camera
                     )

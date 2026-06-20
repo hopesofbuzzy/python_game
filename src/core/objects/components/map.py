@@ -9,6 +9,7 @@ from src.core.objects.game_object import GameObject
 from src.core.singletones.event_bus import EventFlow, event_bus
 
 
+
 class MapViewComponent:
     def __init__(
         self,
@@ -21,7 +22,10 @@ class MapViewComponent:
         self.tileset = tileset
         self.tile_size = tile_size
 
+
+
     def get_scaled_tileset(self, size: float):
+        """Кэширование тайлов для зума камеры."""
         if size not in self._scaled_tilesets.keys():
             self._scaled_tilesets[size] = dict()
             for tile_idx, tile in self.tileset.items():
@@ -30,17 +34,22 @@ class MapViewComponent:
                 self._scaled_tilesets[size][tile_idx] = tile
         return self._scaled_tilesets[size]
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
         pos = local_position
-        scaled_tileset = self.get_scaled_tileset(zoom)
-        for ridx, row in enumerate(self.map_model.tiles):
-            for cidx, tile_idx in enumerate(row):
-                tile = scaled_tileset[tile_idx]
+        scaled_tileset = self.get_scaled_tileset(camera.zoom)
+        c1, c2, r1, r2 = camera.get_visible_range(
+            self.tile_size,
+            len(self.map_model.tiles[0]),
+            len(self.map_model.tiles)
+        )
+        for row in range(r1, r2):
+            for col in range(c1, c2):
+                tile = scaled_tileset[self.map_model.tiles[row][col]]
                 screen.blit(
                     tile,
                     dest=(
-                        pos.x + cidx * self.map_model.tile_size * zoom,
-                        pos.y + ridx * self.map_model.tile_size * zoom,
+                        pos.x + col * self.map_model.tile_size * camera.zoom,
+                        pos.y + row * self.map_model.tile_size * camera.zoom,
                     ),
                 )
 

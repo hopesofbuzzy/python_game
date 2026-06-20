@@ -22,6 +22,7 @@ class Camera:
         self.position: Vector2 = Vector2(0, 0)
 
     def change_zoom(self, event: EventFlow, up: bool):
+        """Изменение зума камеры."""
         zoom_idx = self.zoom_idx
         zoom_idx += 1 if up else -1
         if zoom_idx >= 0 and zoom_idx < len(self.ZOOMES):
@@ -29,7 +30,16 @@ class Camera:
             self.zoom = self.ZOOMES[self.zoom_idx]
             # logging.debug(f"Zoom+ {self.zoom}")
 
+    def get_visible_range(self, tile_size, cols, rows):
+        """Вычисление видимых областей для карт тайлов."""
+        start_col = max(0, int(self.position.x // tile_size))
+        start_row = max(0, int(self.position.y // tile_size))
+        end_col = min(cols, int((self.position.x + self.size.x * (1/self.zoom)) // tile_size) + 2)
+        end_row = min(rows, int((self.position.y + self.size.y * (1/self.zoom)) // tile_size) + 2)
+        return start_col, end_col - 1, start_row, end_row - 1
+
     def handle_drag(self):
+        """Управление перемещением камеры."""
         if cursor:
             # Перетаскивание.
             if cursor.buttons[2]:
@@ -37,7 +47,9 @@ class Camera:
                 cursor.rel_pos = Vector2(0, 0)
 
     def to_local(self, position: Vector2):
+        """Перевод глобальных координат в экранные."""
         return (position - self.position) * self.zoom
 
     def to_global(self, position: Vector2):
+        """Перевод экранных координат в глобальные."""
         return (position / self.zoom) + self.position

@@ -23,19 +23,19 @@ class BarComponent:
         self.value = value
         logging.debug(f"Установленое значение шкалы: {self.value} / {self.max}")
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
-        border = size.x * zoom * (self.value / self.max)
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
+        border = size.x * camera.zoom * (self.value / self.max)
         full_rect = pygame.Rect(
             local_position.x,
             local_position.y,
             border,
-            size.y * zoom
+            size.y * camera.zoom
         )
         empty_rect = pygame.Rect(
             local_position.x + border,
             local_position.y,
-            size.x * zoom * (1 - self.value / self.max),
-            size.y * zoom
+            size.x * camera.zoom * (1 - self.value / self.max),
+            size.y * camera.zoom
         )
         pygame.draw.rect(screen, self.color, full_rect)
         pygame.draw.rect(screen, DEFAULT_EMPTY_BAR_COLOR, empty_rect)

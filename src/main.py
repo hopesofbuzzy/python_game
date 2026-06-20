@@ -11,11 +11,13 @@ logging.basicConfig(
 )
 
 DEBUG = False
+WINDOW_SIZE = (720, 720)
 
 def main(scene_class):
     pygame.init()
-    game = Game(scene_class, debug=DEBUG)
-    screen = pygame.display.set_mode(game.WINDOW_SIZE)
+    screen = pygame.display.set_mode(WINDOW_SIZE)
+    game = Game(scene_class, WINDOW_SIZE, debug=DEBUG)
+    
     clock = pygame.time.Clock()
     delta_time = 0.0
 

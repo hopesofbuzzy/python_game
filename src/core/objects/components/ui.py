@@ -97,6 +97,7 @@ class TextRenderComponent:
         self.parsed_text = self.parse_text(text)
         self.linespace = linespace
         self._surfaces: list = list()
+        self._font = pygame.font.SysFont("Arial", self.size)
         self._cached_text: str = text
         self._converted: bool = False
         self.render_text()
@@ -110,25 +111,15 @@ class TextRenderComponent:
         self._surfaces = list()
         for text_part in self.parsed_text:
             self._surfaces.append(
-                pygame.font
-                .SysFont("Arial", self.size)
-                .render(text_part, True, self.color)
+                self._font.render(text_part, True, self.color).convert_alpha()
             )
         self._converted = False
-
-    def convert(self):
-        if not self._converted:
-            for surface in self._surfaces:
-                surface = surface.convert_alpha()
-                self._converted = True
 
     def parse_text(self, text):
         return text.split("\n")
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
         y_offset = 0
-        if not self._converted:
-            self.convert()
         for surface in self._surfaces:
             screen.blit(surface, local_position + Vector2(0, y_offset))
             y_offset += self.linespace
@@ -138,7 +129,7 @@ class PanelRendererComponent:
     def __init__(self, color: tuple = DEFAULT_TEXT_COLOR):
         self.color = color
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
         rect = pygame.Rect(
             local_position.x,
             local_position.y,
@@ -161,7 +152,7 @@ class ImageRendererComponent:
                 )
         return self._scaled_image
 
-    def draw(self, screen: pygame.Surface, size, local_position, zoom):
+    def draw(self, screen: pygame.Surface, size, local_position, camera):
         image = self.get_scaled_image(tuple(size))
         if image:
             screen.blit(image, local_position)

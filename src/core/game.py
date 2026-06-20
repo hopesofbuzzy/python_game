@@ -16,14 +16,12 @@ from src.core.systems.uniform_grid import UniformGrid
 class Game:
     """Базовый класс для состояния игры."""
 
-    WINDOW_SIZE = (720, 720)
-
-    def __init__(self, scene_class, debug: bool = False):
+    def __init__(self, scene_class, window_size: tuple, debug: bool = False):
         # Systems
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
         self.camera: Camera = Camera(
-            size=Vector2(self.WINDOW_SIZE),
+            size=Vector2(window_size),
         )
         self.uniform_grid = UniformGrid()
         self.collision = CollisionSystem(self.uniform_grid)
