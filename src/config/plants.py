@@ -1,4 +1,5 @@
 from pygame.math import Vector2
+from src.core.objects.components.collision import RectShape
 
 PLANTS = {
     0: None,
@@ -51,36 +52,31 @@ PLANTS_DESCRIPTIONS = {
 PLANT_DATA = {
     "Sunflower": {
         "road_spawn": True,
-        "targeting": False,
-        "cooldown": 10,
+        "components": [
+            {"type": "cycle_timer", "time": 10, "data": 15},
+            {"type": "health", "hp": 15},
+            {"type": "collision", "shape": RectShape(position=Vector2(0, 0), size=Vector2(50, 50), centred=True)},
+        ],
         "image_path": "res/sunflower.png",
-        "health": 15,
-        "given_sun": 15
     },
     "Mushroom": {
         "road_spawn": False,
-        "targeting": True,
-        "attack": 2,
-        "cooldown": 0.7,
+        "components": [
+            {"type": "targeting", "damage": 2, "cooldown": 0.7, "range":2, "speed": 150},
+        ],
         "image_path": "res/mushroom.png",
-        "range": 2,
-        "bullet_speed": 150
     },
     "LongMushroom": {
-        "targeting": True,
-        "attack": 1,
-        "cooldown": 0.25,
+        "components": [
+            {"type": "targeting", "damage": 1, "cooldown": 0.25, "range": 4, "speed": 300},
+        ],
         "image_path": "res/sunflower.png",
-        "range": 4,
-        "bullet_speed": 300
     },
     "BigMushroom": {
-        "targeting": True,
-        "attack": 12,
-        "cooldown": 1,
+        "components": [
+            {"type": "targeting", "damage": 12, "cooldown": 1, "range": 3, "speed": 200},
+        ],
         "image_path": "res/mushroom.png",
-        "range": 3,
-        "bullet_speed": 200
     }
 }
 

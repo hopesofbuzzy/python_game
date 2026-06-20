@@ -7,7 +7,7 @@ from src.core.singletones.event_bus import EventFlow
 from src.scenes.main.factories.bullet_factory import BulletFactory
 from src.scenes.main.factories.plant_builder import PlantBuilder
 from src.scenes.main.factories.ui_factory import UIFactory
-from src.scenes.main.objects import InventoryModelComponent, MapLevelDataComponent
+from src.scenes.main.objects import InventoryModelComponent, MapLevelDataComponent, BasePlant, DataComponent
 from src.scenes.main.systems.currency import CurrencyManager
 
 
@@ -40,10 +40,10 @@ class PlantController:
     ):
         """Посадка растения."""
         tuple_tile_pos = tuple(tile_pos)
-        plant_name = self.inventory.get_active_slot()
+        plant_name = self.inventory.get_active_slot().name
         # Условия посадки.
         if not (
-            plant_name
+            plant_name != "None"
             and self.currency.check_suns(plant_name)
             and self.map_data.is_position_free(tuple_tile_pos)
         ):
@@ -56,12 +56,12 @@ class PlantController:
         plant = (
             PlantBuilder(
                 self.add_object,
-                self.bullet_factory,
+                self.bullet_factory.create_bullet,
                 self.currency.give_sun,
                 self.map_data.remove_plant,
                 self.ui_factory
             )
-            .with_plant(plant_name, global_pos_centred, tile_pos)
+            .with_plant(plant_name, global_pos_centred, tuple_tile_pos)
             .with_upgrade()
             .with_button()
             .build()
@@ -71,3 +71,7 @@ class PlantController:
         event.stop()
         if self.on_plant_success:
             self.on_plant_success()
+
+    def remove_plant(self, plant: BasePlant):
+        self.map_data.remove_plant(plant.get(DataComponent).tile_pos)
+        plant.free()

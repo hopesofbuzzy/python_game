@@ -8,6 +8,7 @@ from src.core.objects import (
     TextRenderComponent,
     UIControl,
     UITransform,
+    VerticalLayoutComponent
 )
 from src.scenes.main.objects import BarComponent
 
@@ -30,6 +31,7 @@ class UIFactory:
         container_size: Vector2 = DEFAULT_TEXT_CONTAINER_SIZE,
         anchor = None
     ):
+        """Создаёт текст в виде объекта интерфейса."""
         text_control = (
             UIControl()
             .add(UITransform(position, container_size, anchor))
@@ -39,6 +41,7 @@ class UIFactory:
         return text_control
 
     def create_bar(self, position, size, start, max, anchor = None):
+        """Создаёт шкалу в виде объекта интерфейса."""
         bar = (
             UIControl()
             .add(UITransform(position, size, anchor, True))
@@ -96,3 +99,26 @@ class UIFactory:
         button.add(PanelRendererComponent(color))
         button.add(TextRenderComponent(text, font_size))
         return button
+
+    def create_vertical_container(self, position, size, anchor, color):
+        """Создаёт вертикальный контейнер (сверху-вниз) для объектов интерфейса."""
+        inventory = (
+            UIControl()
+            .add(UITransform(
+                position,
+                size,
+                anchor
+            ))
+            .add(PanelRendererComponent(color))
+        )
+        inventory.add(VerticalLayoutComponent(inventory))
+
+    def create_image(self, position, size, image_path):
+        """Создаёт картинку в виде объекта интерфейса."""
+        inventory = (
+            UIControl()
+            .add(UITransform(
+                position,
+                size
+            ))
+        )

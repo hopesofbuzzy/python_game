@@ -17,7 +17,7 @@ from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     BasePlant,
     MapLevelDataComponent,
-    PlantDataComponent,
+    DataComponent,
     UpgradeComponent,
 )
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
@@ -63,7 +63,7 @@ class UpgradeManager:
         new_plant = (
             PlantBuilder(
                 self.add_object,
-                self.bullet_factory,
+                self.bullet_factory.create_bullet,
                 self.currency.give_sun,
                 self.gamemap.get(MapLevelDataComponent).remove_plant,
                 self.ui_factory
@@ -97,7 +97,7 @@ class UpgradeManager:
     ):
         """Открытие диалогового окна улучшения растения."""
         self.close_all_upgrade_dialogs()
-        plant_name = plant.get(PlantDataComponent).name
+        plant_name = plant.get(DataComponent).name
         dialog = (
             DialogBuilder(
                 self.add_object,

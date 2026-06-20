@@ -29,6 +29,8 @@ from src.scenes.main.systems.level import LevelManager
 # Системы текущей сцены.
 from src.scenes.main.systems.currency import CurrencyManager
 from src.scenes.main.systems.plant import PlantController
+from src.scenes.main.systems.enemy import EnemyController
+from src.scenes.main.systems.bullet import BulletController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
@@ -37,8 +39,10 @@ class MainScene(Scene):
     def ready(self):
         self.setup_factories()
         self.setup_level()
-        self.setup_waves()
+        
         self.setup_systems()
+        self.setup_waves()
+        self.setup_ui()
         self.event_bus.subscribe(
             "on_requested_upgrade_dialog",
             self.upgrade.open_upgrade_dialog
@@ -53,12 +57,19 @@ class MainScene(Scene):
         )
 
     def setup_factories(self):
-        self.bullet_factory: BulletFactory = BulletFactory(self.add_object,)
+        self.bullet_controller = BulletController()
+        self.bullet_factory: BulletFactory = BulletFactory(
+            self.add_object,
+            self.bullet_controller.remove_bullet
+        )
         self.inventory_factory: InventoryFactory = InventoryFactory(self.add_object)
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object)
+        self.enemy_controller = EnemyController()
         self.enemy_factory: EnemyFactory = EnemyFactory(
             self.add_object,
+            self.enemy_controller.damage_enemy,
+            self.enemy_controller.remove_enemy,
             self.ui_factory
         )
 
@@ -80,18 +91,22 @@ class MainScene(Scene):
             self.bullet_factory,
             self.ui_factory
         )
-        self.ui_manager: UIManager = UIManager(
-            self.ui_factory,
-            self.currency,
-            self.wave_manager.on_wave_started,
-            self.wave_manager.get_time_before_wave
-        )
+        
         self.upgrade: UpgradeManager = UpgradeManager(
             self.gamemap,
             self.currency,
             self.ui_factory,
             self.bullet_factory,
             self.add_object
+        )
+
+    def setup_ui(self):
+        self.ui_manager: UIManager = UIManager(
+            self.ui_factory,
+            self.currency,
+            self.wave_manager.on_wave_started,
+            self.wave_manager.get_time_before_wave,
+            self.inventory.get(InventoryModelComponent).get_slots()
         )
 
     def setup_waves(self):

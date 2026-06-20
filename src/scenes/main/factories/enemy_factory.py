@@ -1,5 +1,6 @@
 import logging
-
+from dataclasses import dataclass
+from typing import Callable
 from pygame.math import Vector2
 
 from src.config.enemies import ENEMY_DATA
@@ -10,7 +11,6 @@ from src.core.objects import (
     PositionComponent,
     RectComponent,
     RectShape,
-    UITransform,
 )
 from src.scenes.main.objects import (
     AttackComponent,
@@ -19,16 +19,26 @@ from src.scenes.main.objects import (
     HealthComponent,
 )
 
+@dataclass
+class BuildContext:
+    damage_func: Callable
+    death_func: Callable
 
 class EnemyFactory:
     """Фабрика сборки врагов."""
 
-    def __init__(self, add_object, ui_factory):
+    def __init__(self, add_object, damage_func, remove_func, ui_factory):
         self.add_object = add_object
+        self.build_context = BuildContext(
+            damage_func=damage_func,
+            death_func=remove_func
+        )
         self.ui_factory = ui_factory
 
     def create_enemy(self, name: str, position: Vector2, path) -> Enemy:
         if name in ENEMY_DATA:
+            # Инициализация врага
+            enemy = Enemy()
             # Харакеристики
             speed = ENEMY_DATA[name]["speed"]
             size = ENEMY_DATA[name]["size"]
@@ -36,42 +46,33 @@ class EnemyFactory:
             attack = ENEMY_DATA[name]["attack"]
             attack_cooldown = ENEMY_DATA[name]["attack_cooldown"]
             health = ENEMY_DATA[name]["health"]
-            # Комопненты
-            position_comp = PositionComponent(position, None)
-            collision_comp = CollisionComponent(
+            # Компоненты
+            enemy.add(PositionComponent(position, None))
+            enemy.add(CollisionComponent(
+                enemy,
                 RectShape(
                     Vector2(0, 0),
                     size,
                     True
                 ), 
                 False
-            )
-            movement_comp = MovementComponent(Vector2(0, 0), speed)
-            health_comp = HealthComponent(health)
-            attack_comp = AttackComponent(
-                movement_comp,
+            ))
+            enemy.add(MovementComponent(Vector2(0, 0), speed))
+            enemy.add(PatrolComponent(enemy, path))
+            enemy.add(RectComponent(color, size, True))
+            enemy.add(AttackComponent(
+                enemy,
                 "plant",
                 attack,
                 attack_cooldown
-            )
-            # Инициализация врага
-            enemy = (
-                Enemy()
-                .add(position_comp)
-                .add(collision_comp)
-                .add(movement_comp)
-                .add(PatrolComponent(position_comp, movement_comp, path))
-                .add(RectComponent(color, size, True))
-                .add(attack_comp)
-                .add(health_comp)
-            )
+            ))
+            enemy.add(HealthComponent(enemy, health))
+            
             enemy.tags.add("enemy")
             self.add_object(enemy)
             # Проводка
-            health_comp.on_death.subscribe(enemy.free)
-            collision_comp.on_collision.subscribe(
-                attack_comp.handle_collision
-            )
+            health_comp = enemy.get(HealthComponent)
+            health_comp.bind(self.build_context)
             health_bar = self.ui_factory.create_bar(
                 Vector2(0, -30),
                 Vector2(50, 10),
@@ -80,7 +81,7 @@ class EnemyFactory:
                 enemy
             )
             enemy.add_child(health_bar)
-            health_comp.on_damage.subscribe(
+            health_comp.damage_func = (
                 health_bar.get(BarComponent).set_value
             )
             return enemy

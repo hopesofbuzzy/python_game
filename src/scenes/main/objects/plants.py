@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import Event, GameObject
+from src.core.objects.game_object import GameObject
 
 
 # Базовое растение

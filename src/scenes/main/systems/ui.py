@@ -6,6 +6,8 @@ from src.scenes.main.factories.ui_factory import UIFactory
 from src.scenes.main.systems.currency import CurrencyManager
 from src.core.objects.event import Event
 
+from src.scenes.main.objects.components.inventory import Slot
+
 SUNS_TEXT_POSITION = Vector2(0, 0)
 SUNS_TEXT_SIZE = 25
 WAVE_NUMBER_TEXT_POSITION = SUNS_TEXT_POSITION + Vector2(0, 20)
@@ -20,15 +22,17 @@ class UIManager:
         ui_factory: UIFactory,
         currency: CurrencyManager,
         on_wave_started: Event,
-        get_time_before_wave_func: Callable
+        get_time_before_wave_func: Callable,
+        inventory_slots: list[Slot]
     ):
         self.ui_factory = ui_factory
         self.currency = currency
         on_wave_started.subscribe(self.on_wave_started)
         self.get_time_before_wave = get_time_before_wave_func
-        self.build_interface()
+        self.build_stats()
+        self.build_inventory(inventory_slots)
         
-    def build_interface(self):
+    def build_stats(self):
         self.suns_text = self.ui_factory.create_text(
             f"Солнышки: {self.currency.suns}",
             SUNS_TEXT_POSITION,
@@ -47,6 +51,9 @@ class UIManager:
             TIME_BEFORE_WAVE_TEXT_POSITION,
             TIME_BEFORE_WAVE_TEXT_SIZE
         )
+
+    def build_inventory(self, inventory_slots: list[Slot]):
+        ...
 
     def on_wave_started(
         self,

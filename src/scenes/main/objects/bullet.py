@@ -1,6 +1,5 @@
 import logging
 
-from src.core.objects.components.collision import MovementComponent
 from src.core.objects.game_object import GameObject
 
 

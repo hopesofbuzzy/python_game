@@ -1,5 +1,6 @@
 import logging
-
+from dataclasses import dataclass
+from typing import Callable
 from pygame.math import Vector2
 
 from src.core.objects import (
@@ -17,23 +18,34 @@ BULLET_COLOR = (255, 255, 255)
 BULLET_SPEED = 150
 BULLET_COOLDOWN = 1.5
 
+@dataclass
+class BuildContext:
+    damage_func: Callable
+    timeout_func: Callable
+
 class BulletFactory:
     """Фабрика сборки пули растения."""
 
-    def __init__(self, add_object):
+    def __init__(self, add_object, remove_func):
         self.add_object = add_object
+        self.build_context = BuildContext(
+            damage_func=remove_func,
+            timeout_func=remove_func
+        )
 
     def create_bullet(self, direction, position, attack, speed):
         logging.debug("Пуля создана!")
+        bullet = Bullet()
         collision = CollisionComponent(
+            bullet,
             RectShape(Vector2(0, 0), BULLET_SIZE, True),
             False
         )
-        timer_remove = TimerComponent(BULLET_COOLDOWN)
+        timer_remove = TimerComponent(bullet, BULLET_COOLDOWN, bullet)
         movement = MovementComponent(direction * speed, speed)
-        attack_component = AttackComponent(movement, "enemy", attack, BULLET_COOLDOWN)
+        attack_component = AttackComponent(bullet, "enemy", attack, BULLET_COOLDOWN)
         bullet = (
-            Bullet()
+            bullet
             .add(PositionComponent(position, None))
             .add(collision)
             .add(movement)
@@ -41,8 +53,7 @@ class BulletFactory:
             .add(attack_component)
             .add(RectComponent(BULLET_COLOR, BULLET_SIZE, centred=True))
         )
-        timer_remove.on_timeout.subscribe(bullet.free)
-        collision.on_collision.subscribe(attack_component.handle_collision)
-        attack_component.on_attack.subscribe(bullet.free)
+        timer_remove.bind(self.build_context)
+        attack_component.bind(self.build_context)
         self.add_object(bullet)
         return bullet

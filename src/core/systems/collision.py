@@ -111,6 +111,7 @@ class CollisionSystem:
     ) -> Overlap | None | bool:
         obj_shape = object.get(CollisionComponent).shape
         oth_shape = other.get(CollisionComponent).shape
+        print(object, other)
         obj_position = object.get(PositionComponent).position + obj_shape.position
         oth_position = other.get(PositionComponent).position + oth_shape.position
         # Circle x Circle

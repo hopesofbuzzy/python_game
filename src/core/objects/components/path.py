@@ -3,7 +3,8 @@ from dataclasses import dataclass, field
 
 from pygame.math import Vector2
 
-from src.core.objects import *
+from src.core.objects.components.position import PositionComponent
+from src.core.objects.components.collision import MovementComponent
 from src.core.objects.event import Event
 
 
@@ -14,9 +15,8 @@ class PathComponent:
 
 class PatrolComponent:
     """Модель компонента следования по пути."""
-    def __init__(self, position, movement, path: PathComponent, point_radius: int = 3):
-        self.position = position
-        self.movement = movement
+    def __init__(self, _entity, path: PathComponent, point_radius: int = 3):
+        self.entity = _entity
         self.path = path
         self.point_radius = point_radius
         self._target_point_ref = len(self.path.points) - 1
@@ -26,7 +26,7 @@ class PatrolComponent:
 
     def start_patrol(self):
         self.on_start_patrol.emit(self.path.points[self._target_point_ref])
-        self.position.position = self.path.points[self._target_point_ref]
+        self.entity.get(PositionComponent).position = self.path.points[self._target_point_ref]
 
     def update(self, delta_time):
         self.follow_path()
@@ -35,8 +35,8 @@ class PatrolComponent:
         """Следует по пути."""
         if self._target_point_ref >= 0:
             target_point = self.path.points[self._target_point_ref]
-            dx = target_point.x - self.position.position.x
-            dy = target_point.y - self.position.position.y
+            dx = target_point.x - self.entity.get(PositionComponent).position.x
+            dy = target_point.y - self.entity.get(PositionComponent).position.y
             dist = dx**2 + dy**2
             min_dist = (self.point_radius) ** 2
             if dist <= min_dist:
@@ -44,12 +44,12 @@ class PatrolComponent:
                 # print(self.position, "->", target_point)
             else:
                 d = Vector2(dx, dy).normalize()
-                self.movement.set_velocity(d[0], d[1])
+                self.entity.get(MovementComponent).set_velocity(d[0], d[1])
         elif self._target_point_ref == -1:
             self.choose_next_point()
         else:
             self.on_reached_end.emit()
-            self.movement.set_velocity(0, 0)
+            self.entity.get(MovementComponent).set_velocity(0, 0)
 
     def choose_next_point(self) -> int | None:
         """Выбирает следующую целевую точку пути."""

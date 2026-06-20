@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class PlantDataComponent:
+class DataComponent:
     name: str
-    targeting: bool
+    tile_pos: tuple[int, int]

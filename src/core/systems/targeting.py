@@ -1,6 +1,7 @@
 import logging
 
-from src.core.objects import PositionComponent, TargetingComponent
+from src.core.objects import PositionComponent
+from src.scenes.main.objects import TargetingComponent
 from src.core.systems.uniform_grid import UniformGrid
 
 
