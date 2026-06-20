@@ -28,8 +28,7 @@ from src.scenes.main.systems.bullet import BulletController
 from src.scenes.main.systems.currency import CurrencyManager
 from src.scenes.main.systems.enemy import EnemyController
 from src.scenes.main.systems.inventory import InventoryManager
-
-# Уровень
+from src.scenes.main.systems.music import MusicManager
 from src.scenes.main.systems.level import LevelManager
 from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
@@ -66,6 +65,10 @@ class MainScene(Scene):
 
     def setup_systems(self):
         """Настраивает системы."""
+        self.music_manager: MusicManager = MusicManager(
+            self.audio_loader,
+            self.event_bus
+        )
         self.inventory: Inventory = self.inventory_factory.create_inventory()
         self.inventory_manager: InventoryManager = InventoryManager(
             self.inventory,

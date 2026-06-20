@@ -9,14 +9,7 @@ from src.core.objects.game_object import GameObject
 # Базовое растение
 class BasePlant(GameObject):
     """Универсальное растение."""
-    def __init__(
-            self,
-            tile_pos: tuple,
-            upgrade_description: str = "Ура!"
-    ):
-        super().__init__()
-        self.tile_pos = tile_pos
-        self.upgrade_description = upgrade_description
+    ...
 
 class Mushroom(BasePlant):
     """Небольшой грибок-стрелок"""

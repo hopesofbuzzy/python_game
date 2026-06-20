@@ -37,6 +37,7 @@ class BulletFactory:
             ),
             timeout_func=lambda bullet: event_bus.fire("on_bullet_timeout", bullet)
         )
+        self.event_bus = event_bus
 
     def create_bullet(
         self,
@@ -77,4 +78,5 @@ class BulletFactory:
         timer_remove.bind(self.build_context)
         attack_component.bind(self.build_context)
         self.add_object(bullet)
+        self.event_bus.fire("on_bullet_created")
         return bullet

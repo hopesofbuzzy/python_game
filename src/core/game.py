@@ -11,6 +11,7 @@ from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
 from src.core.systems.targeting import TargetingSystem
 from src.core.systems.uniform_grid import UniformGrid
+from src.core.singletones.audio_loader import audio_loader, AudioLoader
 
 
 class Game:
@@ -27,6 +28,7 @@ class Game:
         self.collision = CollisionSystem(self.uniform_grid)
         self.targeting = TargetingSystem(self.uniform_grid)
         self.renderer: Renderer = Renderer()
+        self.audio: AudioLoader = audio_loader
         self.debug: bool = debug
         self.debug_renderer: DebugRenderer = DebugRenderer()
         # State
@@ -35,7 +37,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(event_bus, self.exit)
+        self.scene: Scene = scene_class(event_bus, self.audio, self.exit)
 
     def update(self, delta_time: float):
         # Input

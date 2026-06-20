@@ -48,6 +48,7 @@ class PlantFactory:
             damage_func=(lambda x: 5)
         )
         self.ui_factory = ui_factory
+        self.event_bus = event_bus
 
     def _add_button(self, plant):
         """Создаёт кнопку растения.."""
@@ -59,6 +60,7 @@ class PlantFactory:
         click_handler.get(ClickHandlerComponent).on_button_pressed.subscribe(
             plant.get(UpgradeComponent).request_upgrade_dialog
         )
+        self.add_object(click_handler)
         plant.add_child(click_handler)
         return click_handler
 
@@ -77,7 +79,7 @@ class PlantFactory:
         position_comp = PositionComponent(position, None)
         # Иниациализация растения
         plant = (
-            BasePlant(tile_pos)
+            BasePlant()
             .add(position_comp)
             .add(SpriteComponent(image_path, PLANT_SIZE, True))
             .add(DataComponent(plant_name, tuple(tile_pos)))
@@ -99,4 +101,5 @@ class PlantFactory:
         plant.tags.add("plant")
         # Кнопка
         self._add_button(plant)
+        self.event_bus.fire("on_plant_created")
         return plant

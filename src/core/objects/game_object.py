@@ -48,6 +48,7 @@ class GameObject(ABC):
         for c_type, c in self.components.items():
             if hasattr(c, "free"):
                 c.free()
+        self.components.clear()
         for child in self.children:
             child.free()
         self.on_destroy.emit(self)

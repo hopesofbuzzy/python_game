@@ -68,22 +68,23 @@ class UpgradeManager:
     ):
         """Трансформация растения после уровня улучшения."""
         self.close_all_upgrade_dialogs()
+        tile_pos = plant.get(DataComponent).tile_pos
         global_pos_centred = (
             self.gamemap
             .get(MapModelComponent)
-            .tile_to_pos_centred(Vector2(plant.tile_pos))
+            .tile_to_pos_centred(Vector2(tile_pos))
         )
         logging.debug(f"Начинаем улучшение до {target_plant_name}")
         new_plant = self.plant_factory.create_plant(
             target_plant_name,
             global_pos_centred,
-            plant.tile_pos
-        )
-        self.gamemap.get(MapLevelDataComponent).add_plant(
-            tuple(new_plant.tile_pos)
+            tile_pos
         )
         self.gamemap.get(MapLevelDataComponent).remove_plant(
-            plant.tile_pos
+            tile_pos
+        )
+        self.gamemap.get(MapLevelDataComponent).add_plant(
+            tuple(new_plant.get(DataComponent).tile_pos)
         )
         plant.free()
         # Открытие нового окна улучшения.
