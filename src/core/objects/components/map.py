@@ -38,8 +38,8 @@ class MapViewComponent:
         scaled_tileset = self.get_scaled_tileset(camera.zoom)
         c1, c2, r1, r2 = camera.get_visible_range(
             self.tile_size,
-            len(self.map_model.tiles[0]),
-            len(self.map_model.tiles)
+            len(self.map_model.tiles[0]) + 1,
+            len(self.map_model.tiles) + 1
         )
         for row in range(r1, r2):
             for col in range(c1, c2):
@@ -81,9 +81,15 @@ class MapModelComponent:
         """Устанавливает тайл по тайлсету."""
         self.tiles[row][col] = tile_idx
 
+    def is_tile_valid(self, row: int, col: int):
+        return row in range(0, len(self.tiles)) and col in range(0, len(self.tiles[0]))
+
     def get_tile(self, row: int, col: int) -> int:
         """Возвращает тип тайла по тайлсету."""
-        return self.tiles[row][col]
+        if self.is_tile_valid(row, col):
+            return self.tiles[row][col]
+        else:
+            return -1
 
 
 class MapControllerComponent:

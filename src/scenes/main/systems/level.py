@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 
 from src.config.generator_config import *
-from src.scenes.main.factories.map_factory import MapFactory
+from src.factories.map_factory import MapFactory
 
 # Генерация уровня
 from src.scenes.main.level.builder import Level, LevelBuilder
@@ -21,7 +21,7 @@ class LevelManager:
         raw_level = LevelGenerator(LevelLoader(), True).generate(
             PATH_LENGTH,
             SIZE,
-            SEED,
+            seed,
             NOISE_AMPLITUDE,
             WAVE_AMOUNT
         )

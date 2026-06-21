@@ -4,16 +4,16 @@ from typing import Callable
 from pygame.math import Vector2
 
 # Константы
-from src.config.plants import PLANTS_DESCRIPTIONS
+from src.config.plants import PLANTS_UPGRADE_DESCRIPTIONS
 from src.core.objects import (
     Map,
     MapModelComponent,
 )
 from src.core.singletones.event_bus import EventBus, EventFlow
-from src.scenes.main.factories.bullet_factory import BulletFactory
-from src.scenes.main.factories.dialog_builder import DialogBuilder
-from src.scenes.main.factories.plant_factory import PlantFactory
-from src.scenes.main.factories.ui_factory import UIFactory
+from src.factories.bullet_factory import BulletFactory
+from src.factories.dialog_builder import DialogBuilder
+from src.factories.plant_factory import PlantFactory
+from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     BasePlant,
     DataComponent,
@@ -120,7 +120,7 @@ class UpgradeManager:
                 UPGRADE_DIALOG_SIZE,
                 plant
             )
-            .with_text(PLANTS_DESCRIPTIONS[plant_name], 18)
+            .with_text(PLANTS_UPGRADE_DESCRIPTIONS[plant_name], 18)
             .with_button(
                 UPGRADE_BUTTON_TEXT,
                 UPGRADE_BUTTON_FONT_SIZE,

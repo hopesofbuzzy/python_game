@@ -10,3 +10,4 @@ from .tag import TagContactComponent
 from .targeting import TargetingComponent
 from .timer import TimerComponent
 from .upgrade import UpgradeComponent
+from .cursor_circle import CursorCircleComponent

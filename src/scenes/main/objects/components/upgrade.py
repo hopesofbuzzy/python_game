@@ -17,7 +17,7 @@ class UpgradeComponent:
         event_bus.fire("on_requested_upgrade_dialog", self.plant)
 
     def upgrade(self):
-        self.suns += DEFAULT_UPGRADE_SPEED
+        self.suns += self.target_suns
         logging.debug(f"{sys.getrefcount(self)}")
         logging.debug(f"Сейчас: {self.suns} Цель: {self.target_suns}")
         if self.suns >= self.target_suns:
@@ -29,4 +29,4 @@ class UpgradeComponent:
             self.suns -= 10000
 
     def get_upgrade_cost(self):
-        return DEFAULT_UPGRADE_SPEED
+        return self.target_suns

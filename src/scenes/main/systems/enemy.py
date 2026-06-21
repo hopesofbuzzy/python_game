@@ -1,14 +1,30 @@
+from pygame.math import Vector2
+
 from src.core.singletones.event_bus import EventBus, EventFlow
 from src.scenes.main.objects import Enemy
+from src.factories.enemy_factory import EnemyFactory
 
 
 class EnemyController:
-    def __init__(self, event_bus: EventBus):
+    def __init__(self, enemy_factory: EnemyFactory, event_bus: EventBus):
+        self.enemies = list()
+        self.enemy_factory = enemy_factory
         event_bus.subscribe("on_enemy_attacked", self.on_enemy_attacked)
         event_bus.subscribe("on_enemy_death", self.remove_enemy)
+        event_bus.subscribe("on_enemy_spawn", self.spawn_enemy)
+        self.event_bus = event_bus
+
+    def spawn_enemy(self, _event: EventFlow, enemy: str, path):
+        self.enemies.append(self.enemy_factory.create_enemy(
+            enemy,
+            Vector2(0, 00),
+            path
+        ))
 
     def remove_enemy(self, _event: EventFlow, enemy: Enemy):
         enemy.free()
+        self.enemies.remove(enemy)
+        self.event_bus.fire("on_enemy_deleted", len(self.enemies))
 
     def on_enemy_attacked(self, _event: EventFlow, enemy: Enemy, target):
         ...

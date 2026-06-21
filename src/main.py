@@ -3,7 +3,7 @@ import logging
 import pygame
 
 from src.core.game import Game
-from src.scenes.main.main import MainScene
+from src.scenes.menu.menu import MenuScene
 
 logging.basicConfig(
     level=logging.INFO,
@@ -31,4 +31,4 @@ def main(scene_class):
 
 
 if __name__ == "__main__":
-    main(MainScene)
+    main(MenuScene)

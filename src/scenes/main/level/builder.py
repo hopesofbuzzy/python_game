@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import pygame
 
 from src.core.objects.components.map import Map, MapModelComponent
-from src.scenes.main.factories.map_factory import MapFactory
+from src.factories.map_factory import MapFactory
 from src.scenes.main.level.loader import LevelLoader, RawLevel
 from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
 from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject

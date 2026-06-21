@@ -6,17 +6,19 @@ from src.core.objects import (
     Map,
     MapControllerComponent,
     MapModelComponent,
+    MapViewComponent
 )
 from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
-from src.scenes.main.factories.bullet_factory import BulletFactory
+from src.factories.bullet_factory import BulletFactory
 
 # Фабрики и строители.
-from src.scenes.main.factories.enemy_factory import EnemyFactory
-from src.scenes.main.factories.inventory_factory import InventoryFactory
-from src.scenes.main.factories.path_factory import PathFactory
-from src.scenes.main.factories.plant_factory import PlantFactory
-from src.scenes.main.factories.ui_factory import UIFactory
+from src.factories.enemy_factory import EnemyFactory
+from src.factories.inventory_factory import InventoryFactory
+from src.factories.path_factory import PathFactory
+from src.factories.plant_factory import PlantFactory
+from src.factories.cursor_circle_factory import CursorCircleFactory
+from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
@@ -35,7 +37,6 @@ from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
 
-
 class MainScene(Scene):
     def ready(self):
         self.setup_factories()
@@ -45,6 +46,7 @@ class MainScene(Scene):
         self.setup_waves()
         self.setup_ui()
         self.event_bus.subscribe("on_enemy_reached_end", self.game_over)
+        self.event_bus.subscribe("on_win", self.win)
 
     def setup_factories(self):
         """Настраивает мелкие фабрики."""
@@ -54,6 +56,7 @@ class MainScene(Scene):
         )
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object, self.event_bus)
+        self.cursor_circle_factory = CursorCircleFactory(self.add_object)
 
     def setup_level(self):
         """Генерирует и собирает уровень."""
@@ -72,6 +75,8 @@ class MainScene(Scene):
         self.inventory: Inventory = self.inventory_factory.create_inventory()
         self.inventory_manager: InventoryManager = InventoryManager(
             self.inventory,
+            self.cursor_circle_factory,
+            self.gamemap.get(MapViewComponent).tile_size,
             self.event_bus
         )
         self.currency = CurrencyManager(self.event_bus)
@@ -81,17 +86,17 @@ class MainScene(Scene):
             Настраивает системы, связанные с контролем
             спавна сущностей (EventBus driven).
         """
-        self.bullet_controller = BulletController(self.event_bus)
         self.bullet_factory: BulletFactory = BulletFactory(
             self.add_object,
             self.event_bus
         )
-        self.enemy_controller = EnemyController(self.event_bus)
+        self.bullet_controller = BulletController(self.event_bus)
         self.enemy_factory: EnemyFactory = EnemyFactory(
             self.add_object,
             self.ui_factory,
             self.event_bus
         )
+        self.enemy_controller = EnemyController(self.enemy_factory, self.event_bus)
         self.plant_factory: PlantFactory = PlantFactory(
             self.add_object,
             self.bullet_factory,
@@ -154,6 +159,12 @@ class MainScene(Scene):
         self.plant_controller.try_plant(
             event, tile_pos, global_pos_centred
         )
+
+    def win(self, _event: EventFlow):
+        """Победа."""
+        from src.scenes.menu.menu import MenuScene
+        logging.info("Победа!")
+        self.change_scene(MenuScene)
 
     def game_over(self, _event: EventFlow):
         """Проигрыш."""

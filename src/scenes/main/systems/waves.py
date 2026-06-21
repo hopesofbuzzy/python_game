@@ -7,7 +7,7 @@ from pygame.math import Vector2
 
 from src.core.objects.components.path import PatrolComponent
 from src.core.objects.event import Event
-from src.core.singletones.event_bus import EventBus
+from src.core.singletones.event_bus import EventBus, EventFlow
 
 SPAWN_COOLDOWN = 0.5
 
@@ -57,6 +57,7 @@ class WaveManager:
         self.time_before_next_wave = self.waves[0].timestamp
         # События
         self.event_bus = event_bus
+        event_bus.subscribe("on_enemy_deleted", self.on_enemy_deleted)
         logging.debug(self.waves)
 
     def update(self, delta_time):
@@ -75,6 +76,11 @@ class WaveManager:
                         self.time_before_next_wave = -1
                     logging.info(f"Волна монстров!")
 
+    def on_enemy_deleted(self, _event: EventFlow, enemy_count: int):
+        logging.info(f"{len(self.waves)} {enemy_count}")
+        if (len(self.waves) <= 1) and (enemy_count == 0):
+            self.event_bus.fire("on_win")
+
     def start_wave(self, wave):
         """Старт волны."""
         self.current_wave = wave
@@ -86,7 +92,7 @@ class WaveManager:
         return round(self.time_before_next_wave, 0)
 
     def process_wave(self, delta_time):
-        """Обработка текущей волныю"""
+        """Обработка текущей волны."""
         if self.current_wave:
             # Пауза при спавне врагов.
             self._spawn_timer -= delta_time
@@ -97,11 +103,7 @@ class WaveManager:
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
                 # Спавн врага.
-                self.create_enemy(
-                    wave_object.enemy,
-                    Vector2(200, 200),
-                    self.path
-                )
+                self.event_bus.fire("on_enemy_spawn", wave_object.enemy, self.path)
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)
                     if len(wave_objects) == 0:

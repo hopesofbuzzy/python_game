@@ -37,7 +37,7 @@ class Game:
         # Global events
         self.input.on_exit.subscribe(self.exit)
         # Scene
-        self.scene: Scene = scene_class(event_bus, self.audio, self.exit)
+        self.set_scene(scene_class)
 
     def update(self, delta_time: float):
         # Input
@@ -66,6 +66,10 @@ class Game:
         self.renderer.draw(screen, self.scene, self.camera)
         if self.debug:
             self.debug_renderer.draw(screen, self.scene, self.camera)
+
+    def set_scene(self, scene_class):
+        self.scene = scene_class(event_bus, self.audio, self.exit)
+        self.scene.on_scene_changed.subscribe(self.set_scene)
 
     def exit(self):
         self.running = False

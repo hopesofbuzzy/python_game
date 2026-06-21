@@ -16,7 +16,7 @@ class InventoryModelComponent:
     """Инвентарь для выбора растений."""
     # Заглушки
     def __init__(self, raw_slots: dict = PLANTS):
-        self.active_slot: int = 1
+        self.active_slot: int = 0
         self.raw_slots = raw_slots
         self.slots: list[Optional[Slot]] = list()
         self.size: int = 10
@@ -32,7 +32,7 @@ class InventoryModelComponent:
 
     @singledispatchmethod
     def set_active_slot(self, arg):
-        """Функция установки слота инвентаря (перегрузки для Slot, str)"""
+        """Функция установки слота инвентаря (перегрузки для Slot, str, int)"""
         raise NotImplementedError("Тип слота не поддерживается!")
 
     @set_active_slot.register(str)
@@ -40,6 +40,11 @@ class InventoryModelComponent:
         if arg.isdigit():
             self.active_slot = int(arg)
             logging.info(f"Слот инвентаря: {self.active_slot}")
+
+    @set_active_slot.register(int)
+    def _(self, arg: int):
+        self.active_slot = arg
+        logging.info(f"Слот инвентаря: {self.active_slot}")
 
     @set_active_slot.register(Slot)
     def _(self, arg: Slot):
@@ -51,7 +56,9 @@ class InventoryModelComponent:
                 self.active_slot = idx
                 logging.info(f"Слот инвентаря: {self.active_slot}")
                 
-
+    def set_zero_slot(self):
+        """Устаналивает слот без предметов."""
+        self.set_active_slot(0)
 
     def get_active_slot(self) -> Optional[Slot]:
         """Возвращает активный слот."""

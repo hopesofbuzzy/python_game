@@ -21,6 +21,7 @@ DEFAULT_BUTTON_COLOR = (120, 120, 120)
 DEFAULT_BUTTON_INPUT_PRIORITY = 1000
 DEFAULT_TEXT_CONTAINER_SIZE = Vector2(100, 10)
 DEFAULT_TEXT_SIZE = 18
+DEFAULT_TEXT_LINESPACE = 0
 DEFAULT_TOOLTIP_COLOR = (60, 60, 60)
 
 class UIFactory:
@@ -36,7 +37,8 @@ class UIFactory:
         position: Vector2,
         size: int = DEFAULT_TEXT_SIZE,
         container_size: Vector2 = DEFAULT_TEXT_CONTAINER_SIZE,
-        anchor = None
+        anchor = None,
+        linespace = DEFAULT_TEXT_LINESPACE
     ):
         """Создаёт текст в виде объекта интерфейса."""
         text_control = (
@@ -159,7 +161,7 @@ class UIFactory:
             UIControl()
             .add(UITransform(position, size, anchor))
             .add(PanelRendererComponent(color))
-            .add(TextRenderComponent(text, text_size))
+            .add(TextRenderComponent(text, text_size, linespace=DEFAULT_TEXT_LINESPACE))
         )
         self.add_object(tooltip_message)
         return tooltip_message

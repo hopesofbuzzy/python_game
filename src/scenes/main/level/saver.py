@@ -44,11 +44,9 @@ class LevelSaver:
     def save_level(
             self,
             raw_level,
-            parsed_waves,
             level_name: str
     ):
         """Сохранение уровня."""
         raw_level.metadata["map_name"] = level_name + ".csv"
-        raw_level.metadata["waves"] = serialize_waves(parsed_waves)
         self.save_data(raw_level.metadata, level_name)
         self.save_map(raw_level.tiles, level_name)

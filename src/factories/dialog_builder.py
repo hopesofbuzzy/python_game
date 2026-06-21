@@ -13,7 +13,7 @@ from src.core.objects import (
     VerticalLayoutComponent,
 )
 from src.core.singletones.event_bus import EventBus
-from src.scenes.main.factories.ui_factory import UIFactory
+from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects import BarComponent
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)

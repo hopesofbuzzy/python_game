@@ -25,6 +25,8 @@ class Scene:
         # Шина событий (инъекция)
         self.event_bus = event_bus
         self.audio_loader = audio_loader
+        # Смена сцены
+        self.on_scene_changed: Event = Event()
         # Все системы включены, запускаем сцену.
         self.ready()
 
@@ -89,3 +91,6 @@ class Scene:
     def handle_input(self, event: PygameEvent):
         """Читает pygame.event"""
         ...
+
+    def change_scene(self, scene_class):
+        self.on_scene_changed.emit(scene_class)

@@ -79,7 +79,7 @@ class UITransform:
         )
 
 DEFAULT_TEXT_COLOR = (255, 255, 255)
-DEFAULT_TEXT_LINESPACE = 20
+DEFAULT_TEXT_LINESPACE = 0
 
 class TextRenderComponent:
     """Отрисовщик текста."""
@@ -120,7 +120,7 @@ class TextRenderComponent:
         y_offset = 0
         for surface in self._surfaces:
             screen.blit(surface, local_position + Vector2(0, y_offset))
-            y_offset += self.linespace
+            y_offset += self.linespace + surface.get_size()[1]
 
 class PanelRendererComponent:
     """Отрисовщик панели интерфейса (не зависит от зума)."""

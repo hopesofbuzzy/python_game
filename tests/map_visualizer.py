@@ -9,7 +9,7 @@ from src.core.objects.scene import Scene
 from src.main import main
 
 # Фабрики и строители.
-from src.scenes.main.factories.map_factory import MapFactory
+from src.factories.map_factory import MapFactory
 from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
@@ -24,22 +24,13 @@ class MapScene(Scene):
 
     def setup_level(self):
         ll = LevelGenerator(LevelLoader(), True)
-        raw_level, parsed_waves = ll.generate(
+        raw_level = ll.generate(
             PATH_LENGTH,
-            SIZE, SEED,
+            SIZE, seed,
             NOISE_AMPLITUDE,
             WAVE_AMOUNT
         )
-        LevelSaver().save_level(raw_level, parsed_waves, LEVEL_NAME)
-        LevelBuilder(
-            LevelLoader(),
-            MapFactory(self.add_object)
-        ).load_and_create_level(
-            Vector2(0, 0),
-            LEVEL_NAME,
-            False,
-            False
-        )
+        LevelSaver().save_level(raw_level, LEVEL_NAME)
 
 if __name__ == "__main__":
     main(MapScene)

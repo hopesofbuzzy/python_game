@@ -4,10 +4,11 @@ from typing import Callable
 from pygame.math import Vector2
 
 from src.config.plants import PLANTS_DESCRIPTIONS, PLANTS_PRICES
+from src.config.generator_config import *
 from src.core.objects import ClickHandlerComponent, TextRenderComponent
 from src.core.objects.event import Event
 from src.core.singletones.event_bus import EventBus, EventFlow
-from src.scenes.main.factories.ui_factory import UIFactory
+from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects.components.inventory import Slot
 from src.scenes.main.systems.currency import CurrencyManager
 
@@ -20,8 +21,11 @@ TIME_BEFORE_WAVE_TEXT_SIZE = 15
 INVENTORY_POSITION = TIME_BEFORE_WAVE_TEXT_POSITION + Vector2(0, 300)
 INVENTORY_SIZE = Vector2(60, 300)
 INVENTORY_COLOR = (150, 150, 150)
+SEED_TEXT_POSITION = Vector2(0, INVENTORY_POSITION.y + INVENTORY_SIZE.y)
+SEED_TEXT_SIZE = 20
 SLOT_SIZE = Vector2(60, 65)
 SLOT_COLOR = (100, 100, 100)
+TOOLTIP_TEXT_FONT_SIZE = 20
 
 class UIManager:
     """Менеджер интерфейса игры (HUD)"""
@@ -63,6 +67,11 @@ class UIManager:
             f"Следующая волна через: ...",
             TIME_BEFORE_WAVE_TEXT_POSITION,
             TIME_BEFORE_WAVE_TEXT_SIZE
+        )
+        self.seed = self.ui_factory.create_text(
+            f"Зерно генерации: {seed}",
+            SEED_TEXT_POSITION,
+            SEED_TEXT_SIZE
         )
 
     def build_inventory(self, inventory_slots: list[Slot]):
@@ -120,7 +129,7 @@ class UIManager:
             tooltip_message = self.ui_factory.create_tooltip_message(
                 cursor_local_pos,
                 Vector2(250, 120),
-                15,
+                TOOLTIP_TEXT_FONT_SIZE,
                 text
             )
             self.tooltip = tooltip_message

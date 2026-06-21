@@ -4,9 +4,9 @@ from pygame.math import Vector2
 
 from src.core.objects import Map
 from src.core.singletones.event_bus import EventBus, EventFlow
-from src.scenes.main.factories.bullet_factory import BulletFactory
-from src.scenes.main.factories.plant_factory import PlantFactory
-from src.scenes.main.factories.ui_factory import UIFactory
+from src.factories.bullet_factory import BulletFactory
+from src.factories.plant_factory import PlantFactory
+from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     BasePlant,
     DataComponent,
@@ -32,6 +32,7 @@ class PlantController:
         self.map_data = map_data
         event_bus.subscribe("on_plant_death", self.remove_plant)
         self.plant_factory = plant_factory
+        self.event_bus = event_bus
 
     def try_plant(
         self,
@@ -62,6 +63,7 @@ class PlantController:
             tuple_tile_pos
         )
         self.map_data.add_plant(tuple_tile_pos)
+        self.event_bus.fire("on_inventory_zero_slot_set")
         # Остановка события, чтобы клик не шёл дальше после посадки.
         event.stop()
 
