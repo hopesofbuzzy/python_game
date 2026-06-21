@@ -2,7 +2,7 @@ import logging
 
 from pygame.math import Vector2
 
-from src.core.singletones.event_bus import EventFlow, EventBus
+from src.core.singletones.event_bus import EventBus, EventFlow
 from src.core.systems.input import Cursor
 
 ZOOMES: tuple = (0.8, 1.0, 1.5, 2.0)

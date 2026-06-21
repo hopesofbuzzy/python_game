@@ -1,6 +1,8 @@
 from pygame.event import Event as PygameEvent
+
 from src.core.objects import GameObject
 from src.core.systems.input import Cursor
+
 
 class ExampleComponent():
     def __init__(self):

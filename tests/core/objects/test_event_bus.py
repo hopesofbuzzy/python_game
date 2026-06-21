@@ -1,9 +1,10 @@
-from pygame.math import Vector2
 import pytest
+from pygame.math import Vector2
 
-from src.core.objects.camera import Camera, ZOOMES
-from src.core.systems.input import Cursor
+from src.core.objects.camera import ZOOMES, Camera
 from src.core.singletones.event_bus import EventBus
+from src.core.systems.input import Cursor
+
 
 def test_base():
     event_bus = EventBus()
