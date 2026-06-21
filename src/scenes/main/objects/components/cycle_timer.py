@@ -1,11 +1,10 @@
 from src.core.objects.components.component_registry import ComponentRegistry
-from src.core.objects.event import Event
-from src.core.objects.game_object import GameObject
 
 
 @ComponentRegistry.register("cycle_timer")
 class CycleTimerComponent:
     """Циклический таймер, выдающий данные по циклу."""
+
     def __init__(self, _entity, time, data):
         self.time = time
         self.data = data

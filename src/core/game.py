@@ -2,7 +2,6 @@ import pygame
 from pygame.math import Vector2
 
 from src.core.objects.camera import Camera
-from src.core.objects.scene import Scene
 from src.core.singletones.audio_loader import AudioLoader, audio_loader
 from src.core.singletones.event_bus import event_bus
 from src.core.singletones.global_data import global_data
@@ -20,10 +19,10 @@ class Game:
 
     def __init__(self, scene_class, window_size: tuple, debug: bool = False):
         """
-            Args:
-                scene_class: класс сцены инициализации.
-                window_size: размер окна.
-                debug: режим отладки (рендер коллизий, областей интерфейса).
+        Args:
+            scene_class: класс сцены инициализации.
+            window_size: размер окна.
+            debug: режим отладки (рендер коллизий, областей интерфейса).
         """
         # Системы
         self.input: InputManager = InputManager()

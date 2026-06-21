@@ -1,6 +1,4 @@
-import gc
 import logging
-from typing import Optional
 
 import pygame
 from pygame.event import Event as PygameEvent
@@ -17,24 +15,26 @@ from src.core.systems.input import Cursor
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DEFAULT_UI_Z_INDEX = 1000
 
+
 class UITransform:
     """
-        Область интерфейса.
+    Область интерфейса.
 
-        ВАЖНО: UITransform и все компоненты интерфейса должны
-        использоваться только как компоненты объекта интерфейса - UIControl.
+    ВАЖНО: UITransform и все компоненты интерфейса должны
+    использоваться только как компоненты объекта интерфейса - UIControl.
 
-        Для привязки элемента интерфейса к объекту мира
-        нужно использовать object.add_child(ui_control) и anchor = object.
+    Для привязки элемента интерфейса к объекту мира
+    нужно использовать object.add_child(ui_control) и anchor = object.
 
-        Без anchor UITransform всегда работает с координатами экрана.
+    Без anchor UITransform всегда работает с координатами экрана.
     """
+
     def __init__(
-            self,
-            position: Vector2,
-            size: Vector2,
-            anchor: Optional[GameObject] = None,
-            centred: bool = False,
+        self,
+        position: Vector2,
+        size: Vector2,
+        anchor: GameObject | None = None,
+        centred: bool = False,
     ):
         self.original_position = position.copy()
         self.local_position = self.original_position
@@ -78,17 +78,20 @@ class UITransform:
             and mouse_y < self.position.y + self.size.y
         )
 
+
 DEFAULT_TEXT_COLOR = (255, 255, 255)
 DEFAULT_TEXT_LINESPACE = 0
 
+
 class TextRenderComponent:
     """Отрисовщик текста."""
+
     def __init__(
         self,
         text: str,
         size: int,
         color: tuple = DEFAULT_TEXT_COLOR,
-        linespace: int = DEFAULT_TEXT_LINESPACE
+        linespace: int = DEFAULT_TEXT_LINESPACE,
     ):
         self.size = size
         self.color = color
@@ -122,32 +125,30 @@ class TextRenderComponent:
             screen.blit(surface, local_position + Vector2(0, y_offset))
             y_offset += self.linespace + surface.get_size()[1]
 
+
 class PanelRendererComponent:
     """Отрисовщик панели интерфейса (не зависит от зума)."""
+
     def __init__(self, color: tuple = DEFAULT_TEXT_COLOR):
         self.color = color
 
     def draw(self, screen: pygame.Surface, size, local_position, camera):
-        rect = pygame.Rect(
-            local_position.x,
-            local_position.y,
-            size.x,
-            size.y
-        )
+        rect = pygame.Rect(local_position.x, local_position.y, size.x, size.y)
         pygame.draw.rect(screen, self.color, rect)
+
 
 class ImageRendererComponent:
     """Отрисовщик картинки."""
+
     def __init__(self, image_path: str):
         self._original_image: Image = il.load_image(image_path)
         self._scaled_image = None
 
     def get_scaled_image(self, size: tuple):
-        if not self._scaled_image:
-            if isinstance(self._original_image, Image):
-                self._scaled_image = pygame.transform.scale(
-                    self._original_image.surface, size=size
-                )
+        if not self._scaled_image and isinstance(self._original_image, Image):
+            self._scaled_image = pygame.transform.scale(
+                self._original_image.surface, size=size
+            )
         return self._scaled_image
 
     def draw(self, screen: pygame.Surface, size, local_position, camera):
@@ -155,14 +156,18 @@ class ImageRendererComponent:
         if image:
             screen.blit(image, local_position)
 
+
 class UIControl(GameObject):
     """Универсальный элемент интерфейса."""
+
     def __init__(self):
         super().__init__()
         self.z_index = DEFAULT_UI_Z_INDEX
 
+
 class ClickHandlerComponent:
     """Контроллер кликов, выдающий данные по нажатию."""
+
     def __init__(self, ui_control: UIControl, input_priority=5, data=None):
         self.ui_transform = ui_control.get(UITransform)
         self.on_button_pressed: Event = Event()
@@ -170,7 +175,7 @@ class ClickHandlerComponent:
         event_bus.subscribe(
             "on_mouse_left_click",
             self.on_mouse_left_click,
-            priority=input_priority
+            priority=input_priority,
         )
 
     def on_mouse_left_click(self, event: EventFlow, cursor):
@@ -184,8 +189,10 @@ class ClickHandlerComponent:
             self.on_button_pressed.emit(self.data)
             event.stop()
 
+
 class MouseHoverComponent:
     """Контроллер проверки движения мыши по элементу."""
+
     def __init__(self, ui_control: UIControl, data=None):
         self.ui_transform = ui_control.get(UITransform)
         self.is_mouse_inside: bool = False
@@ -199,9 +206,11 @@ class MouseHoverComponent:
             cursor_pos = cursor.global_pos
         else:
             cursor_pos = cursor.pos
-        is_mouse_inside = self.ui_transform.contains(cursor_pos.x, cursor_pos.y)
+        is_mouse_inside = self.ui_transform.contains(
+            cursor_pos.x, cursor_pos.y
+        )
         if self.is_mouse_inside and not is_mouse_inside:
-            
+
             self.on_mouse_exited.emit(self.data)
             self.is_mouse_inside = False
         if not self.is_mouse_inside and is_mouse_inside:
@@ -210,9 +219,9 @@ class MouseHoverComponent:
             self.is_mouse_inside = True
 
 
-
 class VerticalLayoutComponent:
     """Организатор вертикального списка (сверху-вниз)."""
+
     def __init__(self, ui_control: UIControl, space: int = 10):
         self.ui_control = ui_control
         self.space = space
@@ -225,13 +234,15 @@ class VerticalLayoutComponent:
         for child in self.ui_control.children:
             child.get(UITransform)._position_screen_resize = False
             if child.has(UITransform):
-                child.get(UITransform).local_position = (
-                    child.get(UITransform).original_position + Vector2(0, y_offset)
-                )
+                child.get(UITransform).local_position = child.get(
+                    UITransform
+                ).original_position + Vector2(0, y_offset)
                 y_offset += child.get(UITransform).size.y + self.space
+
 
 class ContainerComponent:
     """Контейнер, выравнивающий позиции объектов относительно своей."""
+
     def __init__(self, ui_control: UIControl):
         self.ui_control = ui_control
 

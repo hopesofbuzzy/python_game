@@ -55,8 +55,7 @@ class MainScene(Scene):
     def setup_factories(self):
         """Настраивает мелкие фабрики."""
         self.inventory_factory: InventoryFactory = InventoryFactory(
-            self.add_object,
-            self.event_bus
+            self.add_object, self.event_bus
         )
         self.path_factory: PathFactory = PathFactory()
         self.ui_factory: UIFactory = UIFactory(self.add_object, self.event_bus)
@@ -73,46 +72,44 @@ class MainScene(Scene):
     def setup_systems(self):
         """Настраивает системы."""
         self.music_manager: MusicManager = MusicManager(
-            self.audio_loader,
-            self.event_bus
+            self.audio_loader, self.event_bus
         )
         self.inventory: Inventory = self.inventory_factory.create_inventory()
         self.inventory_manager: InventoryManager = InventoryManager(
             self.inventory,
             self.cursor_circle_factory,
             self.gamemap.get(MapViewComponent).tile_size,
-            self.event_bus
+            self.event_bus,
         )
         self.currency = CurrencyManager(self.event_bus)
 
     def setup_controllers(self):
         """
-            Настраивает системы, связанные с контролем
-            спавна сущностей (EventBus driven).
+        Настраивает системы, связанные с контролем
+        спавна сущностей (EventBus driven).
         """
         self.bullet_factory: BulletFactory = BulletFactory(
-            self.add_object,
-            self.event_bus
+            self.add_object, self.event_bus
         )
         self.bullet_controller = BulletController(self.event_bus)
         self.enemy_factory: EnemyFactory = EnemyFactory(
-            self.add_object,
-            self.ui_factory,
-            self.event_bus
+            self.add_object, self.ui_factory, self.event_bus
         )
-        self.enemy_controller = EnemyController(self.enemy_factory, self.event_bus)
+        self.enemy_controller = EnemyController(
+            self.enemy_factory, self.event_bus
+        )
         self.plant_factory: PlantFactory = PlantFactory(
             self.add_object,
             self.bullet_factory,
             self.ui_factory,
-            self.event_bus
+            self.event_bus,
         )
         self.plant_controller = PlantController(
             self.currency,
             self.inventory.get(InventoryModelComponent),
             self.gamemap.get(MapLevelDataComponent),
             self.event_bus,
-            self.plant_factory
+            self.plant_factory,
         )
         self.upgrade: UpgradeManager = UpgradeManager(
             self.gamemap,
@@ -120,7 +117,7 @@ class MainScene(Scene):
             self.ui_factory,
             self.plant_factory,
             self.add_object,
-            self.event_bus
+            self.event_bus,
         )
 
     def setup_ui(self):
@@ -130,20 +127,20 @@ class MainScene(Scene):
             self.currency,
             self.event_bus,
             self.wave_manager.get_time_before_wave,
-            self.inventory.get(InventoryModelComponent).get_slots()
+            self.inventory.get(InventoryModelComponent).get_slots(),
         )
 
     def setup_waves(self):
         """Настраивает волны."""
         path = self.path_factory.create_path_component(
             self.level.path,
-            self.gamemap.get(MapModelComponent).tile_to_pos_centred
+            self.gamemap.get(MapModelComponent).tile_to_pos_centred,
         )
         self.wave_manager: WaveManager = WaveManager(
             self.level.parsed_waves,
             self.enemy_factory.create_enemy,
             path,
-            self.event_bus
+            self.event_bus,
         )
 
     def update(self, delta_time: float):
@@ -157,13 +154,11 @@ class MainScene(Scene):
         tile_pos: Vector2,
         global_pos_centred: Vector2,
         tile_type: int,
-        global_pos: Vector2
+        global_pos: Vector2,
     ):
         """Соединяет клик на тайл с контроллерами."""
         self.upgrade.close_all_upgrade_dialogs()
-        self.plant_controller.try_plant(
-            event, tile_pos, global_pos_centred
-        )
+        self.plant_controller.try_plant(event, tile_pos, global_pos_centred)
 
     def win(self, _event: EventFlow):
         """Победа."""

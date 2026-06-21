@@ -8,26 +8,23 @@ PLANTS = {
     2: "Sunflower",
 }
 
-PLANTS_PRICES = {
-    "Mushroom": 50,
-    "Sunflower": 50
-}
+PLANTS_PRICES = {"Mushroom": 50, "Sunflower": 50}
 
 PLANTS_LEVEL_UPS = {
     "Sunflower": {"plant_name": "", "cost": 50000},
     "Mushroom": {"plant_name": "LongMushroom", "cost": 50},
     "LongMushroom": {"plant_name": "BigMushroom", "cost": 50},
-    "BigMushroom": {"plant_name": "", "cost": 50000}
+    "BigMushroom": {"plant_name": "", "cost": 50000},
 }
 
 PLANTS_DESCRIPTIONS = {
-    "Sunflower": str(
+    "Sunflower": (
         "Подсолнышко\n"
         "Выдаёт СОЛНЫШКИ\n"
         "Класс: дорожное растение\n"
         "Частота: 10 сек\n"
     ),
-    "Mushroom": str(
+    "Mushroom": (
         "Грибочек\n"
         "Стреляет по врагам\n"
         "Класс: травяное растение\n"
@@ -37,27 +34,22 @@ PLANTS_DESCRIPTIONS = {
 }
 
 PLANTS_UPGRADE_DESCRIPTIONS = {
-    "Sunflower": str(
-        "Подсолнышко (Максимум)\n"
-        "Частота: 10 сек\n"
-    ),
-    "Mushroom": str(
+    "Sunflower": "Подсолнышко (Максимум)\n" "Частота: 10 сек\n",
+    "Mushroom": (
         "Грибочек -> ВысокоГрибка\n"
         "Частота: 0.7 -> 0.25 (сек)\n"
         "Урон: 3 -> 1\n"
         "(50 солнышек)"
     ),
-    "LongMushroom": str(
+    "LongMushroom": (
         "ВысокоГрибка -> Большой гриб\n"
         "Частота: 0.25 -> 1 (сек)\n"
         "Урон: 1 -> 12\n"
         "(50 солнышек)"
     ),
-    "BigMushroom": str(
-        "Большой гриб (Максимум)\n"
-        "Частота: 1 (сек)\n"
-        "Урон: 12\n"
-    ),
+    "BigMushroom": "Большой гриб (Максимум)\n"
+    "Частота: 1 (сек)\n"
+    "Урон: 12\n",
 }
 
 PLANT_DATA = {
@@ -69,9 +61,8 @@ PLANT_DATA = {
             {
                 "type": "collision",
                 "shape": RectShape(
-                    position=Vector2(0, 0),
-                    size=Vector2(50, 50), 
-                    centred=True)
+                    position=Vector2(0, 0), size=Vector2(50, 50), centred=True
+                ),
             },
         ],
         "image_path": "res/sunflower.png",
@@ -83,8 +74,8 @@ PLANT_DATA = {
                 "type": "targeting",
                 "damage": 2,
                 "cooldown": 0.7,
-                "range":2,
-                "speed": 150
+                "range": 2,
+                "speed": 150,
             },
         ],
         "image_path": "res/mushroom.png",
@@ -92,12 +83,11 @@ PLANT_DATA = {
     "LongMushroom": {
         "components": [
             {
-                "type":
-                "targeting",
+                "type": "targeting",
                 "damage": 1,
                 "cooldown": 0.25,
                 "range": 4,
-                "speed": 300
+                "speed": 300,
             },
         ],
         "image_path": "res/sunflower.png",
@@ -109,11 +99,11 @@ PLANT_DATA = {
                 "damage": 12,
                 "cooldown": 1,
                 "range": 3,
-                "speed": 200
+                "speed": 200,
             },
         ],
         "image_path": "res/mushroom.png",
-    }
+    },
 }
 
 # Растения
@@ -122,10 +112,9 @@ PLANT_SIZE = Vector2(50, 50)
 PLANT_HITBOX_SIZE = Vector2(25, 25)
 PLANT_HITBOX_POSITION = PLANT_SIZE // 2
 
+
 def get_plant_range(plant_name: str) -> int:
     for comp in PLANT_DATA[plant_name]["components"]:
-        if "range" in comp.keys():
+        if "range" in comp:
             return comp["range"]
     return DEFAULT_RANGE
-
-

@@ -11,7 +11,7 @@ from src.core.singletones.event_bus import event_bus
 @dataclass
 class Cursor:
     """
-        Объект мыши с данными о состоянии.
+    Объект мыши с данными о состоянии.
     """
 
     pos: Vector2 = field(default_factory=lambda: Vector2(0, 0))
@@ -19,7 +19,9 @@ class Cursor:
     rel_pos: Vector2 = field(default_factory=lambda: Vector2(0, 0))
     buttons: list = field(default_factory=lambda: [0, 0, 0])
 
+
 cursor = Cursor()
+
 
 class InputManager:
     """Менеджер ввода."""

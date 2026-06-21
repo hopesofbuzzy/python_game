@@ -16,11 +16,9 @@ class EnemyController:
         self.event_bus = event_bus
 
     def spawn_enemy(self, _event: EventFlow, enemy: str, path):
-        self.enemies.append(self.enemy_factory.create_enemy(
-            enemy,
-            Vector2(0, 00),
-            path
-        ))
+        self.enemies.append(
+            self.enemy_factory.create_enemy(enemy, Vector2(0, 00), path)
+        )
 
     def remove_enemy(self, _event: EventFlow, enemy: Enemy):
         enemy.free()
@@ -28,8 +26,7 @@ class EnemyController:
         self.event_bus.fire("on_enemy_deleted", len(self.enemies))
         self.enemies_destroyed += 1
 
-    def on_enemy_attacked(self, _event: EventFlow, enemy: Enemy, target):
-        ...
+    def on_enemy_attacked(self, _event: EventFlow, enemy: Enemy, target): ...
 
     def get_enemies_destroyed_count(self):
         return self.enemies_destroyed

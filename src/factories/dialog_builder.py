@@ -1,20 +1,16 @@
 import logging
-from typing import Callable
 
 from pygame.math import Vector2
 
 from src.core.objects import (
     ClickHandlerComponent,
     PanelRendererComponent,
-    RectComponent,
-    TextRenderComponent,
     UIControl,
     UITransform,
     VerticalLayoutComponent,
 )
 from src.core.singletones.event_bus import EventBus
 from src.factories.ui_factory import UIFactory
-from src.scenes.main.objects import BarComponent
 
 DEFAULT_DIALOG_COLOR = (150, 150, 150)
 DIALOG_OBJECTS_SPACE = 10
@@ -23,6 +19,7 @@ DEFAULT_DIALOG_SIZE = Vector2(250, 150)
 DEFAULT_BUTTON_POSITION = Vector2(0, 0)
 DEFAULT_BUTTON_SIZE = Vector2(100, 35)
 DEFAULT_DIALOG_TEXT_CONTAINER_SIZE = Vector2(120, 80)
+
 
 class DialogBuilder:
     """Строитель диалогового окна."""
@@ -38,30 +35,20 @@ class DialogBuilder:
         position: Vector2,
         size: Vector2 = DEFAULT_DIALOG_SIZE,
         anchor=None,
-        color: tuple = DEFAULT_DIALOG_COLOR
+        color: tuple = DEFAULT_DIALOG_COLOR,
     ):
         """Построение окна диалога с вертикальным контейнером (сверху-вниз)."""
         dialog = (
             UIControl()
-            .add(UITransform(
-                position,
-                size,
-                anchor
-            ))
+            .add(UITransform(position, size, anchor))
             .add(PanelRendererComponent(color))
         )
-        dialog.add(VerticalLayoutComponent(
-            dialog, DIALOG_OBJECTS_SPACE
-        ))
+        dialog.add(VerticalLayoutComponent(dialog, DIALOG_OBJECTS_SPACE))
         self.add_object(dialog)
         self._dialog = dialog
         return self
 
-    def with_text(
-        self,
-        text,
-        size
-    ):
+    def with_text(self, text, size):
         """Построение текста внутри окна."""
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
@@ -79,7 +66,7 @@ class DialogBuilder:
         self,
         text: str,
         font_size: int,
-        data = None,
+        data=None,
         position: Vector2 = DEFAULT_BUTTON_POSITION,
         size: Vector2 = DEFAULT_BUTTON_SIZE,
         color: tuple = DEFAULT_BUTTON_COLOR,
@@ -88,13 +75,7 @@ class DialogBuilder:
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
         button = self.ui_factory.create_button(
-            text,
-            font_size,
-            position,
-            size,
-            self._dialog,
-            color,
-            data=data
+            text, font_size, position, size, self._dialog, color, data=data
         )
         logging.debug("Функция соединена")
         button.get(ClickHandlerComponent).on_button_pressed.subscribe(

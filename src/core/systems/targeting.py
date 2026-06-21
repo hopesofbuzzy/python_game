@@ -1,5 +1,3 @@
-import logging
-
 from src.core.objects import PositionComponent
 from src.core.systems.uniform_grid import UniformGrid
 from src.scenes.main.objects import TargetingComponent
@@ -17,8 +15,7 @@ class TargetingSystem:
             if object.has(PositionComponent, TargetingComponent):
                 # Запрашиваем у UniformGrid соседей в нужном радиусе.
                 others = self.uniform_grid.query_circle(
-                    object,
-                    object.get(TargetingComponent).range
+                    object, object.get(TargetingComponent).range
                 )
                 enemies = [
                     other

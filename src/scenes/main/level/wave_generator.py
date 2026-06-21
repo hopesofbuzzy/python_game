@@ -1,4 +1,3 @@
-import math
 import random
 
 from src.config.enemies import (
@@ -14,16 +13,16 @@ from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
 class WaveGenerator:
     """Генератор волн."""
-    def __init__(self):
-        ...
+
+    def __init__(self): ...
 
     def generate_waves(self, count: int, seed=0):
         """
-            Генерирует волны.
+        Генерирует волны.
 
-            Args:
-                count: количество волн.
-                seed: зерно генерации.
+        Args:
+            count: количество волн.
+            seed: зерно генерации.
         """
         rng = random.Random(seed)
         waves = list()
@@ -58,6 +57,8 @@ class WaveGenerator:
         """Функция вычисления бюджета для спавна врагов на волну."""
         return base * (1.3 ** (wave_number + 2))
 
-    def get_wave_puase(self, wave_number: int, minimum: int = MINIMUM_WAVE_PAUSE):
+    def get_wave_puase(
+        self, wave_number: int, minimum: int = MINIMUM_WAVE_PAUSE
+    ):
         """Высчитывает паузу перед следующей волной."""
         return max(minimum, START_WAVE_PAUSE - wave_number)

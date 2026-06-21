@@ -1,7 +1,4 @@
-import logging
-
 import pygame
-from pygame.event import Event
 from pygame.math import Vector2
 
 from src.core.objects.event import Event
@@ -14,22 +11,22 @@ class MapViewComponent:
         self,
         map_model,
         tileset: dict[int, pygame.Surface],
-        tile_size: int = 50
+        tile_size: int = 50,
     ):
         self._scaled_tilesets: dict[float, dict] = dict()
         self.map_model = map_model
         self.tileset = tileset
         self.tile_size = tile_size
 
-
-
     def get_scaled_tileset(self, size: float):
         """Кэширование тайлов для зума камеры."""
-        if size not in self._scaled_tilesets.keys():
+        if size not in self._scaled_tilesets:
             self._scaled_tilesets[size] = dict()
             for tile_idx, tile in self.tileset.items():
                 overall_size = (self.tile_size * size, self.tile_size * size)
-                tile = pygame.transform.scale(tile, size=overall_size).convert()
+                tile = pygame.transform.scale(
+                    tile, size=overall_size
+                ).convert()
                 self._scaled_tilesets[size][tile_idx] = tile
         return self._scaled_tilesets[size]
 
@@ -39,7 +36,7 @@ class MapViewComponent:
         c1, c2, r1, r2 = camera.get_visible_range(
             self.tile_size,
             len(self.map_model.tiles[0]) + 1,
-            len(self.map_model.tiles) + 1
+            len(self.map_model.tiles) + 1,
         )
         for row in range(r1, r2):
             for col in range(c1, c2):
@@ -55,12 +52,13 @@ class MapViewComponent:
 
 class MapModelComponent:
     """
-        Модель карты тайлов.
+    Модель карты тайлов.
 
-        Args:
-            tiles (list[list[int]]): подгруженная карта.
-            tileset (Image): изображение со всеми тайлами.
+    Args:
+        tiles (list[list[int]]): подгруженная карта.
+        tileset (Image): изображение со всеми тайлами.
     """
+
     def __init__(self, tiles: list[list[int]], tile_size: int = 50):
         self.tiles = tiles
         self.tile_size = tile_size
@@ -82,7 +80,9 @@ class MapModelComponent:
         self.tiles[row][col] = tile_idx
 
     def is_tile_valid(self, row: int, col: int):
-        return row in range(0, len(self.tiles)) and col in range(0, len(self.tiles[0]))
+        return row in range(0, len(self.tiles)) and col in range(
+            0, len(self.tiles[0])
+        )
 
     def get_tile(self, row: int, col: int) -> int:
         """Возвращает тип тайла по тайлсету."""
@@ -94,11 +94,12 @@ class MapModelComponent:
 
 class MapControllerComponent:
     """
-        Контроллер карты тайлов. Считывает нажатия на тайлы карты.
+    Контроллер карты тайлов. Считывает нажатия на тайлы карты.
 
-        Args:
-        on_tile_click(tile_pos: Vector2, tile_type: int, global_pos)
+    Args:
+    on_tile_click(tile_pos: Vector2, tile_type: int, global_pos)
     """
+
     def __init__(self, map_model: MapModelComponent):
         self.map_model = map_model
         self.on_tile_click: Event = Event()
@@ -113,7 +114,7 @@ class MapControllerComponent:
             tile_pos,
             global_pos_centred,
             tile_type,
-            self.map_model.tile_to_pos(tile_pos)
+            self.map_model.tile_to_pos(tile_pos),
         )
 
 

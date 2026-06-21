@@ -1,9 +1,6 @@
-from src.core.objects.event import Event
-from src.core.objects.game_object import GameObject
-
-
 class TimerComponent:
     """Одноразовый таймер, выдающий данные по истечению."""
+
     def __init__(self, _entity, time, data):
         self.time = time
         self.data = data

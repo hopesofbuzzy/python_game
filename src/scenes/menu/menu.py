@@ -1,11 +1,8 @@
-import logging
-
 from pygame.math import Vector2
 
 from src.core.objects.components.ui import ClickHandlerComponent
 from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
-from src.factories.bullet_factory import BulletFactory
 from src.factories.ui_factory import UIFactory
 from src.scenes.main.main import MainScene
 
@@ -19,6 +16,7 @@ GAME_NAME = "Монстры, \nцветы \nи что-то ещё"
 GAME_NAME_POSITION = Vector2(0, 50)
 GAME_NAME_FONT_SIZE = 70
 GAME_NAME_LINESPACE = -10
+
 
 class MenuScene(Scene):
     def ready(self):
@@ -36,14 +34,13 @@ class MenuScene(Scene):
         self.audio_loader.load_music(BACKGROUND_MUSIC)
         self.audio_loader.play_music(-1)
 
-
     def setup_ui(self):
         """Настраивает интерфейс."""
         self.ui_factory.create_text(
             GAME_NAME,
             GAME_NAME_POSITION,
             GAME_NAME_FONT_SIZE,
-            linespace=GAME_NAME_LINESPACE
+            linespace=GAME_NAME_LINESPACE,
         )
         button = self.ui_factory.create_button(
             START_BUTTON_TEXT,
@@ -51,9 +48,11 @@ class MenuScene(Scene):
             START_BUTTON_POSITION,
             START_BUTTON_SIZE,
             None,
-            START_BUTTON_COLOR
+            START_BUTTON_COLOR,
         )
-        button.get(ClickHandlerComponent).on_button_pressed.subscribe(self.start_game)
+        button.get(ClickHandlerComponent).on_button_pressed.subscribe(
+            self.start_game
+        )
 
     def start_game(self, _event: EventFlow):
         self.change_scene(MainScene)

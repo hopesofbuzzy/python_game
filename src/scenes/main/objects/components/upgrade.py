@@ -1,10 +1,10 @@
 import logging
 import sys
 
-from src.config.plants import PLANTS_LEVEL_UPS
 from src.core.singletones.event_bus import event_bus
 
 DEFAULT_UPGRADE_SPEED = 25
+
 
 class UpgradeComponent:
     def __init__(self, plant, target_name: str, target_suns: int):

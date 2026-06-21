@@ -51,13 +51,14 @@ class CollisionSystem:
                 mask_tag = object.get(CollisionComponent).mask_tag
                 for other in others:
                     if not (
-                        other.has(MovementComponent) or object.has(MovementComponent)
+                        other.has(MovementComponent)
+                        or object.has(MovementComponent)
                     ):
                         continue
-                    # Проверка целевых тегов коллизий (простая маска по командам).
-                    if mask_tag:
-                        if mask_tag not in other.tags:
-                            continue
+                    # Проверка целевых тегов коллизий
+                    # (простая маска по командам).
+                    if mask_tag and mask_tag not in other.tags:
+                        continue
                     if other.has(PositionComponent, CollisionComponent):
                         # Некоторым объектам не нужно вычислять выталкивание.
                         resolve = False
@@ -82,12 +83,12 @@ class CollisionSystem:
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2, resolve) -> Overlap | None | bool:
         """
-            Проверка коллизий у окружностей.
+        Проверка коллизий у окружностей.
 
-            Args:
-                pos: позиции форм.
-                r: радиусы форм.
-                resolve: вычисление направления выталкивания,
+        Args:
+            pos: позиции форм.
+            r: радиусы форм.
+            resolve: вычисление направления выталкивания,
         """
         dx = pos1.x - pos2.x
         dy = pos1.y - pos2.y
@@ -100,14 +101,16 @@ class CollisionSystem:
             return Overlap(nx=n.x, ny=n.y, depth=(r1 + r2) - sqrt(dist))
 
     @staticmethod
-    def aabb_collide(pos1, size1, pos2, size2, resolve) -> Overlap | None | bool:
+    def aabb_collide(
+        pos1, size1, pos2, size2, resolve
+    ) -> Overlap | None | bool:
         """
-            Проверка коллизий у прямоугольников.
+        Проверка коллизий у прямоугольников.
 
-            Args:
-                pos: позиции форм.
-                size: размеры форм.
-                resolve: вычисление направления выталкивания,
+        Args:
+            pos: позиции форм.
+            size: размеры форм.
+            resolve: вычисление направления выталкивания,
         """
         if (
             pos1.x <= pos2.x + size2.x
@@ -123,10 +126,7 @@ class CollisionSystem:
             dy = pos1.y - pos2.y + (size1.y - size2.y) / 2
             ady = abs(dy)
             # Выталкивание в случае идеального перекрытия.
-            if dx == dy == 0:
-                n = Vector2(1, 0)
-            else:
-                n = Vector2(dx, dy).normalize()
+            n = Vector2(1, 0) if dx == dy == 0 else Vector2(dx, dy).normalize()
 
             if adx > ady:
                 return Overlap(nx=n.x, ny=0, depth=depth_x)
@@ -139,17 +139,33 @@ class CollisionSystem:
         """Проверка пересечения коллизий двух объектов."""
         obj_shape = object.get(CollisionComponent).shape
         oth_shape = other.get(CollisionComponent).shape
-        obj_position = object.get(PositionComponent).position + obj_shape.position
-        oth_position = other.get(PositionComponent).position + oth_shape.position
+        obj_position = (
+            object.get(PositionComponent).position + obj_shape.position
+        )
+        oth_position = (
+            other.get(PositionComponent).position + oth_shape.position
+        )
         # Circle x Circle
-        if isinstance(obj_shape, CircleShape) and isinstance(oth_shape, CircleShape):
+        if isinstance(obj_shape, CircleShape) and isinstance(
+            oth_shape, CircleShape
+        ):
             return self.circles_collide(
-                obj_position, obj_shape.radius, oth_position, oth_shape.radius, resolve
+                obj_position,
+                obj_shape.radius,
+                oth_position,
+                oth_shape.radius,
+                resolve,
             )
         # Rect x Rect
-        elif isinstance(obj_shape, RectShape) and isinstance(oth_shape, RectShape):
+        elif isinstance(obj_shape, RectShape) and isinstance(
+            oth_shape, RectShape
+        ):
             return self.aabb_collide(
-                obj_position, obj_shape.size, oth_position, oth_shape.size, resolve
+                obj_position,
+                obj_shape.size,
+                oth_position,
+                oth_shape.size,
+                resolve,
             )
 
     def resolve(self, delta_time: float):

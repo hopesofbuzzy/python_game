@@ -1,18 +1,20 @@
-import logging
-
 from pygame.math import Vector2
 
 from src.core.singletones.event_bus import EventBus, EventFlow
 from src.core.systems.input import Cursor
 
 ZOOMES: tuple = (0.8, 1.0, 1.5, 2.0)
+DEFAULT_WINDOW_SIZE = Vector2(1200, 700)
+
 
 class Camera:
     """
     Динамическая камера.
     """
 
-    def __init__(self, cursor: Cursor, event_bus: EventBus, size = Vector2(1200, 700)):
+    def __init__(
+        self, cursor: Cursor, event_bus: EventBus, size=DEFAULT_WINDOW_SIZE
+    ):
         self.size: Vector2 = size
         event_bus.subscribe("on_mouse_wheel", self.change_zoom)
 
@@ -24,10 +26,10 @@ class Camera:
 
     def change_zoom(self, event: EventFlow, zoom_in: bool):
         """
-            Изменение зума камеры.
+        Изменение зума камеры.
 
-            Args:
-                zoom_in: True = приближение, False = удаление
+        Args:
+            zoom_in: True = приближение, False = удаление
         """
         zoom_idx = self.zoom_idx
         zoom_idx += 1 if zoom_in else -1
@@ -41,21 +43,22 @@ class Camera:
         start_row = max(0, int(self.position.y // tile_size))
         end_col = min(
             cols,
-            int((self.position.x + self.size.x * (1/self.zoom)) // tile_size) + 2
+            int((self.position.x + self.size.x * (1 / self.zoom)) // tile_size)
+            + 2,
         )
         end_row = min(
             rows,
-            int((self.position.y + self.size.y * (1/self.zoom)) // tile_size) + 2
+            int((self.position.y + self.size.y * (1 / self.zoom)) // tile_size)
+            + 2,
         )
         return start_col, end_col - 1, start_row, end_row - 1
 
     def handle_drag(self):
         """Управление перемещением камеры."""
-        if self.cursor:
+        if self.cursor and self.cursor.buttons[2]:
             # Перетаскивание.
-            if self.cursor.buttons[2]:
-                self.position -= self.cursor.rel_pos
-                self.cursor.rel_pos = Vector2(0, 0)
+            self.position -= self.cursor.rel_pos
+            self.cursor.rel_pos = Vector2(0, 0)
 
     def to_local(self, position: Vector2):
         """Перевод глобальных координат в экранные."""

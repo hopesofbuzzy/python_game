@@ -6,6 +6,7 @@ from src.core.singletones.event_bus import EventBus, EventFlow
 
 DEFAULT_SUNS = 235
 
+
 class CurrencyManager:
     def __init__(self, event_bus: EventBus, suns: int = DEFAULT_SUNS):
         self.suns: int = suns

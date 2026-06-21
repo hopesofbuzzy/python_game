@@ -5,8 +5,10 @@ BACKGROUND_MUSIC = "res/music/background_1.mp3"
 BULLET_SPAWN_SFX = "res/sfx/bullet_spawn_1.mp3"
 PLANT_SPAWN_SFX = "res/sfx/plant_spawn_1.wav"
 
+
 class MusicManager:
     """Менеджер музыки и sfx на главной сцене."""
+
     def __init__(self, audio_loader: AudioLoader, event_bus: EventBus):
         self.audio_loader = audio_loader
         event_bus.subscribe("on_bullet_created", self.on_bullet_created)

@@ -16,9 +16,11 @@ class RawLevel:
     tileset: pygame.Surface
     metadata: dict
 
+
 LEVELS_FOLDER = "res/levels/"
 TILESET_FOLDER = LEVELS_FOLDER + "tilesets/"
 MAPS_FOLDER = LEVELS_FOLDER + "maps/"
+
 
 class LevelLoader:
     """Загрузчик метаданных уровня, тайлсета и карты тайлов."""
@@ -26,21 +28,19 @@ class LevelLoader:
     def load_data(self, level_name):
         """Загрузка данных уровня."""
         try:
-            with open(Path(LEVELS_FOLDER, f"{level_name}.json"), "r") as f:
+            with open(Path(LEVELS_FOLDER, f"{level_name}.json")) as f:
                 return json.load(f)
         except Exception as e:
-            raise Exception(f"Не удалось загрузить уровень: {e}")
+            raise Exception(f"Не удалось загрузить уровень: {e}") from e
 
     def load_tileset(self, tileset_name):
         """Загрузка тайлсета уровня."""
-        return il.load_image(
-            str(Path(TILESET_FOLDER, tileset_name))
-        ).surface
+        return il.load_image(str(Path(TILESET_FOLDER, tileset_name))).surface
 
     def load_map(self, map_name):
         """Загрузка карты уровня."""
         tiles = list()
-        with open(Path(MAPS_FOLDER, map_name), "r") as f:
+        with open(Path(MAPS_FOLDER, map_name)) as f:
             for line in f.readlines():
                 tiles.append(list(map(int, line.split(","))))
         return tiles

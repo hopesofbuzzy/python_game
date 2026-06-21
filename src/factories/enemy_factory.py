@@ -1,6 +1,5 @@
-import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from pygame.math import Vector2
 
@@ -28,6 +27,7 @@ class BuildContext:
     death_func: Callable
     end_patrol_func: Callable
 
+
 class EnemyFactory:
     """Фабрика сборки врагов."""
 
@@ -35,24 +35,24 @@ class EnemyFactory:
         self.add_object = add_object
         self.build_context = BuildContext(
             attack_func=lambda enemy, target: event_bus.fire(
-                "on_enemy_attacked",
-                enemy,
-                target
+                "on_enemy_attacked", enemy, target
             ),
-            damage_func=lambda enemy: event_bus.fire("on_enemy_damaged", enemy),
+            damage_func=lambda enemy: event_bus.fire(
+                "on_enemy_damaged", enemy
+            ),
             death_func=lambda enemy: event_bus.fire("on_enemy_death", enemy),
-            end_patrol_func=lambda: event_bus.fire("on_enemy_reached_end")
+            end_patrol_func=lambda: event_bus.fire("on_enemy_reached_end"),
         )
         self.ui_factory = ui_factory
 
     def create_enemy(self, name: str, position: Vector2, path) -> Enemy:
         """
-            Создаёт врага.
+        Создаёт врага.
 
-            Args:
-                name: название врага.
-                position: позиция появления.
-                path: путь патрулирования (список координат).
+        Args:
+            name: название врага.
+            position: позиция появления.
+            path: путь патрулирования (список координат).
         """
         if name in ENEMY_DATA:
             # Инициализация врага
@@ -66,25 +66,15 @@ class EnemyFactory:
             health = ENEMY_DATA[name]["health"]
             # Компоненты
             enemy.add(PositionComponent(position, None))
-            enemy.add(CollisionComponent(
-                enemy,
-                RectShape(
-                    Vector2(0, 0),
-                    size,
-                    True
-                ), 
-                False,
-                "plant"
-            ))
+            enemy.add(
+                CollisionComponent(
+                    enemy, RectShape(Vector2(0, 0), size, True), False, "plant"
+                )
+            )
             enemy.add(MovementComponent(Vector2(0, 0), speed))
             enemy.add(PatrolComponent(enemy, path))
             enemy.add(RectComponent(color, size, True))
-            enemy.add(AttackComponent(
-                enemy,
-                "plant",
-                attack,
-                attack_cooldown
-            ))
+            enemy.add(AttackComponent(enemy, "plant", attack, attack_cooldown))
             enemy.add(HealthComponent(enemy, health))
             # Bind
             enemy.get(AttackComponent).bind(self.build_context)
@@ -106,9 +96,7 @@ class EnemyFactory:
             Vector2(50, 10),
             health_comp.hp,
             health_comp.hp,
-            enemy
+            enemy,
         )
         enemy.add_child(health_bar)
-        health_comp.damage_func = (
-            health_bar.get(BarComponent).set_value
-        )
+        health_comp.damage_func = health_bar.get(BarComponent).set_value

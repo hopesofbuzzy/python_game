@@ -10,7 +10,10 @@ class MovementSystem:
     """
 
     def update(self, scene: Scene, delta_time: float):
-        """Осуществляет движение всех объектов с соотв. компонентом на сцене."""
+        """
+            Осуществляет движение всех
+            объектов с соотв. компонентом на сцене.
+        """
         for object in scene.object_registry.values():
             if object.has(MovementComponent, PositionComponent):
                 object.get(PositionComponent).position += (

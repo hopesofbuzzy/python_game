@@ -1,7 +1,6 @@
-import logging
 import weakref
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 
 @dataclass
@@ -10,6 +9,7 @@ class Listener:
     priority: int
     is_alive: bool = True
 
+
 @dataclass
 class EventFlow:
     is_stopped: bool = False
@@ -17,25 +17,27 @@ class EventFlow:
     def stop(self):
         self.is_stopped = True
 
+
 class EventBus:
     """
-        Глобальная шина событий с системой приоритетов.
-        Используется для приоритезации ввода и
-        для глобальных событий, интересных основной сцене или многим
-        объектам.
+    Глобальная шина событий с системой приоритетов.
+    Используется для приоритезации ввода и
+    для глобальных событий, интересных основной сцене или многим
+    объектам.
 
-        Больше приоритет -> первее получает событие.
+    Больше приоритет -> первее получает событие.
     """
+
     def __init__(self):
         self.listeners: dict[str, list[Listener]] = dict()
 
     def subscribe(self, event_name, listener, priority=None):
         """
-            Подписка слушателя на событие.
-        
-            event_name: название события.
-            listener: функция-слушатель.
-            priority: приоритет слушателя (выше приоритет -> первее получение).
+        Подписка слушателя на событие.
+
+        event_name: название события.
+        listener: функция-слушатель.
+        priority: приоритет слушателя (выше приоритет -> первее получение).
         """
         if not priority:
             priority = -1
@@ -54,10 +56,10 @@ class EventBus:
 
     def fire(self, event_name, *args):
         """
-            Вызов события и оповещение слушателей.
+        Вызов события и оповещение слушателей.
 
-            Args:
-                event_name: название события.
+        Args:
+            event_name: название события.
         """
         self.listeners[event_name] = self.listeners.get(event_name, [])
         for listener in self.listeners[event_name]:
@@ -76,10 +78,9 @@ class EventBus:
                 break
         # Пересоздаём список вызова для O(n)
         self.listeners[event_name] = [
-            l
-            for l in self.listeners[event_name]
-            if l.is_alive
+            lsn for lsn in self.listeners[event_name] if lsn.is_alive
         ]
+
 
 # Глобальная шина.
 event_bus = EventBus()

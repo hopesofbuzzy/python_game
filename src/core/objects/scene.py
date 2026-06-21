@@ -3,7 +3,6 @@ from abc import abstractmethod
 from pygame.event import Event as PygameEvent
 
 from src.core.objects import *
-from src.core.singletones.image_loader import ImageLoader
 
 
 # FSM для сцен.
@@ -31,7 +30,9 @@ class Scene:
         # Все системы включены, запускаем сцену.
         self.ready()
 
-    def add_object(self, obj: GameObject, obj_id: str | None = None) -> GameObject:
+    def add_object(
+        self, obj: GameObject, obj_id: str | None = None
+    ) -> GameObject:
         """Добавляет объект в очередь на добавление в сцену."""
         if obj_id in self.object_registry:
             raise KeyError("Объект с таким obj_id уже существует")
@@ -40,7 +41,9 @@ class Scene:
         if obj_id is None:
             obj_id = f"{obj.uid}"
         self._objects_to_add[obj_id] = obj
-        obj.on_destroy.subscribe(lambda o=obj: self.remove_object(str(o.uid), o))
+        obj.on_destroy.subscribe(
+            lambda o=obj: self.remove_object(str(o.uid), o)
+        )
         return obj
 
     def add_objects(self):
@@ -50,7 +53,7 @@ class Scene:
             self.z_index_object_registry.append(obj)
         self._objects_to_add = dict()
         self.z_index_object_registry = sorted(
-             self.z_index_object_registry, key=lambda x: x.z_index
+            self.z_index_object_registry, key=lambda x: x.z_index
         )
 
     def remove_object(self, obj_id, object) -> None:
@@ -88,7 +91,7 @@ class Scene:
         """
         Регулярно обновляет сцену.
         """
-        for key, object in self.object_registry.items():
+        for _, object in self.object_registry.items():
             object.update(delta_time)
 
     @abstractmethod

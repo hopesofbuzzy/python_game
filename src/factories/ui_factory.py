@@ -1,5 +1,4 @@
-import logging
-from typing import Callable
+from collections.abc import Callable
 
 from pygame.math import Vector2
 
@@ -24,6 +23,7 @@ DEFAULT_TEXT_SIZE = 18
 DEFAULT_TEXT_LINESPACE = 0
 DEFAULT_TOOLTIP_COLOR = (60, 60, 60)
 
+
 class UIFactory:
     """Фабрика элементов интерфейса."""
 
@@ -37,8 +37,8 @@ class UIFactory:
         position: Vector2,
         size: int = DEFAULT_TEXT_SIZE,
         container_size: Vector2 = DEFAULT_TEXT_CONTAINER_SIZE,
-        anchor = None,
-        linespace = DEFAULT_TEXT_LINESPACE
+        anchor=None,
+        linespace=DEFAULT_TEXT_LINESPACE,
     ):
         """Создаёт текст в виде объекта интерфейса."""
         text_control = (
@@ -49,7 +49,7 @@ class UIFactory:
         self.add_object(text_control)
         return text_control
 
-    def create_bar(self, position, size, start, max, anchor = None):
+    def create_bar(self, position, size, start, max, anchor=None):
         """Создаёт шкалу в виде объекта интерфейса."""
         bar = (
             UIControl()
@@ -60,28 +60,25 @@ class UIFactory:
         return bar
 
     def create_click_handler(
-            self,
-            position: Vector2,
-            size: Vector2,
-            anchor = None,
-            centred: bool = True,
-            input_priority: int = 5,
-            data = None
+        self,
+        position: Vector2,
+        size: Vector2,
+        anchor=None,
+        centred: bool = True,
+        input_priority: int = 5,
+        data=None,
     ):
         """
-            Обработчик кликов. В одиночку обычно используется для кликабельных объектов
+            Обработчик кликов. В одиночку обычно
+            используется для кликабельных объектов
             мира, а не для интерфейса.
         """
-        click_handler = (
-            UIControl()
-            .add(UITransform(
-                    position,
-                    size,
-                    anchor,
-                    centred=centred
-            ))
+        click_handler = UIControl().add(
+            UITransform(position, size, anchor, centred=centred)
         )
-        click_handler.add(ClickHandlerComponent(click_handler, input_priority, data))
+        click_handler.add(
+            ClickHandlerComponent(click_handler, input_priority, data)
+        )
         self.add_object(click_handler)
         return click_handler
 
@@ -93,12 +90,12 @@ class UIFactory:
         size: Vector2,
         anchor,
         color: tuple = DEFAULT_BUTTON_COLOR,
-        data = None
+        data=None,
     ):
         """
-            Кнопка интерфейса, выдающая данные по нажатию.
+        Кнопка интерфейса, выдающая данные по нажатию.
 
-            input_priority: 1
+        input_priority: 1
         """
         button = self.create_click_handler(
             position,
@@ -106,7 +103,7 @@ class UIFactory:
             anchor,
             centred=False,
             input_priority=DEFAULT_BUTTON_INPUT_PRIORITY,
-            data=data
+            data=data,
         )
         button.add(PanelRendererComponent(color))
         button.add(TextRenderComponent(text, font_size))
@@ -114,7 +111,10 @@ class UIFactory:
         return button
 
     def create_vertical_container(self, position, size, anchor, color, space):
-        """Создаёт вертикальный контейнер (сверху-вниз) для объектов интерфейса."""
+        """
+            Создаёт вертикальный контейнер (сверху-вниз)
+            для объектов интерфейса.
+        """
         conatiner = (
             UIControl()
             .add(UITransform(position, size, anchor))
@@ -124,17 +124,14 @@ class UIFactory:
         self.add_object(conatiner)
         return conatiner
 
-    def create_empty_container(self, position, size, anchor = None):
+    def create_empty_container(self, position, size, anchor=None):
         """Создаёт пустой контейнер (без порядка) для объектов интерфейса."""
-        conatiner = (
-            UIControl()
-            .add(UITransform(position, size, anchor))
-        )
+        conatiner = UIControl().add(UITransform(position, size, anchor))
         conatiner.add(ContainerComponent(conatiner))
         self.add_object(conatiner)
         return conatiner
 
-    def create_image(self, position, size, image_path, anchor = None, data = None):
+    def create_image(self, position, size, image_path, anchor=None, data=None):
         """Создаёт кликабельную картинку в виде объекта интерфейса."""
         image = self.create_click_handler(
             position,
@@ -142,7 +139,7 @@ class UIFactory:
             anchor,
             centred=False,
             input_priority=DEFAULT_BUTTON_INPUT_PRIORITY,
-            data=data
+            data=data,
         )
         image.add(ImageRendererComponent(image_path))
         self.add_object(image)
@@ -154,14 +151,18 @@ class UIFactory:
         size,
         text_size,
         text,
-        anchor = None,
-        color = DEFAULT_BUTTON_COLOR
+        anchor=None,
+        color=DEFAULT_BUTTON_COLOR,
     ):
         tooltip_message = (
             UIControl()
             .add(UITransform(position, size, anchor))
             .add(PanelRendererComponent(color))
-            .add(TextRenderComponent(text, text_size, linespace=DEFAULT_TEXT_LINESPACE))
+            .add(
+                TextRenderComponent(
+                    text, text_size, linespace=DEFAULT_TEXT_LINESPACE
+                )
+            )
         )
         self.add_object(tooltip_message)
         return tooltip_message
@@ -171,19 +172,14 @@ class UIFactory:
         position,
         size,
         text,
-        anchor = None,
+        anchor=None,
     ):
-        tooltip = (
-            UIControl()
-            .add(UITransform(position, size, anchor))
-        )
+        tooltip = UIControl().add(UITransform(position, size, anchor))
         mouse_hover_comp = MouseHoverComponent(tooltip, text)
         tooltip.add(mouse_hover_comp)
         mouse_hover_comp.on_mouse_entered.subscribe(
             lambda text, cursor_local_pos: self.event_bus.fire(
-                "on_tooltip_requested",
-                text,
-                cursor_local_pos
+                "on_tooltip_requested", text, cursor_local_pos
             )
         )
         mouse_hover_comp.on_mouse_exited.subscribe(
@@ -191,4 +187,3 @@ class UIFactory:
         )
         self.add_object(tooltip)
         return tooltip
-        

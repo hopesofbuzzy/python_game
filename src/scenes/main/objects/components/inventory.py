@@ -1,7 +1,6 @@
 import logging
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import Optional
 
 from src.config.plants import PLANT_DATA, PLANTS
 
@@ -14,17 +13,18 @@ class Slot:
 
 class InventoryModelComponent:
     """Инвентарь для выбора растений."""
+
     # Заглушки
     def __init__(self, raw_slots: dict = PLANTS):
         self.active_slot: int = 0
         self.raw_slots = raw_slots
-        self.slots: list[Optional[Slot]] = list()
+        self.slots: list[Slot | None] = list()
         self.size: int = 10
         self._set_default_slots()
 
     def _set_default_slots(self):
         """Слоты по умолчанию (инвентарь - постоянный)."""
-        for idx, name in self.raw_slots.items():
+        for _, name in self.raw_slots.items():
             if name:
                 self.slots.append(Slot(name, PLANT_DATA[name]["image_path"]))
             else:
@@ -55,17 +55,15 @@ class InventoryModelComponent:
             elif slot and slot.name == arg.name:
                 self.active_slot = idx
                 logging.info(f"Слот инвентаря: {self.active_slot}")
-                
+
     def set_zero_slot(self):
         """Устаналивает слот без предметов."""
         self.set_active_slot(0)
 
-    def get_active_slot(self) -> Optional[Slot]:
+    def get_active_slot(self) -> Slot | None:
         """Возвращает активный слот."""
         return self.slots[self.active_slot]
 
     def get_slots(self) -> list[Slot]:
         """Возвращает все слоты инвентаря."""
         return [slot for slot in self.slots if slot]
-
-    

@@ -1,7 +1,6 @@
 import random
 
 import pytest
-from pygame.math import Vector2
 
 from src.scenes.main.level.generator import (
     GENERATOR_TEMPLATE_LEVEL,
@@ -16,9 +15,11 @@ from src.scenes.main.level.saver import LevelSaver
 def size():
     return (10, 10)
 
+
 @pytest.fixture
 def path_length():
     return 15
+
 
 @pytest.fixture
 def seed1():
@@ -36,6 +37,7 @@ def test_generator_init(path_length, size, seed1):
     tiles = raw_level.tiles
     print(f"Generated Tiles: {tiles}")
     LevelSaver().save_map(tiles, GENERATOR_TEMPLATE_LEVEL)
+
 
 def test_perlin_noise():
     PerlinNoise().noise2d(1.5, 1.2)

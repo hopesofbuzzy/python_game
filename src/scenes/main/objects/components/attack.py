@@ -1,19 +1,11 @@
-import logging
-
 from src.core.objects import GameObject, MovementComponent
-from src.core.objects.event import Event
 from src.scenes.main.objects.components.health import HealthComponent
 
 DEFAULT_ATTACK_COOLDOWN = 0.5
 
+
 class AttackComponent:
-    def __init__(
-            self,
-            _entity,
-            target_tag: str,
-            attack: int,
-            cooldown: float
-        ):
+    def __init__(self, _entity, target_tag: str, attack: int, cooldown: float):
         self.entity = _entity
         self.target_tag = target_tag
         self.attack = attack
@@ -25,13 +17,12 @@ class AttackComponent:
         self.attack_func = build_context.attack_func
 
     def handle_collision(self, collision: GameObject):
-        if self._attack_timer <= 0.0:
-            if self.target_tag in collision.tags:
-                collision.get(HealthComponent).damage(self.attack)
-                self._attack_timer = self.cooldown
-                self.in_attack = True
-                self.attack_func(self.entity, collision)
-                return True
+        if self._attack_timer <= 0.0 and self.target_tag in collision.tag:
+            collision.get(HealthComponent).damage(self.attack)
+            self._attack_timer = self.cooldown
+            self.in_attack = True
+            self.attack_func(self.entity, collision)
+            return True
         return False
 
     def update(self, delta_time):

@@ -1,10 +1,5 @@
-import logging
-
-from pygame.math import Vector2
-
 from src.core.objects.components.component_registry import ComponentRegistry
 from src.core.objects.components.position import PositionComponent
-from src.core.objects.event import Event
 from src.core.objects.game_object import GameObject
 
 DEFAULT_SHOOTER_RANGE = 2
@@ -12,16 +7,10 @@ DEFAULT_SHOOTER_ATTACK = 3
 DEFAULT_SHOOTER_COOLDOWN = 3.0
 DEFAULT_SHOOTER_BULLET_SPEED = 150
 
+
 @ComponentRegistry.register("targeting")
 class TargetingComponent:
-    def __init__(
-        self,
-        entity: GameObject,
-        range,
-        damage,
-        cooldown,
-        speed
-    ):
+    def __init__(self, entity: GameObject, range, damage, cooldown, speed):
         self.position = entity.get(PositionComponent)
         self.range = range
         self.damage = damage
@@ -51,7 +40,7 @@ class TargetingComponent:
                 self.create_bullet_func(
                     direction, self.position.position, self.damage, self.speed
                 )
-                
+
                 self._timer = self.cooldown
         else:
             self._timer -= delta_time

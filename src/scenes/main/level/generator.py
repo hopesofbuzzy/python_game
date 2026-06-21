@@ -1,15 +1,11 @@
 import math
 import random
 from collections import deque
-from typing import Optional
-
-from pygame.math import Vector2
 
 from src.scenes.main.level.saver import serialize_waves
 from src.scenes.main.level.wave_generator import WaveGenerator
 
-GENERATOR_TEMPLATE_LEVEL = "generator_template"\
-# RandomWalk
+GENERATOR_TEMPLATE_LEVEL = "generator_template"  # RandomWalk
 RANDOM_WALK_CHANGE_PROBAB = 0.5
 DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
 # PerlinNoise
@@ -19,6 +15,7 @@ NOISE_AMPLITUDE = 2.5
 
 DEFAULT_WAVE_COUNT = 5
 
+
 def perm(seed=0):
     """PerlinNoise: Таблица перетсановок для получения градиента в (x, y)."""
     rng = random.Random(seed)
@@ -26,12 +23,14 @@ def perm(seed=0):
     rng.shuffle(p)
     return p + p
 
+
 def is_tile_valid(pos, size):
     return pos[0] in range(0, size[0]) and pos[1] in range(0, size[1])
 
 
 class LevelGenerator:
     """Генератор уровня."""
+
     def __init__(self, level_loader, debug=False, seed=0):
         self.level_loader = level_loader
 
@@ -43,31 +42,15 @@ class LevelGenerator:
 
     def build_tiles(self, size: tuple):
         """Строит начальную карту тайлов."""
-        return [
-            [
-                26
-                for _ in range(size[0])
-            ]
-            for _ in range(size[1])
-        ]
+        return [[26 for _ in range(size[0])] for _ in range(size[1])]
 
     def generate_map_with_path(
-        self,
-        map_size,
-        path_length,
-        path_tile,
-        start_tile,
-        end_tile,
-        seed=0
+        self, map_size, path_length, path_tile, start_tile, end_tile, seed=0
     ):
         """Строит карту и генерирует путь."""
         tiles = self.build_tiles(map_size)
         tiles = RandomWalk(
-            tiles,
-            path_tile,
-            start_tile,
-            end_tile,
-            seed
+            tiles, path_tile, start_tile, end_tile, seed
         ).generate(path_length)
         return tiles
 
@@ -103,14 +86,14 @@ class LevelGenerator:
         size: tuple,
         seed=0,
         noise_amplitude=NOISE_AMPLITUDE,
-        wave_count: int = DEFAULT_WAVE_COUNT
+        wave_count: int = DEFAULT_WAVE_COUNT,
     ):
         """
-            Процесс генерации уровня.
+        Процесс генерации уровня.
 
-            Returns:
-                raw_level: сырой уровень с картой (tiles) и данными (metadata).
-                parsed_waves: сгенерированный объект волн.
+        Returns:
+            raw_level: сырой уровень с картой (tiles) и данными (metadata).
+            parsed_waves: сгенерированный объект волн.
         """
         template, heights = self.get_template_and_heights()
         tiles, visited = self.generate_map_with_path(
@@ -128,22 +111,24 @@ class LevelGenerator:
             heights,
             visited,
             seed,
-            noise_amplitude
+            noise_amplitude,
         )
         template.tiles = tiles
         parsed_waves = WaveGenerator().generate_waves(wave_count, seed)
         template.metadata["waves"] = serialize_waves(parsed_waves)
         return template
 
+
 class RandomWalk:
     """Реализация алгоритма Random Walk для генерации пути."""
+
     def __init__(
         self,
         tiles: list[list],
         draw_tile: int,
         start_tile: int,
         end_tile: int,
-        seed=0
+        seed=0,
     ):
         """
         Args:
@@ -159,21 +144,23 @@ class RandomWalk:
 
     def generate(self, steps: int):
         """
-            Процесс генерации пути.
+        Процесс генерации пути.
 
-            Args:
-                steps: длина пути.
+        Args:
+            steps: длина пути.
 
-            Returns:
-                tiles: карта тайлов с дорогой
-                visited: координаты всех тайлов дороги
+        Returns:
+            tiles: карта тайлов с дорогой
+            visited: координаты всех тайлов дороги
         """
         rng = random.Random(self.seed)
         self.original_tiles = self.tiles
         while True:
             try:
                 visited = set()
-                self.tiles = [[num for num in row] for row in self.original_tiles]
+                self.tiles = [
+                    [num for num in row] for row in self.original_tiles
+                ]
                 # Коориднаты строителя.
                 bx = rng.randrange(0, len(self.tiles[0]))
                 by = rng.randrange(0, len(self.tiles))
@@ -183,7 +170,9 @@ class RandomWalk:
                 dx, dy = (0, 0)
                 for _ in range(steps):
                     # Назад нельзя
-                    posisble_directions = [d for d in DIRECTIONS if d != (-dx, -dy)]
+                    posisble_directions = [
+                        d for d in DIRECTIONS if d != (-dx, -dy)
+                    ]
                     while True:
                         if len(posisble_directions) == 0:
                             raise Exception("Путь блокирован!")
@@ -195,18 +184,15 @@ class RandomWalk:
                                 [(dx, dy), new_direction],
                                 [
                                     1 - RANDOM_WALK_CHANGE_PROBAB,
-                                    RANDOM_WALK_CHANGE_PROBAB
+                                    RANDOM_WALK_CHANGE_PROBAB,
                                 ],
-                                k=1
+                                k=1,
                             )[0]
                         dx, dy = direction
-                        if (
-                            is_tile_valid((bx + dx, by + dy), self.size)
-                            and self.is_valid_path(
-                                (bx + dx, by + dy),
-                                (bx, by),
-                                visited
-                            )
+                        if is_tile_valid(
+                            (bx + dx, by + dy), self.size
+                        ) and self.is_valid_path(
+                            (bx + dx, by + dy), (bx, by), visited
                         ):
                             bx, by = (bx + dx, by + dy)
                             self.tiles[by][bx] = self.draw_tile
@@ -226,13 +212,15 @@ class RandomWalk:
             if (
                 (adj_x, adj_y) != old_pos
                 and type(self.tiles[adj_y][adj_x]) is int
+                and (adj_x, adj_y) in visited
             ):
-                if (adj_x, adj_y) in visited:
-                    return False
+                return False
         return True
+
 
 class PerlinNoise:
     """Шум Перлина для плавности поля дистанций от пути."""
+
     def __init__(self, seed=0):
         self.seed = seed
         self.perm = perm(self.seed)
@@ -248,7 +236,7 @@ class PerlinNoise:
 
         Градиент в точке считается по хэшированным координатам
         точки (perm - функция хэширования вида perm[perm[x] + y]).
-    """
+        """
         grad = GRAD[hash_val % 8]
         return grad[0] * x + grad[1] * y
 
@@ -281,20 +269,21 @@ class PerlinNoise:
 
         bottom = self.lerp(val_bl, val_br, u)
         top = self.lerp(val_tl, val_tr, u)
-        
+
         # Финальная интерполяция по Y
         return self.lerp(bottom, top, v)
 
+
 class DistanceField:
-    """Алгоритм вычисления поля дистанций для всех тайлов до источника (BFS)."""
+    """
+        Алгоритм вычисления поля дистанций
+        для всех тайлов до источника (BFS).
+    """
+
     def __init__(self, tiles: list[list], source_tile: int):
         self.size = (len(tiles[0]), len(tiles))
         self.distance_field = [
-            [
-                None
-                for x in range(self.size[0])
-            ]
-            for y in range(self.size[1])
+            [None for x in range(self.size[0])] for y in range(self.size[1])
         ]
         self.source_tiles = list()
         for y in range(self.size[1]):

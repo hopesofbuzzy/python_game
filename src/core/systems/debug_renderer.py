@@ -1,6 +1,3 @@
-import logging
-from random import randrange
-
 import pygame
 from pygame.math import Vector2
 
@@ -19,13 +16,15 @@ UI_COLOR = (150, 50, 100)
 POSITION_POINT_RADIUS = 3
 POSITION_POINT_COLOR = (255, 127, 255)
 
+
 class DebugRenderer:
     """
-        Визуальная отладка коллизий, позиций, интерфейса.
+    Визуальная отладка коллизий, позиций, интерфейса.
 
-        Отрисовка происходит исключительно тут во избежание
-        нарушения SRP.
+    Отрисовка происходит исключительно тут во избежание
+    нарушения SRP.
     """
+
     def draw(self, screen: pygame.Surface, scene: Scene, camera: Camera):
         for object in scene.object_registry.values():
             if object.has(PositionComponent):
@@ -37,95 +36,83 @@ class DebugRenderer:
                             screen,
                             camera.to_local(position + shape.position),
                             shape,
-                            camera.zoom
+                            camera.zoom,
                         )
                     elif isinstance(shape, CircleShape):
                         self.draw_collision_circle(
                             screen,
                             camera.to_local(position + shape.position),
                             shape,
-                            camera.zoom
+                            camera.zoom,
                         )
                 self.draw_position_point(
-                    screen,
-                    camera.to_local(position),
-                    camera.zoom
+                    screen, camera.to_local(position), camera.zoom
                 )
             if object.has(UITransform):
                 position = None
                 if object.get(UITransform).anchor:
-                    position = camera.to_local(object.get(UITransform).position)
+                    position = camera.to_local(
+                        object.get(UITransform).position
+                    )
                     zoom = camera.zoom
                 else:
                     position = object.get(UITransform).position
                     zoom = 1
                 self.draw_ui_transform(
-                    screen,
-                    object.get(UITransform).size,
-                    position,
-                    zoom
+                    screen, object.get(UITransform).size, position, zoom
                 )
 
     def draw_collision_rect(
-            self,
-            screen: pygame.Surface,
-            local_position: Vector2,
-            shape: RectShape,
-            zoom: float
-        ):
+        self,
+        screen: pygame.Surface,
+        local_position: Vector2,
+        shape: RectShape,
+        zoom: float,
+    ):
         """Отрисовывает прямоугольник коллизии."""
         rect = pygame.Rect(
             local_position.x,
             local_position.y,
             shape.size.x * zoom,
-            shape.size.y * zoom
+            shape.size.y * zoom,
         )
         pygame.draw.rect(screen, COLLISION_COLOR, rect)
 
     def draw_collision_circle(
-            self,
-            screen: pygame.Surface,
-            local_position: Vector2,
-            shape: CircleShape,
-            zoom: float
-        ):
+        self,
+        screen: pygame.Surface,
+        local_position: Vector2,
+        shape: CircleShape,
+        zoom: float,
+    ):
         """Отрисовывает окружность коллизии."""
         pygame.draw.circle(
-            screen,
-            COLLISION_COLOR,
-            local_position,
-            shape.radius * zoom
+            screen, COLLISION_COLOR, local_position, shape.radius * zoom
         )
 
     def draw_position_point(
-            self,
-            screen: pygame.Surface,
-            local_position: Vector2,
-            zoom: float
-        ):
+        self, screen: pygame.Surface, local_position: Vector2, zoom: float
+    ):
         """Отрисовывает точку в позиции."""
         pygame.draw.circle(
             screen,
             POSITION_POINT_COLOR,
             local_position,
-            POSITION_POINT_RADIUS * zoom
+            POSITION_POINT_RADIUS * zoom,
         )
 
     def draw_ui_transform(
-            self,
-            screen: pygame.Surface,
-            size: Vector2,
-            local_position: Vector2,
-            zoom: float
-        ):
+        self,
+        screen: pygame.Surface,
+        size: Vector2,
+        local_position: Vector2,
+        zoom: float,
+    ):
         """
-            Отрисовывает геометрию (трансформ)
-            элемента интерфейса (область интерфейса).
+        Отрисовывает геометрию (трансформ)
+        элемента интерфейса (область интерфейса).
         """
         rect = pygame.Rect(
-            local_position.x,
-            local_position.y,
-            size.x * zoom,
-            size.y * zoom
+            local_position.x, local_position.y, size.x * zoom, size.y * zoom
         )
         pygame.draw.rect(screen, UI_COLOR, rect)

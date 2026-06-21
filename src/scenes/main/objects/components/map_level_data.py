@@ -1,14 +1,6 @@
 import logging
-from dataclasses import dataclass, field
 
 from src.config.plants import PLANT_DATA
-from src.core.objects.components.map import (
-    Map,
-    MapControllerComponent,
-    MapModelComponent,
-    MapViewComponent,
-)
-from src.core.objects.game_object import GameObject
 
 
 class MapLevelDataComponent:
@@ -19,7 +11,9 @@ class MapLevelDataComponent:
         self.start_pos = tuple()
         self.end_pos = tuple()
 
-    def is_position_to_place_plant(self, plant_name: str, position: tuple) -> bool:
+    def is_position_to_place_plant(
+        self, plant_name: str, position: tuple
+    ) -> bool:
         logging.debug(f"Проверка посадки: {plant_name}")
         if PLANT_DATA[plant_name]["road_spawn"]:
             return tuple(position) in self.path_poses
@@ -33,7 +27,7 @@ class MapLevelDataComponent:
     def is_position_free(self, position: tuple) -> bool:
         return tuple(position) not in self.plants
 
-    def add_plant(self, tile_pos, plant = None):
+    def add_plant(self, tile_pos, plant=None):
         self.plants.add(tuple(tile_pos))
 
     def remove_plant(self, tile_pos):
@@ -63,4 +57,6 @@ class MapLevelDataComponent:
             or len(self.poses_to_place) == 0
         ):
             logging.debug(f"GameMap (Parsed): {self}")
-            raise Exception("Не удалось распарсить карту, не найденые нужные сущности.")
+            raise Exception(
+                "Не удалось распарсить карту, не найденые нужные сущности."
+            )

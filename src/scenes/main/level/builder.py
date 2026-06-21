@@ -1,5 +1,4 @@
-import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import pygame
 
@@ -18,16 +17,14 @@ class Level:
     path: list
     parsed_waves: ParsedWaves
 
+
 DEFAULT_LEVEL_NAME = "default"
+
 
 class LevelBuilder:
     """Центр загрузки и строительства уровня."""
 
-    def __init__(
-        self,
-        level_loader: LevelLoader,
-        level_factory: MapFactory
-    ):
+    def __init__(self, level_loader: LevelLoader, level_factory: MapFactory):
         # Загрузчик уровней.
         self.lm = level_loader
         # Фабрика уровней.
@@ -43,10 +40,12 @@ class LevelBuilder:
         position,
         raw_level: RawLevel,
         parse_map: bool = True,
-        parse_waves: bool = True
+        parse_waves: bool = True,
     ) -> Level:
         """Строит уровень: карта, пути, волны."""
-        tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
+        tileset = self.split_tileset(
+            raw_level.tileset, raw_level.metadata["tile_size"]
+        )
         map = self.lf.create_map(raw_level.tiles, tileset)
         path = list()
         if parse_map:
@@ -55,7 +54,7 @@ class LevelBuilder:
                 raw_level.metadata["start_tile"],
                 raw_level.metadata["end_tile"],
                 raw_level.metadata["path_tiles"],
-                raw_level.metadata["tiles_to_place"]
+                raw_level.metadata["tiles_to_place"],
             )
             path = self.build_pathes(map)
         parsed_waves = ParsedWaves(list())
@@ -69,7 +68,11 @@ class LevelBuilder:
         for wave_dict in waves:
             wave = Wave(wave_dict["timestamp"], list())
             enemy_amount_pairs = list(
-                zip(wave_dict["enemy_type"], wave_dict["enemy_amount"])
+                zip(
+                    wave_dict["enemy_type"],
+                    wave_dict["enemy_amount"],
+                    strict=False,
+                )
             )
             for enemy, amount in enemy_amount_pairs:
                 wave.wave_objects.append(WaveObject(enemy, amount))
@@ -78,22 +81,26 @@ class LevelBuilder:
 
     def build_pathes(self, gamemap: Map) -> list:
         """
-            Строит путь для врагов по тайлам карты.
-            Путь может разветвляться для более интересного тавер дефенса,
-            поэтому мы будем хранить карту возможных направлений движения для врага.
+        Строит путь для врагов по тайлам карты.
+        Путь может разветвляться для более интересного тавер дефенса,
+        поэтому мы будем хранить карту возможных направлений
+        движения для врага.
 
-            Args:
-                gamemap: игровая карта для генерации пути.
+        Args:
+            gamemap: игровая карта для генерации пути.
         """
         map_level_data = gamemap.get(MapLevelDataComponent)
         queue = [
             map_level_data.start_pos,
         ]
         visited = set()
-        
+
         for tile_pos in queue:
             for direction in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                new_tile_pos = (tile_pos[0] + direction[0], tile_pos[1] + direction[1])
+                new_tile_pos = (
+                    tile_pos[0] + direction[0],
+                    tile_pos[1] + direction[1],
+                )
                 if (
                     new_tile_pos in map_level_data.path_poses
                     or new_tile_pos == map_level_data.end_pos

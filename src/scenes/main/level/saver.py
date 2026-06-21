@@ -1,8 +1,5 @@
 import json
-from dataclasses import dataclass
 from pathlib import Path
-
-from src.core.singletones.image_loader import image_loader as il
 
 
 def serialize_waves(parsed_waves):
@@ -12,13 +9,14 @@ def serialize_waves(parsed_waves):
         wave_dict = {
             "timestamp": wave.timestamp,
             "enemy_type": [],
-            "enemy_amount": []
+            "enemy_amount": [],
         }
         for wave_object in wave.wave_objects:
             wave_dict["enemy_type"].append(wave_object.enemy)
             wave_dict["enemy_amount"].append(wave_object.amount)
         waves_list.append(wave_dict)
     return waves_list
+
 
 class LevelSaver:
     """Сохранение (сгенерированного) уровня."""
@@ -41,11 +39,7 @@ class LevelSaver:
             for line in lines:
                 f.write(line + "\n")
 
-    def save_level(
-            self,
-            raw_level,
-            level_name: str
-    ):
+    def save_level(self, raw_level, level_name: str):
         """Сохранение уровня."""
         raw_level.metadata["map_name"] = level_name + ".csv"
         self.save_data(raw_level.metadata, level_name)

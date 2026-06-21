@@ -4,6 +4,7 @@ from src.core.objects.game_object import GameObject
 
 class TagContactComponent:
     """Проверка контакта с объектами с тегом."""
+
     def __init__(self, target_tag):
         self.target_tag = target_tag
         self.on_contact: Event = Event()

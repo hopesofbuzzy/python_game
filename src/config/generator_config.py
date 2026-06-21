@@ -1,7 +1,5 @@
-import random
-
 # Конфигурация генерации уровня.
-seed = 338146 # int(random.random() * 1_000_000)
+seed = 338146  # int(random.random() * 1_000_000)
 PATH_LENGTH = 30
 SIZE = (30, 30)
 NOISE_AMPLITUDE = 5

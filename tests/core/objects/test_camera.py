@@ -1,4 +1,3 @@
-import pytest
 from pygame.math import Vector2
 
 from src.core.objects.camera import ZOOMES, Camera
@@ -7,16 +6,18 @@ from src.core.systems.input import Cursor
 
 WINDOW_SIZE = Vector2(600, 600)
 
+
 def test_zoom():
     cursor = Cursor()
     event_bus = EventBus()
     camera = Camera(cursor, event_bus, WINDOW_SIZE)
     for _ in range(5):
         event_bus.fire("on_mouse_wheel", True)
-    assert camera.zoom == ZOOMES[len(ZOOMES)-1]
+    assert camera.zoom == ZOOMES[len(ZOOMES) - 1]
     for _ in range(8):
         event_bus.fire("on_mouse_wheel", False)
     assert camera.zoom == ZOOMES[0]
+
 
 def test_local_global_position():
     cursor = Cursor()
@@ -30,6 +31,7 @@ def test_local_global_position():
     camera.zoom = 2.0
     assert camera.to_local(Vector2(50, 200)) == Vector2(-100, 0)
     assert camera.to_global(Vector2(10, 10)) == Vector2(105, 205)
+
 
 def test_visible_range():
     cursor = Cursor()

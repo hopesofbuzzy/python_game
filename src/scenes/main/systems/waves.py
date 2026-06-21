@@ -1,48 +1,52 @@
 import logging
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 from random import randrange
-from typing import Callable
 
-from pygame.math import Vector2
-
-from src.core.objects.components.path import PatrolComponent
-from src.core.objects.event import Event
 from src.core.singletones.event_bus import EventBus, EventFlow
 
 SPAWN_COOLDOWN = 0.5
 
+
 @dataclass
 class WaveObject:
     """Отдельный объект волны с типом врага и его коичеством."""
+
     enemy: str
     amount: int
+
 
 @dataclass
 class Wave:
     """Волна, содержащая объекты волны, с меткой о времени начала."""
+
     timestamp: float
     wave_objects: list[WaveObject]
+
 
 @dataclass
 class ParsedWaves:
     """Обработанный лист волн."""
+
     waves: list[Wave]
+
 
 class WaveManager:
     """
-        Управляет волнами монстров.
+    Управляет волнами монстров.
 
-        Инъекции:
-            parsed_waves
-            create_enemy,
-            path: PathComponent
+    Инъекции:
+        parsed_waves
+        create_enemy,
+        path: PathComponent
     """
+
     def __init__(
         self,
         parsed_waves: ParsedWaves,
         create_enemy_func: Callable,
         path,
-        event_bus: EventBus
+        event_bus: EventBus,
     ):
         self.waves: list[Wave] = parsed_waves.waves
         self.create_enemy: Callable = create_enemy_func
@@ -68,13 +72,15 @@ class WaveManager:
                 if self._time > wave.timestamp:
                     next_wave = None
                     if idx + 1 < len(self.waves):
-                        next_wave = self.waves[idx+1]
+                        next_wave = self.waves[idx + 1]
                     self.start_wave(wave)
                     if next_wave:
-                        self.time_before_next_wave = next_wave.timestamp - self._time
+                        self.time_before_next_wave = (
+                            next_wave.timestamp - self._time
+                        )
                     else:
                         self.time_before_next_wave = -1
-                    logging.info(f"Волна монстров!")
+                    logging.info("Волна монстров!")
 
     def on_enemy_deleted(self, _event: EventFlow, enemy_count: int):
         logging.info(f"{len(self.waves)} {enemy_count}")
@@ -104,9 +110,7 @@ class WaveManager:
                 wave_object.amount -= 1
                 # Спавн врага.
                 self.event_bus.fire(
-                    "on_enemy_spawn",
-                    wave_object.enemy,
-                    self.path
+                    "on_enemy_spawn", wave_object.enemy, self.path
                 )
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)

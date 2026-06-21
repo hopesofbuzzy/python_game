@@ -1,11 +1,8 @@
-import logging
-
 from pygame.math import Vector2
 
 from src.core.objects.components.ui import ClickHandlerComponent
 from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
-from src.factories.bullet_factory import BulletFactory
 from src.factories.ui_factory import UIFactory
 
 BACKGROUND_MUSIC = "res/sfx/win_2.wav"
@@ -21,6 +18,7 @@ WIN_NAME_LINESPACE = -10
 STATS_TEXT_POSITION = WIN_NAME_POSITION + Vector2(0, 200)
 STATS_TEXT_FONT_SIZE = 25
 STATS_TEXT_LINESPACE = 5
+
 
 class WinScene(Scene):
     def ready(self):
@@ -38,25 +36,24 @@ class WinScene(Scene):
         self.audio_loader.load_music(BACKGROUND_MUSIC)
         self.audio_loader.play_music(1)
 
-
     def setup_ui(self):
         """Настраивает интерфейс."""
         self.ui_factory.create_text(
             WIN_NAME,
             WIN_NAME_POSITION,
             WIN_NAME_FONT_SIZE,
-            linespace=WIN_NAME_LINESPACE
+            linespace=WIN_NAME_LINESPACE,
         )
         stats_text = (
-            f"Пройдено волн: {self.global_data["waves"]}\n"
-            f"Уничтожено монстров {self.global_data["enemies_destroyed"]}\n"
-            f"Счёт солнышек в конце: {self.global_data["suns"]}\n"
+            f"Пройдено волн: {self.global_data['waves']}\n"
+            f"Уничтожено монстров {self.global_data['enemies_destroyed']}\n"
+            f"Счёт солнышек в конце: {self.global_data['suns']}\n"
         )
         self.ui_factory.create_text(
             stats_text,
             STATS_TEXT_POSITION,
             STATS_TEXT_FONT_SIZE,
-            linespace=STATS_TEXT_LINESPACE
+            linespace=STATS_TEXT_LINESPACE,
         )
         button = self.ui_factory.create_button(
             START_BUTTON_TEXT,
@@ -64,10 +61,13 @@ class WinScene(Scene):
             START_BUTTON_POSITION,
             START_BUTTON_SIZE,
             None,
-            START_BUTTON_COLOR
+            START_BUTTON_COLOR,
         )
-        button.get(ClickHandlerComponent).on_button_pressed.subscribe(self.start_game)
+        button.get(ClickHandlerComponent).on_button_pressed.subscribe(
+            self.start_game
+        )
 
     def start_game(self, _event: EventFlow):
         from src.scenes.menu.menu import MenuScene
+
         self.change_scene(MenuScene)

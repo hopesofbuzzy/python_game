@@ -1,6 +1,3 @@
-import logging
-from dataclasses import dataclass, field
-
 from pygame.math import Vector2
 
 from src.core.objects.components.collision import MovementComponent
@@ -15,6 +12,7 @@ class PathComponent:
 
 class PatrolComponent:
     """Модель компонента следования по пути."""
+
     def __init__(self, _entity, path: PathComponent, point_radius: int = 3):
         self.entity = _entity
         self.path = path
@@ -26,9 +24,9 @@ class PatrolComponent:
     def start_patrol(self):
         """Старт патрулирования."""
         self.on_start_patrol.emit(self.path.points[self._target_point_ref])
-        self.entity.get(PositionComponent).position = (
-            self.path.points[self._target_point_ref]
-        )
+        self.entity.get(PositionComponent).position = self.path.points[
+            self._target_point_ref
+        ]
 
     def bind(self, build_context):
         self.end_patrol_func = build_context.end_patrol_func

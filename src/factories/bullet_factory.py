@@ -1,6 +1,6 @@
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from pygame.math import Vector2
 
@@ -19,10 +19,12 @@ BULLET_COLOR = (255, 255, 255)
 BULLET_SPEED = 150
 BULLET_COOLDOWN = 1.5
 
+
 @dataclass
 class BuildContext:
     attack_func: Callable
     timeout_func: Callable
+
 
 class BulletFactory:
     """Фабрика сборки пули растения."""
@@ -31,44 +33,38 @@ class BulletFactory:
         self.add_object = add_object
         self.build_context = BuildContext(
             attack_func=lambda bullet, target: event_bus.fire(
-                "on_bullet_attacked",
-                bullet,
-                target
+                "on_bullet_attacked", bullet, target
             ),
-            timeout_func=lambda bullet: event_bus.fire("on_bullet_timeout", bullet)
+            timeout_func=lambda bullet: event_bus.fire(
+                "on_bullet_timeout", bullet
+            ),
         )
         self.event_bus = event_bus
 
     def create_bullet(
-        self,
-        direction: Vector2,
-        position: Vector2,
-        attack: int,
-        speed: int
+        self, direction: Vector2, position: Vector2, attack: int, speed: int
     ):
         """
-            Создаёт пулю.
+        Создаёт пулю.
 
-            Args:
-                direction: направление пули.
-                position: позиция пули.
-                attack: урон.
-                speed: скорость пули.
+        Args:
+            direction: направление пули.
+            position: позиция пули.
+            attack: урон.
+            speed: скорость пули.
         """
         logging.debug("Пуля создана!")
         bullet = Bullet()
         collision = CollisionComponent(
-            bullet,
-            RectShape(Vector2(0, 0), BULLET_SIZE, True),
-            False,
-            "enemy"
+            bullet, RectShape(Vector2(0, 0), BULLET_SIZE, True), False, "enemy"
         )
         timer_remove = TimerComponent(bullet, BULLET_COOLDOWN, bullet)
         movement = MovementComponent(direction * speed, speed)
-        attack_component = AttackComponent(bullet, "enemy", attack, BULLET_COOLDOWN)
+        attack_component = AttackComponent(
+            bullet, "enemy", attack, BULLET_COOLDOWN
+        )
         bullet = (
-            bullet
-            .add(PositionComponent(position, None))
+            bullet.add(PositionComponent(position, None))
             .add(collision)
             .add(movement)
             .add(timer_remove)

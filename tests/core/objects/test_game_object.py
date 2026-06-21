@@ -4,7 +4,7 @@ from src.core.objects import GameObject
 from src.core.systems.input import Cursor
 
 
-class ExampleComponent():
+class ExampleComponent:
     def __init__(self):
         self.got_input = False
         self.got_update = False
@@ -18,6 +18,7 @@ class ExampleComponent():
 
     def draw(self, screen, size, local_position, camera):
         self.got_draw = True
+
 
 def test_components():
     obj = GameObject()

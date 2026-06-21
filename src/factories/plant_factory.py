@@ -1,6 +1,5 @@
-import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from pygame.math import Vector2
 
@@ -33,19 +32,13 @@ class BuildContext:
 class PlantFactory:
     """Фабрика растений."""
 
-    def __init__(
-            self,
-            add_object,
-            bullet_factory,
-            ui_factory,
-            event_bus
-        ):
+    def __init__(self, add_object, bullet_factory, ui_factory, event_bus):
         self.add_object = add_object
         self.build_context = BuildContext(
             create_bullet_func=bullet_factory.create_bullet,
             death_func=(lambda plant: event_bus.fire("on_plant_death", plant)),
             timeout_func=(lambda suns: event_bus.fire("on_given_sun", suns)),
-            damage_func=(lambda x: 5)
+            damage_func=(lambda x: 5),
         )
         self.ui_factory = ui_factory
         self.event_bus = event_bus
@@ -53,9 +46,7 @@ class PlantFactory:
     def _add_button(self, plant):
         """Создаёт кнопку растения."""
         click_handler = self.ui_factory.create_click_handler(
-            Vector2(0, 0),
-            PLANT_SIZE,
-            plant
+            Vector2(0, 0), PLANT_SIZE, plant
         )
         click_handler.get(ClickHandlerComponent).on_button_pressed.subscribe(
             plant.get(UpgradeComponent).request_upgrade_dialog
@@ -64,14 +55,16 @@ class PlantFactory:
         plant.add_child(click_handler)
         return click_handler
 
-    def create_plant(self, plant_name: str, position: Vector2, tile_pos: tuple):
+    def create_plant(
+        self, plant_name: str, position: Vector2, tile_pos: tuple
+    ):
         """
-            Создаёт растение с выборочными компонентами.
+        Создаёт растение с выборочными компонентами.
 
-            Args:
-                plant_name: название растения.
-                position: позиция растения.
-                tile_pos: позиция в тайлах.
+        Args:
+            plant_name: название растения.
+            position: позиция растения.
+            tile_pos: позиция в тайлах.
         """
         # Характеристики
         image_path = PLANT_DATA[plant_name]["image_path"]
@@ -84,11 +77,13 @@ class PlantFactory:
             .add(SpriteComponent(image_path, PLANT_SIZE, True))
             .add(DataComponent(plant_name, tuple(tile_pos)))
         )
-        plant.add(UpgradeComponent(
+        plant.add(
+            UpgradeComponent(
                 plant,
                 PLANTS_LEVEL_UPS[plant_name]["plant_name"],
-                PLANTS_LEVEL_UPS[plant_name]["cost"]
-            ))
+                PLANTS_LEVEL_UPS[plant_name]["cost"],
+            )
+        )
         # Выборочные компоненты.
         comp_registry = ComponentRegistry()
         for comp in PLANT_DATA[plant_name]["components"]:

@@ -11,6 +11,7 @@ from src.scenes.main.objects import MapLevelDataComponent
 
 DEFAULT_MAP_POSITION = Vector2(0, 0)
 
+
 class MapFactory:
     """Фабрика сборки объектов уровня (карта)."""
 
