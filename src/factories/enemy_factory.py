@@ -10,6 +10,7 @@ from src.core.objects import (
     PatrolComponent,
     PositionComponent,
     RectComponent,
+    SpriteComponent,
     RectShape,
 )
 from src.scenes.main.objects import (
@@ -73,7 +74,7 @@ class EnemyFactory:
             )
             enemy.add(MovementComponent(Vector2(0, 0), speed))
             enemy.add(PatrolComponent(enemy, path))
-            enemy.add(RectComponent(color, size, True))
+            enemy.add(SpriteComponent(ENEMY_DATA[name]["image_path"], size * 2, True))
             enemy.add(AttackComponent(enemy, "plant", attack, attack_cooldown))
             enemy.add(HealthComponent(enemy, health))
             # Bind

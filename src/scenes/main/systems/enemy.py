@@ -25,8 +25,9 @@ class EnemyController:
 
     def remove_enemy(self, _event: EventFlow, enemy: Enemy):
         """Уничтожает сущность enemy."""
+        if enemy in self.enemies:
+            self.enemies.remove(enemy)
         enemy.free()
-        self.enemies.remove(enemy)
         self.event_bus.fire("on_enemy_deleted", len(self.enemies))
         self.enemies_destroyed += 1
 

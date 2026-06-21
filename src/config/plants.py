@@ -90,7 +90,7 @@ PLANT_DATA = {
                 "speed": 300,
             },
         ],
-        "image_path": "res/sunflower.png",
+        "image_path": "res/long_mushroom.png",
     },
     "BigMushroom": {
         "components": [
@@ -102,7 +102,7 @@ PLANT_DATA = {
                 "speed": 200,
             },
         ],
-        "image_path": "res/mushroom.png",
+        "image_path": "res/big_mushroom.png",
     },
 }
 

@@ -9,6 +9,7 @@ ENEMY_DATA = {
         "color": (255, 25, 25),
         "attack": 5,
         "attack_cooldown": 0.5,
+        "image_path": "res/enemy.png"
     },
     "FastEnemy": {
         "price": 100,
@@ -18,6 +19,7 @@ ENEMY_DATA = {
         "color": (80, 80, 255),
         "attack": 5,
         "attack_cooldown": 0.5,
+        "image_path": "res/fast_enemy.png"
     },
     "Minion": {
         "price": 20,
@@ -27,6 +29,7 @@ ENEMY_DATA = {
         "color": (80, 255, 80),
         "attack": 1,
         "attack_cooldown": 0.5,
+        "image_path": "res/minion.png"
     },
 }
 
