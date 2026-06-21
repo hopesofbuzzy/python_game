@@ -8,20 +8,22 @@ from src.core.objects.components.ui import ClickHandlerComponent
 
 from src.factories.ui_factory import UIFactory
 
-from src.scenes.main.main import MainScene
 
-BACKGROUND_MUSIC = "res/music/background_2.mp3"
-START_BUTTON_TEXT = "Начать игру"
+BACKGROUND_MUSIC = "res/sfx/win_2.wav"
+START_BUTTON_TEXT = "В меню"
 START_BUTTON_FONT_SIZE = 30
 START_BUTTON_COLOR = (150, 200, 150)
 START_BUTTON_POSITION = Vector2(0, 500)
 START_BUTTON_SIZE = Vector2(150, 60)
-GAME_NAME = "Монстры, \nцветы \nи что-то ещё"
-GAME_NAME_POSITION = Vector2(0, 50)
-GAME_NAME_FONT_SIZE = 70
-GAME_NAME_LINESPACE = -10
+WIN_NAME = "Ферма спасена! <3"
+WIN_NAME_POSITION = Vector2(0, 50)
+WIN_NAME_FONT_SIZE = 50
+WIN_NAME_LINESPACE = -10
+STATS_TEXT_POSITION = WIN_NAME_POSITION + Vector2(0, 200)
+STATS_TEXT_FONT_SIZE = 25
+STATS_TEXT_LINESPACE = 5
 
-class MenuScene(Scene):
+class WinScene(Scene):
     def ready(self):
         self.setup_factories()
         self.setup_music()
@@ -35,16 +37,27 @@ class MenuScene(Scene):
     def setup_music(self):
         """Настраивает музыку."""
         self.audio_loader.load_music(BACKGROUND_MUSIC)
-        self.audio_loader.play_music(-1)
+        self.audio_loader.play_music(1)
 
 
     def setup_ui(self):
         """Настраивает интерфейс."""
         self.ui_factory.create_text(
-            GAME_NAME,
-            GAME_NAME_POSITION,
-            GAME_NAME_FONT_SIZE,
-            linespace=GAME_NAME_LINESPACE
+            WIN_NAME,
+            WIN_NAME_POSITION,
+            WIN_NAME_FONT_SIZE,
+            linespace=WIN_NAME_LINESPACE
+        )
+        stats_text = (
+            f"Пройдено волн: {self.global_data["waves"]}\n"
+            f"Уничтожено монстров {self.global_data["enemies_destroyed"]}\n"
+            f"Счёт солнышек в конце: {self.global_data["suns"]}\n"
+        )
+        self.ui_factory.create_text(
+            stats_text,
+            STATS_TEXT_POSITION,
+            STATS_TEXT_FONT_SIZE,
+            linespace=STATS_TEXT_LINESPACE
         )
         button = self.ui_factory.create_button(
             START_BUTTON_TEXT,
@@ -57,4 +70,5 @@ class MenuScene(Scene):
         button.get(ClickHandlerComponent).on_button_pressed.subscribe(self.start_game)
 
     def start_game(self, _event: EventFlow):
-        self.change_scene(MainScene)
+        from src.scenes.menu.menu import MenuScene
+        self.change_scene(MenuScene)

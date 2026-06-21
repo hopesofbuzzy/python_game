@@ -5,6 +5,7 @@ from src.core.objects.camera import Camera
 from src.core.objects.scene import Scene
 from src.core.singletones.audio_loader import AudioLoader, audio_loader
 from src.core.singletones.event_bus import event_bus
+from src.core.singletones.global_data import global_data
 from src.core.systems.collision import CollisionSystem
 from src.core.systems.debug_renderer import DebugRenderer
 from src.core.systems.input import InputManager
@@ -36,6 +37,8 @@ class Game:
         self.running: bool = True
         # Global events
         self.input.on_exit.subscribe(self.exit)
+        # Global data
+        self.global_data = global_data
         # Scene
         self.set_scene(scene_class)
 
@@ -68,7 +71,7 @@ class Game:
             self.debug_renderer.draw(screen, self.scene, self.camera)
 
     def set_scene(self, scene_class):
-        self.scene = scene_class(event_bus, self.audio, self.exit)
+        self.scene = scene_class(event_bus, self.audio, global_data, self.exit)
         self.scene.on_scene_changed.subscribe(self.set_scene)
 
     def exit(self):

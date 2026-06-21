@@ -111,3 +111,6 @@ class WaveManager:
                         self.current_wave = None
                         self._spawn_timer = SPAWN_COOLDOWN
             return True
+
+    def get_wave_count(self):
+        return self.current_wave_number

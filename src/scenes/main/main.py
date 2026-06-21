@@ -12,6 +12,8 @@ from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
 from src.factories.bullet_factory import BulletFactory
 
+from src.scenes.win.win import WinScene
+
 # Фабрики и строители.
 from src.factories.enemy_factory import EnemyFactory
 from src.factories.inventory_factory import InventoryFactory
@@ -162,9 +164,13 @@ class MainScene(Scene):
 
     def win(self, _event: EventFlow):
         """Победа."""
-        from src.scenes.menu.menu import MenuScene
         logging.info("Победа!")
-        self.change_scene(MenuScene)
+        self.global_data["waves"] = self.wave_manager.get_wave_count()
+        self.global_data["suns"] = self.currency.get_suns()
+        self.global_data["enemies_destroyed"] = (
+            self.enemy_controller.get_enemies_destroyed_count()
+        )
+        self.change_scene(WinScene)
 
     def game_over(self, _event: EventFlow):
         """Проигрыш."""

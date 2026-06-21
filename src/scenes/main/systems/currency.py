@@ -4,7 +4,7 @@ from src.config.plants import PLANTS_PRICES
 from src.core.objects.event import Event
 from src.core.singletones.event_bus import EventBus, EventFlow
 
-DEFAULT_SUNS = 135
+DEFAULT_SUNS = 235
 
 class CurrencyManager:
     def __init__(self, event_bus: EventBus, suns: int = DEFAULT_SUNS):
@@ -29,3 +29,6 @@ class CurrencyManager:
 
     def print_current_suns(self):
         logging.debug(f"Текущие солнышки: {self.suns}")
+
+    def get_suns(self):
+        return self.suns
