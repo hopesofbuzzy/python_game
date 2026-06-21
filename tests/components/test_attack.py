@@ -1,6 +1,7 @@
 from src.core.objects import GameObject, MovementComponent
 from src.scenes.main.objects import AttackComponent, HealthComponent
 
+
 def test_attack():
     obj1 = GameObject()
     obj1.add(AttackComponent(obj1, "enemy", 50, 1))

@@ -1,6 +1,7 @@
 from src.core.objects import GameObject, MovementComponent
-from src.scenes.main.objects import UpgradeComponent
 from src.core.singletones.event_bus import EventBus
+from src.scenes.main.objects import UpgradeComponent
+
 
 def test_upgrade():
     obj1 = GameObject()

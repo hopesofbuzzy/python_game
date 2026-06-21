@@ -1,13 +1,13 @@
-from pygame.math import Vector2
 import pytest
+from pygame.math import Vector2
 
-from src.core.systems.uniform_grid import UniformGrid
-from src.core.systems.collision import CollisionSystem
 from src.core.objects import (
     GameObject,
     PositionComponent,
 )
 from src.core.objects.scene import Scene
+from src.core.systems.collision import CollisionSystem
+from src.core.systems.uniform_grid import UniformGrid
 
 
 def test_uniform_grid():
