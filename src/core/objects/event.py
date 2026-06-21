@@ -2,10 +2,13 @@ import weakref
 
 
 class Event:
+    """локальное событие (observer pattern)."""
+
     def __init__(self):
         self.listeners: list = []
 
     def subscribe(self, listener):
+        """Подписка слушателя (listener) на событие."""
         # Храним слабую ссылку, чтобы не было УТЕЧЕК ПАМЯТИ!
         if hasattr(listener, "__self__"):
             self.listeners.append(weakref.WeakMethod(listener))
@@ -13,6 +16,7 @@ class Event:
             self.listeners.append(listener)
 
     def unsubscribe(self, listener):
+        """Отписка слушателя (listener) от события."""
         for listener_shell in self.listeners[:]:
             if isinstance(listener_shell, weakref.WeakMethod):
                 alive_func = listener_shell()
@@ -22,6 +26,7 @@ class Event:
         self.listeners.remove(listener)
 
     def emit(self, *args):
+        """Вызов события и оповещение слушателей."""
         dead_refs = list()
         for listener in self.listeners[:]:
             if isinstance(listener, weakref.WeakMethod):

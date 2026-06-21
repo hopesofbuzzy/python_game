@@ -7,6 +7,7 @@ from src.core.objects import PathComponent
 
 class PathFactory:
     """Фабрика сборки выровненного пути для врагов."""
+
     def create_path_component(self, path, align_method):
         return PathComponent(
             points=list(

@@ -22,10 +22,13 @@ class Cursor:
 cursor = Cursor()
 
 class InputManager:
+    """Менеджер ввода."""
+
     def __init__(self):
         self.on_exit = Event()
 
     def handle_input(self, scene, camera):
+        """Обработчик ввода у всех объектов сцены."""
         for event in pygame.event.get():
             match event.type:
                 case pygame.MOUSEMOTION:

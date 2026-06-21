@@ -15,7 +15,7 @@ from src.core.objects import (
 )
 
 COLLISION_COLOR = (255, 127, 80)
-UI_COLOR = (20, 250, 50)
+UI_COLOR = (150, 50, 100)
 POSITION_POINT_RADIUS = 3
 POSITION_POINT_COLOR = (255, 127, 255)
 
@@ -73,6 +73,7 @@ class DebugRenderer:
             shape: RectShape,
             zoom: float
         ):
+        """Отрисовывает прямоугольник коллизии."""
         rect = pygame.Rect(
             local_position.x,
             local_position.y,
@@ -88,6 +89,7 @@ class DebugRenderer:
             shape: CircleShape,
             zoom: float
         ):
+        """Отрисовывает окружность коллизии."""
         pygame.draw.circle(
             screen,
             COLLISION_COLOR,
@@ -101,6 +103,7 @@ class DebugRenderer:
             local_position: Vector2,
             zoom: float
         ):
+        """Отрисовывает точку в позиции."""
         pygame.draw.circle(
             screen,
             POSITION_POINT_COLOR,
@@ -115,6 +118,10 @@ class DebugRenderer:
             local_position: Vector2,
             zoom: float
         ):
+        """
+            Отрисовывает геометрию (трансформ)
+            элемента интерфейса (область интерфейса).
+        """
         rect = pygame.Rect(
             local_position.x,
             local_position.y,

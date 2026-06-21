@@ -23,8 +23,8 @@ class UniformGrid:
 
     def query_rect(self, object: GameObject, range_x, range_y) -> list[GameObject]:
         """
-        Извлечение соседних объектов для целевого объекта.
-        range в тайлах.
+            Извлечение соседних объектов для целевого объекта.
+            range в тайлах.
         """
         obj_position = object.get(PositionComponent).position
         cx = int(obj_position.x / self.CELL_SIZE)
@@ -38,8 +38,8 @@ class UniformGrid:
 
     def query_circle(self, object: GameObject, radius) -> list[GameObject]:
         """
-        Извлечение соседних объектов для целевого объекта.
-        radius в тайлах.
+            Извлечение соседних объектов для целевого объекта.
+            radius в тайлах.
         """
         candidates = self.query_rect(object, radius, radius)
         center = object.get(PositionComponent).position
@@ -58,6 +58,7 @@ class UniformGrid:
                 self.insert(object)
 
     def clear(self):
+        """Очистка карты.."""
         self.cells: list[list[list]] = [
             [list() for _ in range(self.SIZE)] for _ in range(self.SIZE)
         ]
@@ -67,4 +68,5 @@ class UniformGrid:
         return x in range(0, self.SIZE) and y in range(0, self.SIZE)
 
     def __repr__(self) -> str:
+        """Отображение карты."""
         return f"{self.cells}"

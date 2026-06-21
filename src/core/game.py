@@ -19,7 +19,13 @@ class Game:
     """Базовый класс для состояния игры."""
 
     def __init__(self, scene_class, window_size: tuple, debug: bool = False):
-        # Systems
+        """
+            Args:
+                scene_class: класс сцены инициализации.
+                window_size: размер окна.
+                debug: режим отладки (рендер коллизий, областей интерфейса).
+        """
+        # Системы
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
         self.camera: Camera = Camera(
@@ -34,17 +40,18 @@ class Game:
         self.audio: AudioLoader = audio_loader
         self.debug: bool = debug
         self.debug_renderer: DebugRenderer = DebugRenderer()
-        # State
+        # Состояние
         self.paused: bool = False
         self.running: bool = True
-        # Global events
+        # Глобальные события
         self.input.on_exit.subscribe(self.exit)
-        # Global data
+        # Глобальные данные.
         self.global_data = global_data
-        # Scene
+        # Сцена.
         self.set_scene(scene_class)
 
     def update(self, delta_time: float):
+        """Кадр игры, обновление всех систем."""
         # Input
         self.input.handle_input(self.scene, self.camera)
         # AI
@@ -54,7 +61,7 @@ class Game:
         self.uniform_grid.update(self.scene)
         # Collision
         self.collision.update(self.scene, delta_time)
-        # Resolution
+        # Resolution (разрешение столкновений).
         self.collision.resolve(delta_time)
         # Targeting
         self.targeting.update(self.scene, delta_time)
@@ -64,17 +71,20 @@ class Game:
         self.camera.handle_drag()
         # Cleanup
         self.scene.cleanup()
-        # Add objects after all logics.
+        # Add objects (после всей логики).
         self.scene.add_objects()
 
     def draw(self, screen: pygame.Surface):
+        """Отрисовка элементов (отдельно от обновлений и логики)."""
         self.renderer.draw(screen, self.scene, self.camera)
         if self.debug:
             self.debug_renderer.draw(screen, self.scene, self.camera)
 
     def set_scene(self, scene_class):
+        """Смена текущей сцены."""
         self.scene = scene_class(event_bus, self.audio, global_data, self.exit)
         self.scene.on_scene_changed.subscribe(self.set_scene)
 
     def exit(self):
+        """Выход из игры."""
         self.running = False

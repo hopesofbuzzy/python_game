@@ -103,7 +103,11 @@ class WaveManager:
                 wave_object = wave_objects[rand_wave_obj_idx]
                 wave_object.amount -= 1
                 # Спавн врага.
-                self.event_bus.fire("on_enemy_spawn", wave_object.enemy, self.path)
+                self.event_bus.fire(
+                    "on_enemy_spawn",
+                    wave_object.enemy,
+                    self.path
+                )
                 if wave_object.amount <= 0:
                     wave_objects.remove(wave_object)
                     if len(wave_objects) == 0:

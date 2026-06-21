@@ -15,6 +15,7 @@ class CollisionShape:
 
 
 class CircleShape(CollisionShape):
+    """Окружность столкновения."""
     def __init__(self, position: Vector2, radius: float):
         self.radius = radius
         super().__init__(position)
@@ -28,6 +29,7 @@ class CircleShape(CollisionShape):
         self._position = value
 
 class RectShape(CollisionShape):
+    """Прямоугольник столкновения."""
     def __init__(self, position: Vector2, size: Vector2, centred: bool):
         self.size = size
         self.centred = centred
@@ -50,17 +52,26 @@ class RectShape(CollisionShape):
 # Компоненты.
 @ComponentRegistry.register("collision")
 class CollisionComponent():
+    """
+        Компонент столкновений.
+
+        Args:
+            entity: сущность-хозяин.
+            shape: форма столкновения.
+            resolvable: разрешимость столкновения (свойство выталкивания).
+            mask_tag: тег целевых объектов для столкновения.
+    """
     def __init__(
         self,
-        _entity,
+        entity,
         shape: CollisionShape,
         resolvable: bool = False,
         mask_tag: Optional[str] = None
     ):
-        self.entity: GameObject = _entity
+        self.entity: GameObject = entity
         self.shape = shape
         self.resolvable = resolvable
-        self.mask_tag = mask_tag  # Тег целевых объектов коллизий.
+        self.mask_tag = mask_tag
 
     def bind(self, build_context):
         ...
@@ -72,6 +83,7 @@ class CollisionComponent():
         # self.collision_func(other)
 
 class MovementComponent():
+    """Компонент движения."""
     def __init__(self, velocity: Vector2, speed: float):
         self.velocity = velocity
         self.speed = speed

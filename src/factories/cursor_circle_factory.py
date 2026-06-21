@@ -7,6 +7,8 @@ from src.scenes.main.objects import CursorCircleComponent
 
 
 class CursorCircleFactory:
+    """Фабрика окружности для привязки к курсору."""
+
     def __init__(self, add_object: Callable):
         self.add_object = add_object
 

@@ -6,7 +6,9 @@ import pygame
 from src.core.objects.components.map import Map, MapModelComponent
 from src.factories.map_factory import MapFactory
 from src.scenes.main.level.loader import LevelLoader, RawLevel
-from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+from src.scenes.main.objects.components.map_level_data import (
+    MapLevelDataComponent,
+)
 from src.scenes.main.systems.waves import ParsedWaves, Wave, WaveObject
 
 
@@ -45,7 +47,7 @@ class LevelBuilder:
     ) -> Level:
         """Строит уровень: карта, пути, волны."""
         tileset = self.split_tileset(raw_level.tileset, raw_level.metadata["tile_size"])
-        map = self.lf.create_map(position, raw_level.tiles, tileset)
+        map = self.lf.create_map(raw_level.tiles, tileset)
         path = list()
         if parse_map:
             map.get(MapLevelDataComponent).parse_map(

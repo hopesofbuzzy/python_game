@@ -11,12 +11,13 @@ class Image:
 
 
 class ImageLoader:
-    """Регистр подгрузки изображения для переиспользования."""
+    """Регистр изображений для переиспользования."""
 
     def __init__(self):
         self.image_registry: dict[str, Image] = {}
 
     def load_image(self, filename: str) -> Image:
+        """Подгрузка изображения из filename."""
         if filename not in self.image_registry:
             try:
                 image = pygame.image.load(filename)
@@ -26,6 +27,7 @@ class ImageLoader:
         return self.image_registry[filename]
 
     def cleanup(self):
+        """Очистка регистра."""
         self.image_registry = {}
 
 

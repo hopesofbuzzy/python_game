@@ -43,7 +43,7 @@ class CollisionSystem:
         self.uniform_grid = uniform_grid
 
     def update(self, scene: Scene, delta_time: float):
-        """Проверка коллизий и определение столкновений."""
+        """Проверка коллизий объектов сцены и определение столкновений."""
         checks = 0
         for object in scene.object_registry.values():
             if object.has(PositionComponent, CollisionComponent):
@@ -81,6 +81,14 @@ class CollisionSystem:
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2, resolve) -> Overlap | None | bool:
+        """
+            Проверка коллизий у окружностей.
+
+            Args:
+                pos: позиции форм.
+                r: радиусы форм.
+                resolve: вычисление направления выталкивания,
+        """
         dx = pos1.x - pos2.x
         dy = pos1.y - pos2.y
         dist = dx**2 + dy**2
@@ -93,6 +101,14 @@ class CollisionSystem:
 
     @staticmethod
     def aabb_collide(pos1, size1, pos2, size2, resolve) -> Overlap | None | bool:
+        """
+            Проверка коллизий у прямоугольников.
+
+            Args:
+                pos: позиции форм.
+                size: размеры форм.
+                resolve: вычисление направления выталкивания,
+        """
         if (
             pos1.x <= pos2.x + size2.x
             and pos2.x <= pos1.x + size1.x
@@ -120,6 +136,7 @@ class CollisionSystem:
     def check_overlap(
         self, object: GameObject, other: GameObject, resolve: bool
     ) -> Overlap | None | bool:
+        """Проверка пересечения коллизий двух объектов."""
         obj_shape = object.get(CollisionComponent).shape
         oth_shape = other.get(CollisionComponent).shape
         obj_position = object.get(PositionComponent).position + obj_shape.position
@@ -136,7 +153,7 @@ class CollisionSystem:
             )
 
     def resolve(self, delta_time: float):
-        """Разрешение столкновений."""
+        """Разрешение всех найденных столкновений (выталкивание)."""
         for object, other, overlap, resolve in self.collisions:
             if resolve:
                 if object.has(MovementComponent):

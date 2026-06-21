@@ -25,6 +25,8 @@ DEFAULT_BUTTON_SIZE = Vector2(100, 35)
 DEFAULT_DIALOG_TEXT_CONTAINER_SIZE = Vector2(120, 80)
 
 class DialogBuilder:
+    """Строитель диалогового окна."""
+
     def __init__(self, add_object, ui_factory: UIFactory, event_bus: EventBus):
         self.add_object = add_object
         self.ui_factory = ui_factory
@@ -38,6 +40,7 @@ class DialogBuilder:
         anchor=None,
         color: tuple = DEFAULT_DIALOG_COLOR
     ):
+        """Построение окна диалога с вертикальным контейнером (сверху-вниз)."""
         dialog = (
             UIControl()
             .add(UITransform(
@@ -59,6 +62,7 @@ class DialogBuilder:
         text,
         size
     ):
+        """Построение текста внутри окна."""
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
         text = self.ui_factory.create_text(
@@ -80,6 +84,7 @@ class DialogBuilder:
         size: Vector2 = DEFAULT_BUTTON_SIZE,
         color: tuple = DEFAULT_BUTTON_COLOR,
     ):
+        """Построение кнопки диалога внутри окна."""
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
         button = self.ui_factory.create_button(
@@ -99,6 +104,7 @@ class DialogBuilder:
         return self
 
     def build(self):
+        """Построение диалога."""
         if not self._dialog:
             raise ValueError("Сперва постройте диалог")
         return self._dialog

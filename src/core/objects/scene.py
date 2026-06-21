@@ -32,6 +32,7 @@ class Scene:
         self.ready()
 
     def add_object(self, obj: GameObject, obj_id: str | None = None) -> GameObject:
+        """Добавляет объект в очередь на добавление в сцену."""
         if obj_id in self.object_registry:
             raise KeyError("Объект с таким obj_id уже существует")
         obj.uid = self.lastuid + 1
@@ -53,10 +54,12 @@ class Scene:
         )
 
     def remove_object(self, obj_id, object) -> None:
+        """Добавляет объект в очередь на удаление со сцены."""
         if obj_id in self.object_registry:
             self._objects_to_delete[obj_id] = object
 
     def cleanup(self):
+        """Очистка объектов из списка на удаление в конце кадра."""
         if len(self._objects_to_delete):
             logging.debug(f"objects_to_delete: len({self._objects_to_delete})")
         # Лучше перестроить список z_index за O(n)
@@ -94,4 +97,5 @@ class Scene:
         ...
 
     def change_scene(self, scene_class):
+        """Запрашивает смену сцены на scene_class."""
         self.on_scene_changed.emit(scene_class)

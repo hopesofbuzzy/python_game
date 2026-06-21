@@ -20,7 +20,9 @@ from src.scenes.main.objects import (
     MapLevelDataComponent,
     UpgradeComponent,
 )
-from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+from src.scenes.main.objects.components.map_level_data import (
+    MapLevelDataComponent,
+)
 from src.scenes.main.systems.currency import CurrencyManager
 
 UPGRADE_DIALOG_SIZE = Vector2(300, 150)

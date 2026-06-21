@@ -12,9 +12,10 @@ class TargetingSystem:
         self.uniform_grid = uniform_grod
 
     def update(self, scene, delta_time: float):
-        """Проверка соседей башни для стрельбы."""
+        """Проверка соседей объектов-башен для стрельбы."""
         for object in scene.object_registry.values():
             if object.has(PositionComponent, TargetingComponent):
+                # Запрашиваем у UniformGrid соседей в нужном радиусе.
                 others = self.uniform_grid.query_circle(
                     object,
                     object.get(TargetingComponent).range

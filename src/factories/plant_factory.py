@@ -51,7 +51,7 @@ class PlantFactory:
         self.event_bus = event_bus
 
     def _add_button(self, plant):
-        """Создаёт кнопку растения.."""
+        """Создаёт кнопку растения."""
         click_handler = self.ui_factory.create_click_handler(
             Vector2(0, 0),
             PLANT_SIZE,

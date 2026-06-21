@@ -23,7 +23,9 @@ from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
 )
-from src.scenes.main.objects.components.map_level_data import MapLevelDataComponent
+from src.scenes.main.objects.components.map_level_data import (
+    MapLevelDataComponent,
+)
 from src.scenes.main.systems.bullet import BulletController
 
 # Системы текущей сцены.
@@ -157,6 +159,7 @@ class MainScene(Scene):
         tile_type: int,
         global_pos: Vector2
     ):
+        """Соединяет клик на тайл с контроллерами."""
         self.upgrade.close_all_upgrade_dialogs()
         self.plant_controller.try_plant(
             event, tile_pos, global_pos_centred

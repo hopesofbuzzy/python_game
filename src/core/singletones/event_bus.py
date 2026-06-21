@@ -30,6 +30,13 @@ class EventBus:
         self.listeners: dict[str, list[Listener]] = dict()
 
     def subscribe(self, event_name, listener, priority=None):
+        """
+            Подписка слушателя на событие.
+        
+            event_name: название события.
+            listener: функция-слушатель.
+            priority: приоритет слушателя (выше приоритет -> первее получение).
+        """
         if not priority:
             priority = -1
         self.listeners[event_name] = self.listeners.get(event_name, [])
@@ -46,6 +53,12 @@ class EventBus:
         )
 
     def fire(self, event_name, *args):
+        """
+            Вызов события и оповещение слушателей.
+
+            Args:
+                event_name: название события.
+        """
         self.listeners[event_name] = self.listeners.get(event_name, [])
         for listener in self.listeners[event_name]:
             event = EventFlow()
@@ -68,4 +81,5 @@ class EventBus:
             if l.is_alive
         ]
 
+# Глобальная шина.
 event_bus = EventBus()

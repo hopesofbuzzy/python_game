@@ -11,7 +11,7 @@ from src.scenes.main.objects import (
 
 
 class InventoryFactory:
-    """Фабрика сборки инвентаря."""
+    """Фабрика инвентаря."""
 
     def __init__(self, add_object, event_bus):
         self.add_object = add_object

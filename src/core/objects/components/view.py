@@ -10,12 +10,14 @@ from src.core.singletones.image_loader import image_loader as il
 
 
 class RectComponent:
+    """Отрисовщик прямоугольников в мире."""
     def __init__(self, color: tuple[int, int, int], size: Vector2, centred: bool):
         self.color = color
         self.size = size
         self.centred = centred
 
     def get_centred_local_position(self, local_position, zoom):
+        """Возвращает отцентрованную экранную позицию прямоугольника."""
         return local_position - (self.size * zoom // 2)
 
     def draw(self, screen: pygame.Surface, size, local_position, camera):
@@ -33,6 +35,7 @@ class RectComponent:
         pygame.draw.rect(screen, self.color, rect)
 
 class SpriteComponent:
+    """Отрисовщик спрайтов в мире."""
     def __init__(self, image_path: str, size: Vector2, centred: bool):
         self.image_path = image_path
         self.centred = centred
@@ -58,6 +61,7 @@ class SpriteComponent:
             return self._scaled_images[size]
 
     def get_centred_local_position(self, local_position, zoom):
+        """Возвращает отцентрованную экранную позицию спрайта."""
         return local_position - (self.size * zoom // 2)
 
     def draw(self, screen: pygame.Surface, size, local_position, camera):
