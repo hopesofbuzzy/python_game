@@ -14,7 +14,6 @@ class Slot:
 class InventoryModelComponent:
     """Инвентарь для выбора растений."""
 
-    # Заглушки
     def __init__(self, raw_slots: dict = PLANTS):
         self.active_slot: int = 0
         self.raw_slots = raw_slots
@@ -22,6 +21,7 @@ class InventoryModelComponent:
         self.size: int = 10
         self._set_default_slots()
 
+    # Заглушки
     def _set_default_slots(self):
         """Слоты по умолчанию (инвентарь - постоянный)."""
         for _, name in self.raw_slots.items():

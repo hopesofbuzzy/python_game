@@ -84,8 +84,8 @@ class CollisionComponent:
                 hasattr(comp, "handle_collision")
                 and comp_cls is not CollisionComponent
             ):
+                # Уведомляет все заинтересованные компоненты о столкновении.
                 comp.handle_collision(other)
-        # self.collision_func(other)
 
 
 class MovementComponent:

@@ -82,6 +82,7 @@ class PlantFactory:
                 plant,
                 PLANTS_LEVEL_UPS[plant_name]["plant_name"],
                 PLANTS_LEVEL_UPS[plant_name]["cost"],
+                self.event_bus
             )
         )
         # Выборочные компоненты.

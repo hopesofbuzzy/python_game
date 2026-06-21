@@ -45,9 +45,10 @@ class CollisionSystem:
     def update(self, scene: Scene, delta_time: float):
         """Проверка коллизий объектов сцены и определение столкновений."""
         checks = 0
+        self.collisions = []
         for object in scene.object_registry.values():
             if object.has(PositionComponent, CollisionComponent):
-                others = self.uniform_grid.query_rect(object, 1, 1)
+                others = self.uniform_grid.query_rect(object, 2, 2)
                 mask_tag = object.get(CollisionComponent).mask_tag
                 for other in others:
                     if not (
@@ -78,7 +79,6 @@ class CollisionSystem:
                             self.collisions.append(
                                 (object, other, overlap, resolve)
                             )
-        logging.debug(checks)
 
     @staticmethod
     def circles_collide(pos1, r1, pos2, r2, resolve) -> Overlap | None | bool:

@@ -1,5 +1,7 @@
 from src.core.objects import GameObject, PositionComponent
 
+DEFAULT_CELL_SIZE = 50
+DEFAULT_SIZE = 100
 
 class UniformGrid:
     """
@@ -7,18 +9,21 @@ class UniformGrid:
     и проверок соседей объектов.
     """
 
-    CELL_SIZE = 50
-    SIZE = 100
-
-    def __init__(self):
+    def __init__(
+        self,
+        cell_size: int = DEFAULT_CELL_SIZE,
+        size: int = DEFAULT_SIZE
+    ):
         self.cells: list[list[list]] = []
+        self.cell_size = cell_size
+        self.size = size
         self.clear()
 
     def insert(self, object: GameObject):
         """Вставка объекта в нужную клетку GridMap."""
         obj_position = object.get(PositionComponent).position
-        cx = int(obj_position.x / self.CELL_SIZE)
-        cy = int(obj_position.y / self.CELL_SIZE)
+        cx = int(obj_position.x / self.cell_size)
+        cy = int(obj_position.y / self.cell_size)
         self.cells[cy][cx].append(object)
 
     def query_rect(
@@ -29,8 +34,8 @@ class UniformGrid:
         range в тайлах.
         """
         obj_position = object.get(PositionComponent).position
-        cx = int(obj_position.x / self.CELL_SIZE)
-        cy = int(obj_position.y / self.CELL_SIZE)
+        cx = int(obj_position.x / self.cell_size)
+        cy = int(obj_position.y / self.cell_size)
         result = list()
         for dy in range(-range_x, range_x + 1):
             for dx in range(-range_y, range_y + 1):
@@ -49,7 +54,7 @@ class UniformGrid:
             cndt
             for cndt in candidates
             if (center - cndt.get(PositionComponent).position).length_squared()
-            < (radius * self.CELL_SIZE) ** 2
+            < (radius * self.cell_size) ** 2
         ]
 
     def update(self, scene):
@@ -62,12 +67,12 @@ class UniformGrid:
     def clear(self):
         """Очистка карты.."""
         self.cells: list[list[list]] = [
-            [list() for _ in range(self.SIZE)] for _ in range(self.SIZE)
+            [list() for _ in range(self.size)] for _ in range(self.size)
         ]
 
     def in_bounds(self, x, y):
         """Проверка, что координаты на карте."""
-        return x in range(0, self.SIZE) and y in range(0, self.SIZE)
+        return x in range(0, self.size) and y in range(0, self.size)
 
     def __repr__(self) -> str:
         """Отображение карты."""
