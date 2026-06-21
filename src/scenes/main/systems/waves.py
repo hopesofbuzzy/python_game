@@ -121,4 +121,5 @@ class WaveManager:
             return True
 
     def get_wave_count(self):
+        """Возвращает текущую волну."""
         return self.current_wave_number

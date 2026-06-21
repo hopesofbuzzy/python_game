@@ -6,6 +6,8 @@ from src.core.objects.event import Event
 
 @ComponentRegistry.register("health")
 class HealthComponent:
+    """Компонент здоровья."""
+
     def __init__(self, entity, hp: int):
         self.hp = hp
         self.entity = entity

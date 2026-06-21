@@ -18,6 +18,7 @@ class LevelManager:
         self.add_object = add_object_func
 
     def generate_level(self):
+        """Генерация уровня с нуля."""
         # Генерация уровня.
         raw_level = LevelGenerator(LevelLoader(), True).generate(
             PATH_LENGTH, SIZE, seed, NOISE_AMPLITUDE, WAVE_AMOUNT
@@ -29,6 +30,7 @@ class LevelManager:
         return level
 
     def load_existing_level(self, level_name: str):
+        """Загрузка сущестующего уровня."""
         level_builder: LevelBuilder = LevelBuilder(
             LevelLoader(), MapFactory(self.add_object)
         )

@@ -8,6 +8,8 @@ DEFAULT_SUNS = 235
 
 
 class CurrencyManager:
+    """Менеджер валюты (солнышки)."""
+
     def __init__(self, event_bus: EventBus, suns: int = DEFAULT_SUNS):
         self.suns: int = suns
         self.on_suns_update: Event = Event()
@@ -19,17 +21,21 @@ class CurrencyManager:
         self.on_suns_update.emit(self.suns)
 
     def decrease_suns(self, suns: int):
+        """Вычет солнышек."""
         self.suns -= suns
         self.on_suns_update.emit(self.suns)
 
     def check_suns(self, plant: str) -> bool:
+        """Проверка количества солнышек для покупки."""
         return self.suns >= PLANTS_PRICES[plant]
 
     def get_plant_price(self, plant: str) -> int:
+        """Цена растения plant."""
         return PLANTS_PRICES[plant]
 
     def print_current_suns(self):
         logging.debug(f"Текущие солнышки: {self.suns}")
 
     def get_suns(self):
+        """Возвращает текущие солнышки."""
         return self.suns

@@ -5,6 +5,8 @@ DEFAULT_ATTACK_COOLDOWN = 0.5
 
 
 class AttackComponent:
+    """Компонент атаки сущностей."""
+
     def __init__(self, _entity, target_tag: str, attack: int, cooldown: float):
         self.entity = _entity
         self.target_tag = target_tag
@@ -17,7 +19,7 @@ class AttackComponent:
         self.attack_func = build_context.attack_func
 
     def handle_collision(self, collision: GameObject):
-        if self._attack_timer <= 0.0 and self.target_tag in collision.tag:
+        if self._attack_timer <= 0.0 and self.target_tag in collision.tags:
             collision.get(HealthComponent).damage(self.attack)
             self._attack_timer = self.cooldown
             self.in_attack = True

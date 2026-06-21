@@ -4,6 +4,7 @@ from src.core.objects.event import Event
 
 
 class KeyControllerComponent:
+    """Контроллер кликов с клавиатуры."""
     def __init__(self):
         self.on_key_pressed: Event = Event()
 

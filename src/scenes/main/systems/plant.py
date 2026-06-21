@@ -35,7 +35,10 @@ class PlantController:
         tile_pos: Vector2,
         global_pos_centred: Vector2,
     ):
-        """Посадка растения."""
+        """
+            Посадка растения на тайле tile_pos
+            в глобальной позиции global_pos_centred.
+        """
         tuple_tile_pos = tuple(tile_pos)
         active_inventory_slot = self.inventory.get_active_slot()
         # Условия посадки.

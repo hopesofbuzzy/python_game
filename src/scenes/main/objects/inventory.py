@@ -1,4 +1,6 @@
 from src.core.objects.game_object import GameObject
 
 
-class Inventory(GameObject): ...
+class Inventory(GameObject):
+    """Инвентарь."""
+    ...

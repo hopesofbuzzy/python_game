@@ -7,6 +7,8 @@ DEFAULT_UPGRADE_SPEED = 25
 
 
 class UpgradeComponent:
+    """Компонент улучшения растения."""
+
     def __init__(self, plant, target_name: str, target_suns: int):
         self.suns: int = 0
         self.plant = plant

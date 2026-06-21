@@ -33,6 +33,7 @@ class InventoryManager:
         )
 
     def on_inventory_changed_slot(self, event: EventFlow, slot: Slot):
+        """Смена слота инвентаря."""
         inventory_model = self.inventory.get(InventoryModelComponent)
         if inventory_model.get_active_slot():
             inventory_model.set_zero_slot()
@@ -49,10 +50,12 @@ class InventoryManager:
         event.stop()
 
     def free_cursor_circle(self):
+        """Очищение выделения радиуса."""
         if self.cursor_circle:
             self.cursor_circle.free()
         self.cursor_circle = None
 
     def on_inventory_zero_slot_set(self, event: EventFlow):
+        """Установка нулевого слота в инвентаре."""
         self.inventory.get(InventoryModelComponent).set_zero_slot()
         self.free_cursor_circle()

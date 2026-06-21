@@ -53,6 +53,7 @@ class UIManager:
         self.tooltip = None
 
     def build_stats(self):
+        """Строит интерфейс статистики."""
         self.suns_text = self.ui_factory.create_text(
             f"Солнышки: {self.currency.suns}",
             SUNS_TEXT_POSITION,
@@ -78,6 +79,7 @@ class UIManager:
         )
 
     def build_inventory(self, inventory_slots: list[Slot]):
+        """Строит инвентарь."""
         container = self.ui_factory.create_vertical_container(
             INVENTORY_POSITION, INVENTORY_SIZE, None, INVENTORY_COLOR, 5
         )
@@ -120,16 +122,19 @@ class UIManager:
         _event: EventFlow,
         wave_number: int,
     ):
+        """Обновляет статистику количества волн."""
         self.wave_number.get(TextRenderComponent).set_text(
             f"Текущая волна: {wave_number}"
         )
 
     def update(self, delta_time):
+        """Обновляет время до следующей волны."""
         self.time_before_wave.get(TextRenderComponent).set_text(
             f"Следующая волна через: {self.get_time_before_wave()}"
         )
 
     def show_tooltip(self, _event: EventFlow, text: str, cursor_local_pos):
+        """Показывает тултип с текстом text."""
         if not self.tooltip:
             tooltip_message = self.ui_factory.create_tooltip_message(
                 cursor_local_pos,
@@ -140,6 +145,7 @@ class UIManager:
             self.tooltip = tooltip_message
 
     def hide_tooltip(self, _event: EventFlow, text: str):
+        """Прячет тултип."""
         if self.tooltip:
             self.tooltip.free()
             self.tooltip = None

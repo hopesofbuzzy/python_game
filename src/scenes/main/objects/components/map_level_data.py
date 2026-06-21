@@ -4,6 +4,7 @@ from src.config.plants import PLANT_DATA
 
 
 class MapLevelDataComponent:
+    """Модель хранения данных карты об уровне."""
     def __init__(self):
         self.plants: set[tuple] = set()
         self.poses_to_place: set = set()
@@ -14,23 +15,23 @@ class MapLevelDataComponent:
     def is_position_to_place_plant(
         self, plant_name: str, position: tuple
     ) -> bool:
+        """Проверяет, доступна ли эта позиция для спавна растения plant_name"""
         logging.debug(f"Проверка посадки: {plant_name}")
         if PLANT_DATA[plant_name]["road_spawn"]:
             return tuple(position) in self.path_poses
         else:
             return tuple(position) in self.poses_to_place
-        # if plant_name in self.poses_to_place.keys():
-        #     return tuple(position) in self.poses_to_place[plant_name]
-        # else:
-        #     return tuple(position) in self.poses_to_place["_"]
 
     def is_position_free(self, position: tuple) -> bool:
+        """Свободна ли позиция."""
         return tuple(position) not in self.plants
 
     def add_plant(self, tile_pos, plant=None):
+        """Добавляет растения в набор занятых позиций."""
         self.plants.add(tuple(tile_pos))
 
     def remove_plant(self, tile_pos):
+        """Убирает растение из набора занятых позиций."""
         if tuple(tile_pos) in self.plants:
             self.plants.remove(tuple(tile_pos))
 

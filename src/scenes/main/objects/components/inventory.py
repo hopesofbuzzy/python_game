@@ -32,7 +32,7 @@ class InventoryModelComponent:
 
     @singledispatchmethod
     def set_active_slot(self, arg):
-        """Функция установки слота инвентаря (перегрузки для Slot, str, int)"""
+        """Устанавливает слот инвентаря (перегрузки для Slot, str, int)"""
         raise NotImplementedError("Тип слота не поддерживается!")
 
     @set_active_slot.register(str)

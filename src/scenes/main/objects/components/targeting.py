@@ -10,6 +10,8 @@ DEFAULT_SHOOTER_BULLET_SPEED = 150
 
 @ComponentRegistry.register("targeting")
 class TargetingComponent:
+    """Компонент прицеливания к врагам."""
+
     def __init__(self, entity: GameObject, range, damage, cooldown, speed):
         self.position = entity.get(PositionComponent)
         self.range = range
