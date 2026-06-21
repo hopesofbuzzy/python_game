@@ -8,7 +8,7 @@ from src.core.singletones.event_bus import event_bus
 from src.core.singletones.global_data import global_data
 from src.core.systems.collision import CollisionSystem
 from src.core.systems.debug_renderer import DebugRenderer
-from src.core.systems.input import InputManager
+from src.core.systems.input import InputManager, cursor
 from src.core.systems.movement import MovementSystem
 from src.core.systems.renderer import Renderer
 from src.core.systems.targeting import TargetingSystem
@@ -23,6 +23,8 @@ class Game:
         self.input: InputManager = InputManager()
         self.movement = MovementSystem()
         self.camera: Camera = Camera(
+            cursor,
+            event_bus,
             size=Vector2(window_size),
         )
         self.uniform_grid = UniformGrid()

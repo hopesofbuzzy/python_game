@@ -1,13 +1,12 @@
 import logging
+
 from pygame.math import Vector2
 
+from src.core.objects.components.ui import ClickHandlerComponent
 from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
 from src.factories.bullet_factory import BulletFactory
-from src.core.objects.components.ui import ClickHandlerComponent
-
 from src.factories.ui_factory import UIFactory
-
 
 BACKGROUND_MUSIC = "res/sfx/win_2.wav"
 START_BUTTON_TEXT = "В меню"

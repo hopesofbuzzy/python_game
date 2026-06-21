@@ -1,8 +1,8 @@
 from pygame.math import Vector2
 
 from src.core.singletones.event_bus import EventBus, EventFlow
-from src.scenes.main.objects import Enemy
 from src.factories.enemy_factory import EnemyFactory
+from src.scenes.main.objects import Enemy
 
 
 class EnemyController:

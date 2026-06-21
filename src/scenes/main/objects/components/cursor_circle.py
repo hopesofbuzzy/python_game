@@ -1,10 +1,12 @@
 import logging
-import pygame
-from pygame.math import Vector2
-from pygame.event import Event as PygameEvent
 
-from src.core.systems.input import Cursor
+import pygame
+from pygame.event import Event as PygameEvent
+from pygame.math import Vector2
+
 from src.core.objects.components import PositionComponent
+from src.core.systems.input import Cursor
+
 
 class CursorCircleComponent:
     """Компонент отрисовки полупрозрачной области вокруг курсора."""

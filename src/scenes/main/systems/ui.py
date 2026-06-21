@@ -3,8 +3,8 @@ from typing import Callable
 
 from pygame.math import Vector2
 
-from src.config.plants import PLANTS_DESCRIPTIONS, PLANTS_PRICES
 from src.config.generator_config import *
+from src.config.plants import PLANTS_DESCRIPTIONS, PLANTS_PRICES
 from src.core.objects import ClickHandlerComponent, TextRenderComponent
 from src.core.objects.event import Event
 from src.core.singletones.event_bus import EventBus, EventFlow

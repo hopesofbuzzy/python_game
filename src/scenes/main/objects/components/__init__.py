@@ -1,5 +1,6 @@
 from .attack import AttackComponent
 from .bar import BarComponent
+from .cursor_circle import CursorCircleComponent
 from .cycle_timer import CycleTimerComponent
 from .data import DataComponent
 from .health import HealthComponent
@@ -10,4 +11,3 @@ from .tag import TagContactComponent
 from .targeting import TargetingComponent
 from .timer import TimerComponent
 from .upgrade import UpgradeComponent
-from .cursor_circle import CursorCircleComponent

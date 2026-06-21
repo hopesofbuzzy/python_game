@@ -6,20 +6,18 @@ from src.core.objects import (
     Map,
     MapControllerComponent,
     MapModelComponent,
-    MapViewComponent
+    MapViewComponent,
 )
 from src.core.objects.scene import Scene
 from src.core.singletones.event_bus import EventFlow
 from src.factories.bullet_factory import BulletFactory
-
-from src.scenes.win.win import WinScene
+from src.factories.cursor_circle_factory import CursorCircleFactory
 
 # Фабрики и строители.
 from src.factories.enemy_factory import EnemyFactory
 from src.factories.inventory_factory import InventoryFactory
 from src.factories.path_factory import PathFactory
 from src.factories.plant_factory import PlantFactory
-from src.factories.cursor_circle_factory import CursorCircleFactory
 from src.factories.ui_factory import UIFactory
 from src.scenes.main.objects import (
     Inventory,
@@ -38,6 +36,8 @@ from src.scenes.main.systems.plant import PlantController
 from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
+from src.scenes.win.win import WinScene
+
 
 class MainScene(Scene):
     def ready(self):

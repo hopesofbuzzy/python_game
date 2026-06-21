@@ -1,8 +1,10 @@
+from typing import Callable
+
 from pygame.math import Vector2
 
-from typing import Callable
 from src.core.objects import GameObject, PositionComponent
 from src.scenes.main.objects import CursorCircleComponent
+
 
 class CursorCircleFactory:
     def __init__(self, add_object: Callable):

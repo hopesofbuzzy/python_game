@@ -2,9 +2,9 @@ import logging
 
 from src.config.plants import get_plant_range
 from src.core.singletones.event_bus import EventBus, EventFlow
+from src.factories.cursor_circle_factory import CursorCircleFactory
 from src.scenes.main.objects import Inventory
 from src.scenes.main.objects.components.inventory import InventoryModelComponent, Slot
-from src.factories.cursor_circle_factory import CursorCircleFactory
 
 DEFAULT_CURSOR_CIRCLE_COLOR = (255, 50, 50, 96)
 

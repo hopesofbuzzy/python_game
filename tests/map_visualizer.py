@@ -6,10 +6,10 @@ from pygame.math import Vector2
 
 from src.config.generator_config import *
 from src.core.objects.scene import Scene
-from src.main import main
 
 # Фабрики и строители.
 from src.factories.map_factory import MapFactory
+from src.main import main
 from src.scenes.main.level.builder import Level, LevelBuilder
 from src.scenes.main.level.generator import LevelGenerator
 from src.scenes.main.level.loader import LevelLoader
