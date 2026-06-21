@@ -65,6 +65,7 @@ class Scene:
         for obj_id, obj in self._objects_to_delete.items():
             if obj_id in self.object_registry:
                 self.object_registry.pop(obj_id)
+                obj.components.clear()
                 del obj
         self._objects_to_delete = dict()
 
