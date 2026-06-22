@@ -19,6 +19,7 @@ from src.factories.inventory_factory import InventoryFactory
 from src.factories.path_factory import PathFactory
 from src.factories.plant_factory import PlantFactory
 from src.factories.ui_factory import UIFactory
+from src.scenes.lose.lose import LoseScene
 from src.scenes.main.objects import (
     Inventory,
     InventoryModelComponent,
@@ -39,7 +40,6 @@ from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
 from src.scenes.win.win import WinScene
-from src.scenes.lose.lose import LoseScene
 
 
 class MainScene(Scene):
