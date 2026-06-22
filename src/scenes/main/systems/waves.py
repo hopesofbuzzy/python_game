@@ -83,8 +83,7 @@ class WaveManager:
                     logging.info("Волна монстров!")
 
     def on_enemy_deleted(self, _event: EventFlow, enemy_count: int):
-        logging.info(f"{len(self.waves)} {enemy_count}")
-        if (len(self.waves) <= 1) and (enemy_count == 0):
+        if (len(self.waves) <= 0) and (enemy_count == 0):
             self.event_bus.fire("on_win")
 
     def start_wave(self, wave):

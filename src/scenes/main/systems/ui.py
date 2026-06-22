@@ -115,7 +115,6 @@ class UIManager:
                 )
             )
             container.add_child(inner_container)
-            logging.info(slot)
 
     def on_wave_started(
         self,

@@ -48,7 +48,6 @@ class InventoryModelComponent:
 
     @set_active_slot.register(Slot)
     def _(self, arg: Slot):
-        logging.info(f"{arg}")
         for idx, slot in enumerate(self.slots):
             if not slot and not arg:
                 self.active_slot = 0

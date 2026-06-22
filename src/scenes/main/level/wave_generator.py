@@ -40,12 +40,10 @@ class WaveGenerator:
             while wave_budget >= 100:
                 for enemy in possible_enemies:
                     cost = ENEMY_DATA[enemy]["price"]
-                    # print(cost, wave_budget)
                     if wave_budget >= cost:
                         amount = wave_budget // cost
                         wave_object = WaveObject(enemy, amount)
                         wave_objects.append(wave_object)
-                        # print(wave_budget)
                         wave_budget -= cost * amount
                     pos_enemies_count -= 1
             wave = Wave(timestamp, wave_objects)

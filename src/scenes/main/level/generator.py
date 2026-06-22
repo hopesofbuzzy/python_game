@@ -1,3 +1,4 @@
+import logging
 import math
 import random
 from collections import deque
@@ -203,7 +204,7 @@ class RandomWalk:
                 self.tiles[by][bx] = self.end_tile
                 return self.tiles, visited
             except Exception as e:
-                print(f"Ошибка генерации пути: {e}")
+                logging.debug("Ошибка генерации пути!")
 
     def is_valid_path(self, pos, old_pos, visited):
         """Проверка на тупик."""

@@ -39,6 +39,7 @@ from src.scenes.main.systems.ui import UIManager
 from src.scenes.main.systems.upgrade import UpgradeManager
 from src.scenes.main.systems.waves import WaveManager
 from src.scenes.win.win import WinScene
+from src.scenes.lose.lose import LoseScene
 
 
 class MainScene(Scene):
@@ -162,7 +163,6 @@ class MainScene(Scene):
 
     def win(self, _event: EventFlow):
         """Победа."""
-        logging.info("Победа!")
         self.global_data["waves"] = self.wave_manager.get_wave_count()
         self.global_data["suns"] = self.currency.get_suns()
         self.global_data["enemies_destroyed"] = (
@@ -172,4 +172,9 @@ class MainScene(Scene):
 
     def game_over(self, _event: EventFlow):
         """Проигрыш."""
-        self.exit()
+        self.global_data["waves"] = self.wave_manager.get_wave_count()
+        self.global_data["suns"] = self.currency.get_suns()
+        self.global_data["enemies_destroyed"] = (
+            self.enemy_controller.get_enemies_destroyed_count()
+        )
+        self.change_scene(LoseScene)
